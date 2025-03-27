@@ -5,7 +5,7 @@ import json
 np.set_printoptions(formatter={'float_kind': '{: .2e}'.format}, linewidth=200)
 
 # Entrada de dados
-with open('./porticos/06/input.json') as file:
+with open('./porticos/05/input.json') as file:
     data = json.load(file)
     
 # constantes //////////////////////////////////////////////////////////////////////////////////////
