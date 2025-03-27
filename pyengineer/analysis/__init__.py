@@ -1,2 +1,2 @@
-from .linear import Linear
-from .nonlinear import Nonlinear
+from ._linear import Linear
+from ._nonlinear import NonLinear

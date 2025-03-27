@@ -1,3 +1,3 @@
-class Materia:
+class NonLinear:
     def __init__(self):
         pass
