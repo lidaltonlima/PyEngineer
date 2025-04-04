@@ -38,8 +38,8 @@ loads.append(load)
 
 # Supports
 support = Support('SP1')
-support.add_fixed_support(n1)
-support.add_fixed_support(n3)
+support.add_support(n1, [False, True, True, False, False, False])
+support.add_pinned_support(n3)
 support.add_fixed_support(n4)
 
 a = analysis.Linear(nodes, bars, loads, support)

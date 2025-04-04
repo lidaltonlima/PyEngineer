@@ -133,16 +133,18 @@ class Linear:
         for node in self.supports.nodes_support:
             # Índices globais de cada nó
             node_index = self.nodes.index(node)
-
-            index_support = [6 * (node_index + 1) - 6,
-                             6 * (node_index + 1) - 5,
-                             6 * (node_index + 1) - 4,
-                             6 * (node_index + 1) - 3,
-                             6 * (node_index + 1) - 2,
-                             6 * (node_index + 1) - 1] 
+            
+            index_support = list()
+            index = 0
+            for support in self.supports.nodes_support[node]:
+                if support:
+                    index_support.append(6 * (node_index + 1) - (6 - index))
+                
+                index += 1
+                
             
             # Colocar número grande na diagonal 
-            for i in index_support:    
+            for i in index_support: 
                 for j in index_support:
                     if i == j:
                         kg_solution[i][j] = 1e25
