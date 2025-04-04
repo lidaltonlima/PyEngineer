@@ -14,18 +14,30 @@ class Linear:
         self.supports = supports
         self.matrix_order = 6 * len(nodes)
         self.calculated = False
+        self.displacements = None
+        self.reactions = None
+        self.kg = None
+        self.kg_solution = None
+        self.forces_vector = None
     
-    def calculate(self):
-        displacements = dict()
+    
+    def calculate_structure(self):
+        self.displacements = dict()
+        self.reactions = dict()
+        self.kg_solution = self.calculate_kg_solution()
+        self.forces_vector = self.calculate_forces_vector()
         
         for load in self.loads:
-            displacements[load] = np.linalg.inv(self.kg_solution()) @ self.forces()[load]
+            # Calculate displacements
+            self.displacements[load] = np.linalg.inv(self.kg_solution) @ self.forces_vector[load]
+            
+            # Calculate reactions
+            self.reactions[load] = self.kg @ self.displacements[load] - self.forces_vector[load]
         
         self.calculated = True
-        
-        return displacements
+
     
-    def forces(self):
+    def calculate_forces_vector(self):
         forces = dict()
                 
         for load in self.loads:
@@ -44,12 +56,12 @@ class Linear:
         
         
     
-    def kg(self):
+    def calculate_kg(self):
         kg = np.zeros([self.matrix_order, self.matrix_order])
     
         for bar in self.bars:
-            spread_vector = self.spread(bar)
-            bar.klg = self.klg(bar)
+            spread_vector = self.calculate_spread_vector(bar)
+            bar.klg = self.calculate_klg(bar)
             
             line_local = -1 # Ídice da linha localmente
             for line_global in spread_vector:
@@ -61,7 +73,7 @@ class Linear:
     
         return kg
     
-    def kl(self, bar: Bar):
+    def calculate_kl(self, bar: Bar):
         kl = np.zeros([12, 12])
              
         l = bar.length
@@ -100,17 +112,23 @@ class Linear:
         kl[11][11] = kl[5][5]
         kl = kl + kl.T - np.diag(kl.diagonal())
         
+        bar.kl = kl # Atibui ao objeto
+        
         return kl
     
     
-    def klg(self, bar: Bar):
-        r = self.r(bar)
+    def calculate_klg(self, bar: Bar):
+        r = self.calculate_r(bar)
+        klg = r.T @ self.calculate_kl(bar) @ r
         
-        return r.T @ self.kl(bar) @ r
+        bar.klg = klg # Atibui ao objeto
+        
+        return klg
     
     
-    def kg_solution(self):
-        kg_solution = self.kg().copy()
+    def calculate_kg_solution(self):
+        self.kg = self.calculate_kg()
+        kg_solution = self.kg.copy()
         
         for node in self.supports.nodes_support:
             # Índices globais de cada nó
@@ -132,7 +150,7 @@ class Linear:
         return kg_solution
     
     
-    def r(self, bar: Bar):
+    def calculate_r(self, bar: Bar):
         x1 = bar.end_node.x
         y1 = bar.end_node.y
         z1 = bar.end_node.z
@@ -181,9 +199,11 @@ class Linear:
         rotation[6:9, 6:9] = rot_aux
         rotation[9:12, 9:12] = rot_aux
         
+        bar.r = rotation # Atribui matriz de rotação à no objeto barra
+    
         return rotation
     
-    def spread(self, bar: Bar):
+    def calculate_spread_vector(self, bar: Bar):
         # Vetor de espalhamento **********************************************************************
         ni = self.nodes.index(bar.start_node) # Índice do nó inicial
         nf = self.nodes.index(bar.end_node) # Índice do nó final
@@ -193,3 +213,35 @@ class Linear:
                          6 * (nf + 1) - 6, 6 * (nf + 1) - 5, 6 * (nf + 1) - 4,
                          6 * (nf + 1) - 3, 6 * (nf + 1) - 2, 6 * (nf + 1) - 1]
         return spread_vector
+    
+    
+    def get_displacements(self, node_name: str, load_name: str):
+        for load in self.loads:
+            if load.name == load_name: 
+                for node in self.nodes:
+                    if node.name == node_name:
+                        node_index = self.nodes.index(node) # Node index
+                        initial_index = 6 * (node_index + 1) - 6
+                        end_index = 6 * (node_index + 1)
+                                                
+                        node_displacements = self.displacements[load][initial_index : end_index]
+                        break
+                break
+        
+        return node_displacements
+    
+    
+    def get_reactions(self, node_name: str, load_name: str):
+        for load in self.loads:
+            if load.name == load_name: 
+                for node in self.nodes:
+                    if node.name == node_name:
+                        node_index = self.nodes.index(node) # Node index
+                        initial_index = 6 * (node_index + 1) - 6
+                        end_index = 6 * (node_index + 1)
+                                                
+                        node_reations = self.reactions[load][initial_index : end_index]
+                        break
+                break
+        
+        return node_reations

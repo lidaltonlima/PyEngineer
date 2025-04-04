@@ -15,11 +15,17 @@ class Support:
     #     self.nodes_support[node.name] = [dx, dy, dz, rx, ry, rz]
     
     
-    def add_node_fixed(self, node: Node):
+    def add_fixed_support(self, node: Node):
         if not node in self.nodes_support:
             self.nodes_support[node] = list()
             
         self.nodes_support[node] = [True, True, True, True, True, True]
+    
+    def add_support(self, node: Node, supports: list[bool]):
+        if not node in self.nodes_support:
+            self.nodes_support[node] = list()
+            
+        self.nodes_support[node] = supports
     
     # def add_node_pinned(self, node: Node):  
     #     if not node.name in self.nodes_support:

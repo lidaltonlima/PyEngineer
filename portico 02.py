@@ -4,7 +4,7 @@ from pyengineer import *
 from pyengineer import analysis
 
 
-np.set_printoptions(formatter={'float_kind': '{: .2e}'.format}, linewidth=200)
+np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)
 
 
 material = Material('M1', 2e11, 7.692308e10, 0.3, 7850)
@@ -37,11 +37,12 @@ load.add_node_load('FN1', n2, 8000, 9000, 10000, 11000, 12000, 13000)
 loads.append(load)
 
 # Supports
-section = Support('SP1')
-section.add_node_fixed(n1)
-section.add_node_fixed(n3)
-section.add_node_fixed(n4)
+support = Support('SP1')
+support.add_fixed_support(n1)
+support.add_fixed_support(n3)
+support.add_fixed_support(n4)
 
-a = analysis.Linear(nodes, bars, loads, section)
+a = analysis.Linear(nodes, bars, loads, support)
+a.calculate_structure()
 
-print(a.calculate().values())
+print(a.get_reactions('N3', 'L1'))

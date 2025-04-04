@@ -34,9 +34,9 @@ loads.append(load)
 
 # Supports
 section = Support('SP1')
-section.add_node_fixed(n1)
-section.add_node_fixed(n3)
+section.add_fixed_support(n1)
+section.add_fixed_support(n3)
 
 a = analysis.Linear(nodes, bars, loads, section)
 
-print(a.calculate().values())
+print(a.calculate_structure().values())
