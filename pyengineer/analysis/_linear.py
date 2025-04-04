@@ -66,9 +66,9 @@ class Linear:
              
         l = bar.length
         a = bar.section.area
+        ix = bar.section.ix
         iy = bar.section.iy
         iz = bar.section.iz
-        j = bar.section.j
         e = bar.material.e
         g = bar.material.g
         
@@ -82,7 +82,7 @@ class Linear:
         kl[2][4] = (-6 * e * iy) / l**2
         kl[2][8] = -kl[2][2]
         kl[2][10] = kl[2][4]
-        kl[3][3] = (g * j) / l
+        kl[3][3] = (g * ix) / l
         kl[3][9] = -kl[3][3]
         kl[4][4] = (4 * e * iy) / l
         kl[4][8] = -kl[2][4]

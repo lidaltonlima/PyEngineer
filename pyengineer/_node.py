@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, name: str, x: float, y: float, z: float):
+    def __init__(self, name: str, coordinates: list[float]):
         self.name = name
-        self.x = x
-        self.y = y
-        self.z = z
+        self.x = coordinates[0]
+        self.y = coordinates[1]
+        self.z = coordinates[2]
         
