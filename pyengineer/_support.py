@@ -17,7 +17,7 @@ class Support:
 
         Args:
             node (Node): nó em que estará o apoio
-            supports (list[bool]): restrições a deslocamentos e rotações nos eixo x, y e z,
+            supports (list[bool]): restrições a deslocamentos e rotações nos eixo x, y e z
             respectivamente.
         """
         if not node in self.nodes_support:

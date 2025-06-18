@@ -21,15 +21,14 @@ n3 = eng.Node('N3', [10, 0, 10])
 nodes.append(n3)
 n4 = eng.Node('N4', [0, 10, 10])
 nodes.append(n4)
-
 # Bars
 bars = []
-b1 = eng.Bar('B1', n1, n2, section, material)
+b1 = eng.Bar('B1', n2, n1, section, material)
 bars.append(b1)
 b2 = eng.Bar('B2', n2, n3, section, material)
 bars.append(b2)
-b2 = eng.Bar('B3', n2, n4, section, material)
-bars.append(b2)
+b3 = eng.Bar('B3', n2, n4, section, material)
+bars.append(b3)
 
 # Loads
 loads = []
@@ -39,9 +38,9 @@ loads.append(load)
 
 # Supports
 support = eng.Support('SP1')
-support.add_support(n1, [False, True, True, False, False, False])
+support.add_fixed_support(n1)
 support.add_pinned_support(n3)
-support.add_fixed_support(n4)
+support.add_support(n4, [True, False, True, True, True, True])
 
 a = analysis.Linear(nodes, bars, loads, support)
 a.calculate_structure()
