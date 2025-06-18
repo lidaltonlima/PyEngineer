@@ -1,15 +1,16 @@
+"""Funções úteis para para manipulação de objetos no espaço tridimensional"""
 import numpy as np
 
-def rotate_point_around_line(point_p: list[float],
-                             point_a: list[float],
-                             point_b: list[float],
+def rotate_point_around_line(point_p: list[float] | np.ndarray,
+                             point_a: list[float] | np.ndarray,
+                             point_b: list[float] | np.ndarray,
                              angle: float) -> np.ndarray:
     """Rotaciona um ponto "p" em torno de uma reta definida pelos pontos "a" e "b"
 
     Args:
-        point_p (list[float]): (x, y, z) ponto a ser rotacionado
-        point_a (list[float]): (x, y, z) ponto da reta
-        point_b (list[float]): (x, y, z) ponto da reta
+        point_p (list[float] | np.ndarray): (x, y, z) ponto a ser rotacionado
+        point_a (list[float] | np.ndarray): (x, y, z) ponto da reta
+        point_b (list[float] | np.ndarray): (x, y, z) ponto da reta
         angle (float): ângulo de rotação em radianos
 
     Returns:
@@ -37,12 +38,3 @@ def rotate_point_around_line(point_p: list[float],
 
     # Translada de volta
     return rotated + point_a
-
-# Exemplo de uso:
-p = [0, 0, 1]
-a = [0, 0, 0]
-b = [1, 0, 0]
-theta = np.pi / 2  # 90 graus
-
-rotated_point = rotate_point_around_line(p, a, b, theta)
-print("Ponto rotacionado:", rotated_point)

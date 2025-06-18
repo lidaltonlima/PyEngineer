@@ -20,14 +20,14 @@ class Load:
         """Adiciona carregamentos e esforços
 
         Args:
-            name (str): _description_
-            node (Node): _description_
-            fx (float, optional): _description_. Defaults to 0.
-            fy (float, optional): _description_. Defaults to 0.
-            fz (float, optional): _description_. Defaults to 0.
-            mx (float, optional): _description_. Defaults to 0.
-            my (float, optional): _description_. Defaults to 0.
-            mz (float, optional): _description_. Defaults to 0.
+            name (str): nome do esforço
+            node (Node): nó em que será aplicado o esforço
+            fx (float, optional): Força em "x". Defaults to 0.
+            fy (float, optional): Força em "y". Defaults to 0.
+            fz (float, optional): Força em "z". Defaults to 0.
+            mx (float, optional): Momento em "x". Defaults to 0.
+            my (float, optional): Momento em "y". Defaults to 0.
+            mz (float, optional): Momento em "z". Defaults to 0.
         """
 
         if not node in self.nodes_loads:

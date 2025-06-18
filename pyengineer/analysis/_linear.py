@@ -31,10 +31,10 @@ class Linear:
         self.forces_vector = None
 
 
-    def calculate_structure(self):
+    def calculate_structure(self) -> None:
         """Realiza a calculo"""
-        self.displacements = dict()
-        self.reactions = dict()
+        self.displacements = {}
+        self.reactions = {}
         self.kg_solution = self.calculate_kg_solution()
         self.forces_vector = self.calculate_forces_vector()
 
@@ -48,7 +48,7 @@ class Linear:
         self.calculated = True
 
 
-    def calculate_forces_vector(self):
+    def calculate_forces_vector(self) -> dict:
         """Calcula o vetor de forças para cada caso de carga e cria um dicionário
 
         Returns:
@@ -56,7 +56,7 @@ class Linear:
         """
         forces = {}
         for load in self.loads:
-            f_load = np.zeros(self.matrix_order)
+            f_load = np.zeros(self.matrix_order, dtype=float)
 
             for node in load.nodes_loads:
                 node_position = (self.nodes.index(node) + 1) * 6 - 6
@@ -70,11 +70,11 @@ class Linear:
         return forces
 
 
-    def calculate_kg(self):
+    def calculate_kg(self) -> np.ndarray:
         """ Calcula a matriz de rigidez global
 
         Returns:
-            ndarray: _description_
+            ndarray: matriz de rigidez global
         """
         kg = np.zeros([self.matrix_order, self.matrix_order])
 
@@ -93,7 +93,7 @@ class Linear:
         return kg
 
 
-    def calculate_klg(self, bar: Bar):
+    def calculate_klg(self, bar: Bar) -> np.ndarray:
         """Transforma a matriz de rigidez local e global
 
         Args:
@@ -110,7 +110,7 @@ class Linear:
         return klg
 
 
-    def calculate_kg_solution(self):
+    def calculate_kg_solution(self) -> np.ndarray:
         """Aplica os apoios na matriz
 
         Returns:
@@ -148,16 +148,16 @@ class Linear:
 
         return kg_solution
 
-    def calculate_spread_vector(self, bar: Bar):
+    def calculate_spread_vector(self, bar: Bar) -> list[int]:
         """Calcula o vetor de espalhamento
 
         Args:
             bar (Bar): barra
 
         Returns:
-            ndarray: vetor de espalhamento
+            list[int]: vetor de espalhamento
         """
-# Vetor de espalhamento ***************************************************************************
+        # Vetor de espalhamento *******************************************************************
         ni = self.nodes.index(bar.start_node) # Índice do nó inicial
         nf = self.nodes.index(bar.end_node) # Índice do nó final
 
@@ -168,7 +168,7 @@ class Linear:
         return spread_vector
 
 
-    def get_displacements(self, node_name: str, load_name: str):
+    def get_displacements(self, node_name: str, load_name: str) -> np.ndarray:
         """Pega os deslocamentos
 
         Args:
@@ -193,7 +193,7 @@ class Linear:
         return node_displacements
 
 
-    def get_reactions(self, node_name: str, load_name: str):
+    def get_reactions(self, node_name: str, load_name: str) -> np.ndarray:
         """Pega as reações
 
         Args:

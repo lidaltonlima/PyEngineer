@@ -16,9 +16,10 @@ class Support:
         """Adiciona um apoio
 
         Args:
-            node (Node): nó em que estará o apoio
-            supports (list[bool]): restrições a deslocamentos e rotações nos eixo x, y e z
-            respectivamente.
+            node (Node): nó em que estará o apoio.
+            supports (list[bool | float]): (Dx, Dy, Dz, Rx, Ry, Rz)
+                restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
+                Pode ser fixo/livre (bool) ou uma mola (float).
         """
         if not node in self.nodes_support:
             self.nodes_support[node] = []

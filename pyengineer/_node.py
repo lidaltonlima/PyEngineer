@@ -10,10 +10,11 @@ class Node:
         """Construtor
 
         Args:
-            name (str): nome para pegar dados do nó
-            coordinates (list[float]): coordenada do nó
+            name (str): nome para pegar dados do nó.
+            coordinates (list[float]): (x, y, z) coordenada do nó.
         """
         self.name = name
         self.x = coordinates[0]
         self.y = coordinates[1]
         self.z = coordinates[2]
+        self.position = coordinates

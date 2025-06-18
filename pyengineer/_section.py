@@ -8,7 +8,7 @@ class Section:
         Args:
             name (str): nome da seção
             area (float): área da seção
-            inertias (list[float]): inércias em x, y e z
+            inertias (list[float]): inércias em x, y e z (Ix, Iy, Iz)
         """
         self.name = name
         self.area = area

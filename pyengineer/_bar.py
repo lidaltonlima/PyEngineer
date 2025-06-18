@@ -1,6 +1,9 @@
 """Módulo para operações matemáticas"""
 import numpy as np
 
+from .functions import space_3d
+
+
 from ._material import Material
 from ._node import Node
 from ._section import Section
@@ -38,7 +41,7 @@ class Bar:
         self.r = self.calculate_r() # Matriz de rotação
 
 
-    def calculate_kl(self):
+    def calculate_kl(self) -> np.ndarray:
         """Calcula a matriz de rigidez local da barra
 
         Args:
@@ -111,11 +114,19 @@ class Bar:
         rot_aux[0, 1] = dy / self.length
         rot_aux[0, 2] = dz / self.length
 
-        # Ponto auxiliar para determinar o plano "xy" da barra
+        # Ponto auxiliar para determinar o plano "xy" da barra ////////////////////////////////////
+        # Ponto auxiliar inicial ******************************************************************
         if dx != 0 or dz != 0:
             aux = np.array([x1, y1 + 1, z1])
         else:
             aux = np.array([x1 + 1, y1, z1])
+
+        # Rotação do ponto auxiliar em torno da barra *********************************************
+        aux = space_3d.rotate_point_around_line(aux,
+                                                self.start_node.position,
+                                                self.end_node.position,
+                                                self.rotation)
+        # /////////////////////////////////////////////////////////////////////////////////////////
 
         dx = aux[0] - x1
         dy = aux[1] - y1
