@@ -1,3 +1,4 @@
+"""Exportação do módulos para facilitar a importação"""
 from ._bar import Bar
 from ._material import Material
 from ._node import Node

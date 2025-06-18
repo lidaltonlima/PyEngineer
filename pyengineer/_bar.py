@@ -1,3 +1,4 @@
+"""Módulo para operações matemáticas"""
 from numpy import sqrt
 
 from ._material import Material
@@ -5,7 +6,22 @@ from ._node import Node
 from ._section import Section
 
 class Bar:
-    def __init__(self, name: str, start_node: Node, end_node: Node, section: Section, material: Material):
+    """Cria uma barra para ser usada na estrutura"""
+    def __init__(self,
+                 name: str,
+                 start_node: Node,
+                 end_node: Node,
+                 section: Section,
+                 material: Material):
+        """Construtor
+
+        Args:
+            name (str): nome da barra
+            start_node (Node): nó inicial (i)
+            end_node (Node): nó final (j)
+            section (Section): seção
+            material (Material): material
+        """
         self.name = name
         self.start_node = start_node
         self.end_node = end_node

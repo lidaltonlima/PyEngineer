@@ -1,3 +1,4 @@
+"""Cálculo do pórtico 3"""
 import numpy as np
 
 from pyengineer import *
@@ -45,4 +46,4 @@ support.add_fixed_support(n4)
 a = analysis.Linear(nodes, bars, loads, support)
 a.calculate_structure()
 
-print(a.get_reactions('N3', 'L1'))
+print(a.get_displacements('N2', 'L1'))
