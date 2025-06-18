@@ -38,11 +38,11 @@ loads.append(load)
 
 # Supports
 support = eng.Support('SP1')
-support.add_fixed_support(n1)
+support.add_support(n1, [5e6, True, True, True, True, True])
 support.add_pinned_support(n3)
-support.add_support(n4, [True, False, True, True, True, True])
+support.add_support(n4, [True, 10e6, True, True, True, True])
 
 a = analysis.Linear(nodes, bars, loads, support)
 a.calculate_structure()
 
-print(a.get_displacements('N2', 'L1'))
+print(a.get_displacements('N1', 'L1'))

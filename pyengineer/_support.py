@@ -12,7 +12,7 @@ class Support:
         self.name = name
         self.nodes_support = {}
 
-    def add_support(self, node: Node, supports: list[bool]):
+    def add_support(self, node: Node, supports: list[bool | float]):
         """Adiciona um apoio
 
         Args:

@@ -175,10 +175,13 @@ class Linear:
             # Índices globais de cada nó
             node_index = self.nodes.index(node)
 
-            index_support = list()
+            index_support = []
+            index_spring = {}
             index = 0
             for support in self.supports.nodes_support[node]:
                 if support:
+                    if not isinstance(support, bool):
+                        index_spring[6 * (node_index + 1) - (6 - index)] = support
                     index_support.append(6 * (node_index + 1) - (6 - index))
 
                 index += 1
@@ -188,7 +191,12 @@ class Linear:
             for i in index_support:
                 for j in index_support:
                     if i == j:
-                        kg_solution[i][j] = 1e25
+                        # Se tiver mola, soma apenas a mola
+                        if i in index_spring:
+                            kg_solution[i][j] += index_spring[i]
+                        else:
+                            kg_solution[i][j] += 1e25
+
 
         return kg_solution
 
