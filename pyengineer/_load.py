@@ -57,7 +57,7 @@ class Load:
     #             self.bars_loads_dist[bar.name] = dict()
 
     #     self.bars_loads_dist[bar.name][name] = {'start_position': start_position,
-    #                                             'end_position': end_position, 
+    #                                             'end_position': end_position,
     #                                             'start_forces': start_forces,
     #                                             'end_forces': end_forces,
     #                                             'local_reference': local_reference}

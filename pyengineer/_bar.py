@@ -31,6 +31,6 @@ class Bar:
         self.length = sqrt(self.dx**2 + self.dy**2 + self.dz**2)
         self.section = section
         self.material = material
-        self.klg = None
-        self.kl = None
-        self.r = None
+        self.klg = None # Matriz de rigidez nas coordenadas globais
+        self.kl = None # Matriz de rigidez nas coordenadas locais
+        self.r = None # Matriz de rotação
