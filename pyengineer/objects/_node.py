@@ -1,4 +1,6 @@
 """Nós da estrutura"""
+import numpy as np
+
 class Node:
     """Cria um nó que será usado na estrutura
     Observações:
@@ -14,7 +16,7 @@ class Node:
             coordinates (list[float]): (x, y, z) coordenada do nó.
         """
         self.name = name
-        self.position = position
-        self.x = position[0]
-        self.y = position[1]
-        self.z = position[2]
+        self.position = np.array(position, dtype=float)
+        self.x = float(position[0])
+        self.y = float(position[1])
+        self.z = float(position[2])

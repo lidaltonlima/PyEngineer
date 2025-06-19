@@ -3,6 +3,7 @@ import numpy as np
 
 import pyengineer as eng
 from pyengineer import analysis
+from pyengineer import view
 
 
 np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)
@@ -53,7 +54,10 @@ bars.append(b4)
 support.add_fixed_support(n5)
 load.add_node_load('FN2', n6, fz=10000)
 
-structure = analysis.Linear(nodes, bars, loads, support)
-structure.calculate_structure()
+linear_analysis = analysis.Linear(nodes, bars, loads, support)
+linear_analysis.calculate_structure()
 
-print(structure.get_displacements('N6', 'L1'))
+view_structure = view.Structure(linear_analysis)
+view_structure.show()
+
+# print(linear_analysis.get_displacements('N6', 'L1'))

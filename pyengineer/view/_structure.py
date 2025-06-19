@@ -2,46 +2,75 @@
 import typing as tp
 import pyvista as pv
 import vtk
+from ..analysis import Linear
 
 class IStyles(tp.TypedDict):
     """Interface para estilos"""
     theme: str
     background_color: str
+
     grid_size: float
     cell_size: float
     cell_width: float
     cell_color: str
+
     section_size: float
     section_width: float
     section_color: str
 
+    node_size: int
+    node_color: str
+    bar_width: int
+    bar_color: str
+
 
 class Structure:
     """Visualização da estrutura"""
-    def __init__(self):
+    def __init__(self, analysis: Linear):
+        self.analysis = analysis
         self.styles: IStyles = {
             'theme': 'dark',
             'background_color': '#1a1a1a',
             # Grid
-            'grid_size': 10,
+            'grid_size': 50,
 
-            'cell_size': 0.2,
+            'cell_size': 1,
             'cell_width': 1,
             'cell_color': '#4d4d4d',
 
-            'section_size': 1,
+            'section_size': 10,
             'section_width': 2,
-            'section_color': '#4d4d4d'
+            'section_color': '#4d4d4d',
+
+            # Objetos
+            'node_size': 10,
+            'node_color': 'blue',
+            'bar_width': 3,
+            'bar_color': 'red'
         }
 
         self.plotter = pv.Plotter()
 
 
-        # Adiciona qualquer malha ou ator que você queira visualizar
-        cube = pv.Cube((0, 0, 0.5))
-        self.plotter.add_mesh(cube)
+    def _add_objects(self) -> None:
+        # Points
+        points_position = []
+        for node in self.analysis.nodes:
+            points_position.append(node.position)
 
-    def config(self) -> None:
+        self.plotter.add_mesh(pv.PolyData(points_position),
+                              color=self.styles['node_color'],
+                              point_size=self.styles['node_size'])
+
+        # Bars
+        for bar in self.analysis.bars:
+            line = pv.Line(bar.start_node.position, bar.end_node.position)
+            self.plotter.add_mesh(line,
+                                  color=self.styles['bar_color'],
+                                  line_width=self.styles['bar_width'])
+
+
+    def _config(self) -> None:
         """Faz as configurações iniciais"""
         # pylint: disable=E1101
         vtk.vtkObject.GlobalWarningDisplayOff() # Desativar erros
@@ -54,7 +83,7 @@ class Structure:
         self.plotter.add_axes() # Visualização do eixos globais
 
         self.plotter.camera_position = [
-            (10, -10, 10),  # posição da câmera (x, y, z)
+            (50, -50, 50),  # posição da câmera (x, y, z)
             (0, 0, 0),     # ponto focal (olhando pro centro da cena)
             (0, 0, 1)      # view-up (o eixo Z é o "cima" da tela)
         ]
@@ -89,11 +118,8 @@ class Structure:
                               line_width=self.styles['section_width'])
         # /////////////////////////////////////////////////////////////////////////////////////////
 
-
     def show(self):
         """Inicia a visualização"""
-        self.config()
+        self._config()
+        self._add_objects()
         self.plotter.show()
-
-a = Structure()
-a.show()
