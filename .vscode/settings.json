@@ -4,7 +4,8 @@
         "linalg",
         "ndarray",
         "printoptions",
-        "pyengineer"
+        "pyengineer",
+        "pyvista"
     ],
 
       // Ícones personalizados para as pastas com nome diferente
