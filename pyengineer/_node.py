@@ -6,7 +6,7 @@ class Node:
         - Não pode haver nós soltos;
         - Um único nó pode ser usado para vários elementos
     """
-    def __init__(self, name: str, coordinates: list[float]):
+    def __init__(self, name: str, position: list[float]):
         """Construtor
 
         Args:
@@ -14,7 +14,7 @@ class Node:
             coordinates (list[float]): (x, y, z) coordenada do nó.
         """
         self.name = name
-        self.x = coordinates[0]
-        self.y = coordinates[1]
-        self.z = coordinates[2]
-        self.position = coordinates
+        self.position = position
+        self.x = position[0]
+        self.y = position[1]
+        self.z = position[2]

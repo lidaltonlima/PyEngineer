@@ -6,9 +6,9 @@ class Section:
         """Construtor
 
         Args:
-            name (str): nome da seção
-            area (float): área da seção
-            inertias (list[float]): inércias em x, y e z (Ix, Iy, Iz)
+            name (str): Nome da seção
+            area (float): Área da seção
+            inertias (list[float]): Inércias em x, y e z (Ix, Iy, Iz)
         """
         self.name = name
         self.area = area

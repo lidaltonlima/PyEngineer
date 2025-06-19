@@ -13,10 +13,10 @@ class Linear:
         """Construtor
 
         Args:
-            nodes (list[Node]): nós
-            bars (list[Bar]): barras
-            loads (list[Load]): casos de carga
-            supports (Support): apoios
+            nodes (list[Node]): Nós
+            bars (list[Bar]): Barras
+            loads (list[Load]): Casos de carga
+            supports (Support): Apoios
         """
         self.nodes = nodes
         self.bars = bars
@@ -52,7 +52,7 @@ class Linear:
         """Calcula o vetor de forças para cada caso de carga e cria um dicionário
 
         Returns:
-            dict: vetor de forças
+            dict: Vetor de forças
         """
         forces = {}
         for load in self.loads:
@@ -74,7 +74,7 @@ class Linear:
         """ Calcula a matriz de rigidez global
 
         Returns:
-            ndarray: matriz de rigidez global
+            ndarray: Matriz de rigidez global
         """
         kg = np.zeros([self.matrix_order, self.matrix_order])
 
@@ -97,10 +97,10 @@ class Linear:
         """Transforma a matriz de rigidez local e global
 
         Args:
-            bar (Bar): _description_
+            bar (Bar): Barra
 
         Returns:
-            _type_: _description_
+            ndarray: Matriz de rigidez global
         """
         r = bar.r
         klg = r.T @ bar.kl @ r
@@ -114,7 +114,7 @@ class Linear:
         """Aplica os apoios na matriz
 
         Returns:
-            ndarray: matriz de rigidez com os apoios aplicados
+            ndarray: Matriz de rigidez com os apoios aplicados
         """
         self.kg = self.calculate_kg()
         kg_solution = self.kg.copy()
@@ -152,10 +152,10 @@ class Linear:
         """Calcula o vetor de espalhamento
 
         Args:
-            bar (Bar): barra
+            bar (Bar): Barra
 
         Returns:
-            list[int]: vetor de espalhamento
+            list[int]: Vetor de espalhamento
         """
         # Vetor de espalhamento *******************************************************************
         ni = self.nodes.index(bar.start_node) # Índice do nó inicial
@@ -172,11 +172,11 @@ class Linear:
         """Pega os deslocamentos
 
         Args:
-            node_name (str): mome do nó
-            load_name (str): nome da carga
+            node_name (str): Nome do nó
+            load_name (str): Nome do caso de carga
 
         Returns:
-            ndarray: deslocamentos
+            ndarray: Deslocamentos
         """
         for load in self.loads:
             if load.name == load_name:
@@ -197,11 +197,11 @@ class Linear:
         """Pega as reações
 
         Args:
-            node_name (str): nome do nó
-            load_name (str): nome da carga
+            node_name (str): Nome do nó
+            load_name (str): Nome do caso de carga
 
         Returns:
-            ndarray: reações
+            ndarray: Reações
         """
         for load in self.loads:
             if load.name == load_name:

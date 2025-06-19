@@ -7,7 +7,7 @@ class Support:
         """Construtor
 
         Args:
-            name (str): nome do conjunto de apoios
+            name (str): Nome do conjunto de apoios
         """
         self.name = name
         self.nodes_support = {}
@@ -16,9 +16,9 @@ class Support:
         """Adiciona um apoio
 
         Args:
-            node (Node): nó em que estará o apoio.
+            node (Node): Nó em que estará o apoio.
             supports (list[bool | float]): (Dx, Dy, Dz, Rx, Ry, Rz)
-                restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
+                Restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
                 Pode ser fixo/livre (bool) ou uma mola (float).
         """
         if not node in self.nodes_support:
@@ -30,7 +30,7 @@ class Support:
         """Adiciona um apoio do tipo fixo
 
         Args:
-            node (Node): nó em que será colocado o apoio
+            node (Node): Nó em que será colocado o apoio
         """
         if not node in self.nodes_support:
             self.nodes_support[node] = []
@@ -41,7 +41,7 @@ class Support:
         """Adiciona um apoio fixo, mas que permite rotações
 
         Args:
-            node (Node): nó em ue será colocado o apoio
+            node (Node): Nó em ue será colocado o apoio
         """
         if not node in self.nodes_support:
             self.nodes_support[node] = []

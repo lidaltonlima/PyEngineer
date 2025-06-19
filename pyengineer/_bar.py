@@ -20,11 +20,11 @@ class Bar:
         """Construtor
 
         Args:
-            name (str): nome da barra
-            start_node (Node): nó inicial (i)
-            end_node (Node): nó final (j)
-            section (Section): seção
-            material (Material): material
+            name (str): Nome da barra
+            start_node (Node): Nó inicial (i)
+            end_node (Node): Nó final (j)
+            section (Section): Seção
+            material (Material): Material
         """
         self.name = name
         self.start_node = start_node
@@ -96,10 +96,10 @@ class Bar:
         """Calcula a matriz de rotação da barra
 
         Args:
-            bar (Bar): barra
+            bar (Bar): Barra
 
         Returns:
-            ndarray: matriz de rotação
+            ndarray: Matriz de rotação
         """
         x1 = self.end_node.x
         y1 = self.end_node.y

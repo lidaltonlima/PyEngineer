@@ -5,11 +5,11 @@ class Material:
         """Construtor
 
         Args:
-            name (str): nome do material
-            e (float): módulo de elasticidade
-            g (float): módulo de elasticidade transversal
-            ni (float): coeficiente de Poisson
-            rho (float): massa específica
+            name (str): Nome do material
+            e (float): Módulo de elasticidade
+            g (float): Módulo de elasticidade transversal
+            ni (float): Coeficiente de Poisson
+            rho (float): Massa específica
         """
         self.name = name
         self.e = e

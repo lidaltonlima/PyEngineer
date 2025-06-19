@@ -5,5 +5,10 @@
         "ndarray",
         "printoptions",
         "pyengineer"
-    ]
+    ],
+
+      // Ícones personalizados para as pastas com nome diferente
+  "material-icon-theme.folders.associations": {
+      "analysis": "core",
+  }
 }

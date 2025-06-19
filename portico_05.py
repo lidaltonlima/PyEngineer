@@ -25,7 +25,7 @@ nodes.append(n4)
 bars = []
 b1 = eng.Bar('B1', n2, n1, section, material)
 bars.append(b1)
-b2 = eng.Bar('B2', n2, n3, section, material, rotation=np.pi / 2)
+b2 = eng.Bar('B2', n2, n3, section, material, rotation=np.pi / 4)
 bars.append(b2)
 b3 = eng.Bar('B3', n2, n4, section, material)
 bars.append(b3)

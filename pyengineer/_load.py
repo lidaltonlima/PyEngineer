@@ -7,7 +7,7 @@ class Load:
         """Construtor
 
         Args:
-            name (str): nome da carga
+            name (str): Nome da carga
         """
         self.name = name
         self.nodes_loads = {}
@@ -20,8 +20,8 @@ class Load:
         """Adiciona carregamentos e esforços
 
         Args:
-            name (str): nome do esforço
-            node (Node): nó em que será aplicado o esforço
+            name (str): Nome do esforço
+            node (Node): Nó em que será aplicado o esforço
             fx (float, optional): Força em "x". Defaults to 0.
             fy (float, optional): Força em "y". Defaults to 0.
             fz (float, optional): Força em "z". Defaults to 0.

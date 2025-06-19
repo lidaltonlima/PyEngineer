@@ -8,9 +8,9 @@ def rotate_point_around_line(point_p: list[float] | np.ndarray,
     """Rotaciona um ponto "p" em torno de uma reta definida pelos pontos "a" e "b"
 
     Args:
-        point_p (list[float] | np.ndarray): (x, y, z) ponto a ser rotacionado
-        point_a (list[float] | np.ndarray): (x, y, z) ponto da reta
-        point_b (list[float] | np.ndarray): (x, y, z) ponto da reta
+        point_p (list[float] | np.ndarray): (x, y, z) Ponto a ser rotacionado
+        point_a (list[float] | np.ndarray): (x, y, z) Ponto da reta
+        point_b (list[float] | np.ndarray): (x, y, z) Ponto da reta
         angle (float): ângulo de rotação em radianos
 
     Returns:
