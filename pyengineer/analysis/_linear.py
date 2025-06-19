@@ -1,10 +1,10 @@
 """Faz a análise linear da estrutura"""
 import numpy as np
 
-from .._node import Node
-from .._bar import Bar
-from .._load import Load
-from .._support import Support
+from ..objects import Node
+from ..objects import Bar
+from ..objects import Load
+from ..objects import Support
 
 class Linear:
     """Análise linear"""
@@ -30,7 +30,6 @@ class Linear:
         self.kg_solution = None
         self.forces_vector = None
 
-
     def calculate_structure(self) -> None:
         """Realiza a calculo"""
         self.displacements = {}
@@ -46,7 +45,6 @@ class Linear:
             self.reactions[load] = self.kg @ self.displacements[load] - self.forces_vector[load]
 
         self.calculated = True
-
 
     def calculate_forces_vector(self) -> dict:
         """Calcula o vetor de forças para cada caso de carga e cria um dicionário
@@ -69,7 +67,6 @@ class Linear:
 
         return forces
 
-
     def calculate_kg(self) -> np.ndarray:
         """ Calcula a matriz de rigidez global
 
@@ -80,7 +77,7 @@ class Linear:
 
         for bar in self.bars:
             spread_vector = self.calculate_spread_vector(bar)
-            bar.klg = self.calculate_klg(bar)
+            bar.klg = bar.klg
 
             line_local = -1 # Índice da linha localmente
             for line_global in spread_vector:
@@ -91,24 +88,6 @@ class Linear:
                     kg[line_global][column_global] += bar.klg[line_local][column_local]
 
         return kg
-
-
-    def calculate_klg(self, bar: Bar) -> np.ndarray:
-        """Transforma a matriz de rigidez local e global
-
-        Args:
-            bar (Bar): Barra
-
-        Returns:
-            ndarray: Matriz de rigidez global
-        """
-        r = bar.r
-        klg = r.T @ bar.kl @ r
-
-        bar.klg = klg # Atribui ao objeto
-
-        return klg
-
 
     def calculate_kg_solution(self) -> np.ndarray:
         """Aplica os apoios na matriz
@@ -144,7 +123,6 @@ class Linear:
                             kg_solution[i][j] += index_spring[i]
                         else:
                             kg_solution[i][j] += 1e25
-
 
         return kg_solution
 
@@ -191,7 +169,6 @@ class Linear:
                 break
 
         return node_displacements
-
 
     def get_reactions(self, node_name: str, load_name: str) -> np.ndarray:
         """Pega as reações

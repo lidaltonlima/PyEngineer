@@ -72,7 +72,7 @@ class Structure:
 
         # Section *********************************************************************************
         section_resolution = int(round(self.styles['grid_size'] / self.styles['section_size'], 0))
-        section_plane1 = pv.Plane((0, 0, 0.001),
+        section_plane1 = pv.Plane((0, 0, 0.0001),
                                  i_size=self.styles['grid_size'], j_size=self.styles['grid_size'],
                                  i_resolution=section_resolution, j_resolution=section_resolution)
         section_grid1 = section_plane1.extract_all_edges()
@@ -80,7 +80,7 @@ class Structure:
                               color=self.styles['section_color'],
                               line_width=self.styles['section_width'])
         # Parte inferior para ficar sempre na frente do "cell"
-        section_plane2 = pv.Plane((0, 0, -0.001),
+        section_plane2 = pv.Plane((0, 0, -0.0001),
                                  i_size=self.styles['grid_size'], j_size=self.styles['grid_size'],
                                  i_resolution=section_resolution, j_resolution=section_resolution)
         section_grid2 = section_plane2.extract_all_edges()

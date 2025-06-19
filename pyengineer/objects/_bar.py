@@ -1,12 +1,12 @@
 """Módulo para operações matemáticas"""
 import numpy as np
 
-from .functions import space_3d
-
-
 from ._material import Material
 from ._node import Node
 from ._section import Section
+
+from ..functions import space_3d
+
 
 class Bar:
     """Cria uma barra para ser usada na estrutura"""
@@ -36,9 +36,25 @@ class Bar:
         self.dy = end_node.y - start_node.y
         self.dz = end_node.z - start_node.z
         self.length = np.sqrt(self.dx**2 + self.dy**2 + self.dz**2)
-        self.klg = None # Matriz de rigidez nas coordenadas globais
         self.kl = self.calculate_kl() # Matriz de rigidez nas coordenadas locais
         self.r = self.calculate_r() # Matriz de rotação
+        self.klg = self.calculate_klg() # Matriz de rigidez nas coordenadas globais
+
+    def calculate_klg(self) -> np.ndarray:
+        """Transforma a matriz de rigidez local e global
+
+        Args:
+            bar (Bar): Barra
+
+        Returns:
+            ndarray: Matriz de rigidez global
+        """
+        r = self.r
+        klg = r.T @ self.kl @ r
+
+        self.klg = klg # Atribui ao objeto
+
+        return klg
 
 
     def calculate_kl(self) -> np.ndarray:
