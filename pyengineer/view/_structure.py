@@ -3,6 +3,7 @@ import typing as tp
 import pyvista as pv
 import vtk
 from ..analysis import Linear
+from .objects import supports
 
 class IStyles(tp.TypedDict):
     """Interface para estilos"""
@@ -46,14 +47,13 @@ class Structure:
             'node_size': 10,
             'node_color': 'blue',
             'bar_width': 3,
-            'bar_color': 'red'
+            'bar_color': 'orange'
         }
-
         self.plotter = pv.Plotter()
 
 
     def _add_objects(self) -> None:
-        # Points
+        # Points //////////////////////////////////////////////////////////////////////////////////
         points_position = []
         for node in self.analysis.nodes:
             points_position.append(node.position)
@@ -62,12 +62,49 @@ class Structure:
                               color=self.styles['node_color'],
                               point_size=self.styles['node_size'])
 
-        # Bars
+        # Bars ////////////////////////////////////////////////////////////////////////////////////
         for bar in self.analysis.bars:
             line = pv.Line(bar.start_node.position, bar.end_node.position)
             self.plotter.add_mesh(line,
                                   color=self.styles['bar_color'],
                                   line_width=self.styles['bar_width'])
+
+        # Apoios //////////////////////////////////////////////////////////////////////////////////
+        # Fixo no deslocamento ********************************************************************
+        # for node, support in self.analysis.supports.nodes_support.items():
+        #     for index, value in enumerate(support):
+        #         if index > 2:
+        #             break
+
+        #         match index:
+        #             case 0:
+        #                 axis = 'x'
+        #             case 1:
+        #                 axis = 'y'
+        #             case 2:
+        #                 axis = 'z'
+
+        #         if isinstance(value, bool) and value:
+        #             supports.fixed_displacement(self.plotter, node.position, axis)
+        # Mola no deslocamento ********************************************************************
+        # for node, support in self.analysis.supports.nodes_support.items():
+        #     for index, value in enumerate(support):
+        #         if index > 2:
+        #             break
+
+        #         match index:
+        #             case 0:
+        #                 axis = 'x'
+        #             case 1:
+        #                 axis = 'y'
+        #             case 2:
+        #                 axis = 'z'
+
+        #         if isinstance(value, float):
+        #             supports.spring_displacement(self.plotter, node.position, axis)
+
+        # Fixo na rotação *************************************************************************
+        supports.fixed_rotation(self.plotter, [0, 0, 0], 'x')
 
 
     def _config(self) -> None:

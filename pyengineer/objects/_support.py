@@ -21,6 +21,14 @@ class Support:
                 Restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
                 Pode ser fixo/livre (bool) ou uma mola (float).
         """
+        for value in supports:
+            if not isinstance(value, bool) and value == 0:
+                raise ValueError("Um apoio não pode ter uma mola com valor '0'." \
+                                 "Para apoio nulo use 'false'")
+
+        if len(supports) != 6:
+            raise ValueError("Insira todos os valores para os apoios. " \
+                             "3 deslocamentos e 3 rotações)")
         if not node in self.nodes_support:
             self.nodes_support[node] = []
 

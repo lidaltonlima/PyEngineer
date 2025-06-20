@@ -51,7 +51,7 @@ def desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1.0, color='re
 
     def rotacionar_pontos(pontos):
         pts_rot = pontos.copy()
-        for i in range(len(pts_rot)):
+        for i, _j in enumerate(pts_rot):
             p = pts_rot[i]
             # Componentes do plano
             v1 = (perp_axis + 1) % 3
@@ -89,8 +89,9 @@ nuvem_de_pontos = pv.PolyData(ponto)
 plotter.add_mesh(nuvem_de_pontos, color='blue', point_size=15)
 
 # Triângulo no plano XY, base_point no vértice oposto (0,0,0), rotacionado 30 graus
-desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='blue', plano='xy', rot_deg=0)
-desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='red', plano='xy', rot_deg=90)
+desenhar_triangulo_com_base(plotter, base_point=(-0.5,0,0), size=1, color='red', plano='xy', rot_deg=-90)
+desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='blue', plano='xz', rot_deg=0)
+desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='green', plano='yz', rot_deg=90)
 
 
 plotter.show()
