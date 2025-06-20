@@ -104,7 +104,19 @@ class Structure:
         #             supports.spring_displacement(self.plotter, node.position, axis)
 
         # Fixo na rotação *************************************************************************
-        supports.fixed_rotation(self.plotter, [0, 0, 0], 'x')
+        for node, support in self.analysis.supports.nodes_support.items():
+            for index, value in enumerate(support):
+                if index >= 3:
+                    match index:
+                        case 3:
+                            axis = 'x'
+                        case 4:
+                            axis = 'y'
+                        case 5:
+                            axis = 'z'
+
+                    if isinstance(value, bool) and value:
+                        supports.fixed_rotation(self.plotter, node.position, axis)
 
 
     def _config(self) -> None:

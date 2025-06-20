@@ -3,6 +3,52 @@ from typing import Literal
 import numpy as np
 import pyvista as pv
 
+def map2plane(points: np.ndarray, axis: Literal['x', 'y', 'z']) -> np.ndarray | None:
+    """Coloca os pontos um dos planos principais:
+    x == xy, y == yz, z == xz
+
+    Args:
+        points (np.ndarray): Pontos a serem transformados
+        axis (Literal[&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]): Eixo
+
+    Returns:
+        np.ndarray | None: Pontos transformados
+    """
+    match axis:
+        case 'x':
+            return points
+        case 'z':
+            return points[:, [0, 2, 1]] # Muda as colunas de lugar
+        case 'y':
+            return points[:, [2, 0, 1]]
+    return None
+
+
+def rotate_points(points: np.ndarray, axis: Literal['x', 'y', 'z'], rotation: float) -> np.ndarray:
+    """Rotaciona os pontos em um plano.
+
+    Args:
+        points (np.ndarray): Pontos a serem rotacionados
+        axis (Literal[&#39;x&#39;, &#39;y&#39;, &#39;z&#39;]): Eixo
+        rotation (float): Ângulo de rotação em radianos
+
+    Returns:
+        np.ndarray: Pontos rotacionados
+    """
+    perpendicular_axis = {'x': 2, 'z': 1, 'y': 0}
+    pts_rot = points.copy()
+    for index, point in enumerate(pts_rot):
+        # Componentes do plano
+        v1 = (perpendicular_axis[axis] + 1) % 3
+        v2 = (perpendicular_axis[axis] + 2) % 3
+        x, y = point[v1], point[v2]
+        # Rotaciona 2D
+        x_new = np.cos(rotation)*x - np.sin(rotation)*y
+        y_new = np.sin(rotation)*x + np.cos(rotation)*y
+        pts_rot[index, v1] = x_new
+        pts_rot[index, v2] = y_new
+    return pts_rot
+
 
 def fixed_displacement(plotter: pv.Plotter,
                        base_point: list[float] | np.ndarray,
@@ -46,43 +92,18 @@ def fixed_displacement(plotter: pv.Plotter,
         [half + base/2, -height/3 - 0.1, 0]
     ])
 
-    # Reorganiza pontos para o plano correto
-    def map2plane(points) -> np.ndarray | None:
-        match axis:
-            case 'x':
-                return points
-            case 'z':
-                return points[:, [0, 2, 1]] # Muda as colunas de lugar
-            case 'y':
-                return points[:, [2, 0, 1]]
-        return None
-
-    tri_pts = map2plane(points_xy)
-    base_line_pts = map2plane(base_line_xy)
+    tri_pts = map2plane(points_xy, axis)
+    base_line_pts = map2plane(base_line_xy, axis)
 
     # Colocar o ponto base na origem (vértice superior)
     pivot = tri_pts[2].copy()  # vértice oposto à base
     tri_pts -= pivot
     base_line_pts -= pivot
 
-    # Matriz rotação 2D
-    perpendicular_axis = {'x': 2, 'z': 1, 'y': 0}
-    def rotate_points(points):
-        pts_rot = points.copy()
-        for index, point in enumerate(pts_rot):
-            # Componentes do plano
-            v1 = (perpendicular_axis[axis] + 1) % 3
-            v2 = (perpendicular_axis[axis] + 2) % 3
-            x, y = point[v1], point[v2]
-            # Rotaciona 2D
-            x_new = np.cos(rotation)*x - np.sin(rotation)*y
-            y_new = np.sin(rotation)*x + np.cos(rotation)*y
-            pts_rot[index, v1] = x_new
-            pts_rot[index, v2] = y_new
-        return pts_rot
 
-    tri_pts = rotate_points(tri_pts)
-    base_line_pts = rotate_points(base_line_pts)
+
+    tri_pts = rotate_points(tri_pts, axis, rotation)
+    base_line_pts = rotate_points(base_line_pts, axis, rotation)
 
     # Agora volta para a posição base_point
     tri_pts += np.array(base_point)
@@ -107,7 +128,7 @@ def fixed_displacement(plotter: pv.Plotter,
 def fixed_rotation(plotter: pv.Plotter,
                         base_point: list[float] | np.ndarray,
                         axis: Literal['x',  'y', 'z'],
-                        size: float = 0.3) -> None:
+                        size: float = 0.5) -> None:
     """Desenha um apoio tipo "rotação fixa" no eixo.
 
     Args:
@@ -126,49 +147,26 @@ def fixed_rotation(plotter: pv.Plotter,
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
     points_line = np.array([[0.0, 0.0, 0.0],
-                            [1.5*size, 0.0, 0.0]])
+                            [2*size, 0.0, 0.0]])
 
     points_square = np.array([[2*size, size, size],
                               [2*size, -size, size],
                               [2*size, -size, -size],
                               [2*size, size, -size]])
 
-    # Reorganiza pontos para o plano correto
-    def map2plane(points):
-        if axis == 'x':
-            return points
-        if axis == 'z':
-            return points[:, [0, 2, 1]] # Muda as colunas de lugar
-        if axis == 'y':
-            return points[:, [2, 0, 1]]
-
     # Desenho para fica apontando para o sentido positivo
     match axis:
         case 'x':
-            rotation = np.deg2rad(0)
+            rotation = 0
         case 'y':
-            rotation = np.deg2rad(0)
+            rotation = 0
         case 'z':
-            rotation = np.deg2rad(0)
+            rotation = np.deg2rad(-90)
 
-    # Matriz rotação 2D
-    perpendicular_axis = {'x': 2, 'z': 1, 'y': 0}
-    def rotate_points(points):
-        pts_rot = points.copy()
-        for index, point in enumerate(pts_rot):
-            # Componentes do plano
-            v1 = (perpendicular_axis[axis] + 1) % 3
-            v2 = (perpendicular_axis[axis] + 2) % 3
-            x, y = point[v1], point[v2]
-            # Rotaciona 2D
-            x_new = np.cos(rotation)*x - np.sin(rotation)*y
-            y_new = np.sin(rotation)*x + np.cos(rotation)*y
-            pts_rot[index, v1] = x_new
-            pts_rot[index, v2] = y_new
-        return pts_rot
-
-    points = rotate_points(map2plane(points_line))
-    points += np.array(base_point)
+    points_line = rotate_points(map2plane(points_line, axis), axis, rotation)
+    points_line += np.array(base_point)
+    points_square = rotate_points(map2plane(points_square, axis), axis, rotation)
+    points_square += np.array(base_point)
 
     # Color
     match axis:
@@ -179,7 +177,7 @@ def fixed_rotation(plotter: pv.Plotter,
         case 'z':
             color = 'blue'
 
-    lines_line = pv.lines_from_points(points, close=False)
+    lines_line = pv.lines_from_points(points_line, close=False)
     plotter.add_mesh(lines_line, color=color, line_width=2)
 
     lines_square = pv.lines_from_points(points_square, close=True)
@@ -219,13 +217,7 @@ def spring_displacement(plotter: pv.Plotter,
                             [7*size, -2*size, 0.0]])
 
     # Reorganiza pontos para o plano correto
-    def map2plane(points):
-        if axis == 'x':
-            return points
-        if axis == 'z':
-            return points[:, [0, 2, 1]] # Muda as colunas de lugar
-        if axis == 'y':
-            return points[:, [2, 0, 1]]
+
 
     # Desenho para fica apontando para o sentido positivo
     match axis:
@@ -236,23 +228,7 @@ def spring_displacement(plotter: pv.Plotter,
         case 'z':
             rotation = np.deg2rad(90)
 
-    # Matriz rotação 2D
-    perpendicular_axis = {'x': 2, 'z': 1, 'y': 0}
-    def rotate_points(points):
-        pts_rot = points.copy()
-        for index, point in enumerate(pts_rot):
-            # Componentes do plano
-            v1 = (perpendicular_axis[axis] + 1) % 3
-            v2 = (perpendicular_axis[axis] + 2) % 3
-            x, y = point[v1], point[v2]
-            # Rotaciona 2D
-            x_new = np.cos(rotation)*x - np.sin(rotation)*y
-            y_new = np.sin(rotation)*x + np.cos(rotation)*y
-            pts_rot[index, v1] = x_new
-            pts_rot[index, v2] = y_new
-        return pts_rot
-
-    points = rotate_points(map2plane(points_base))
+    points = rotate_points(map2plane(points_base, axis), axis, rotation)
     points += np.array(base_point)
 
     # Color

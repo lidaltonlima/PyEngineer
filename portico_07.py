@@ -42,7 +42,7 @@ loads.append(load)
 support = eng.Support('SP1')
 support.add_support(n1, [5e6, False, True, True, True, True])
 support.add_pinned_support(n3)
-support.add_support(n4, [True, 10e6, True, True, True, True])
+support.add_support(n4, [True, 10e6, True, True, True, 10e6])
 
 # Barra solta
 n5 = eng.Node('N5', [3, 3, 3])
