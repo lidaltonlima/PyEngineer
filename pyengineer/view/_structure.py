@@ -23,6 +23,7 @@ class IStyles(tp.TypedDict):
     node_color: str
     bar_width: int
     bar_color: str
+    support_scale: float
 
 
 class Structure:
@@ -47,7 +48,8 @@ class Structure:
             'node_size': 10,
             'node_color': 'blue',
             'bar_width': 3,
-            'bar_color': 'orange'
+            'bar_color': 'orange',
+            'support_scale': 0.5
         }
         self.plotter = pv.Plotter()
 
@@ -85,7 +87,10 @@ class Structure:
                         axis = 'z'
 
                 if isinstance(value, bool) and value:
-                    supports.fixed_displacement(self.plotter, node.position, axis)
+                    supports.fixed_displacement(self.plotter,
+                                                node.position,
+                                                axis,
+                                                self.styles['support_scale'])
         # Mola no deslocamento ********************************************************************
         for node, support in self.analysis.supports.nodes_support.items():
             for index, value in enumerate(support):
@@ -101,7 +106,10 @@ class Structure:
                         axis = 'z'
 
                 if isinstance(value, float):
-                    supports.spring_displacement(self.plotter, node.position, axis)
+                    supports.spring_displacement(self.plotter,
+                                                node.position,
+                                                axis,
+                                                self.styles['support_scale'])
 
         # Fixo na rotação *************************************************************************
         for node, support in self.analysis.supports.nodes_support.items():
@@ -116,7 +124,10 @@ class Structure:
                             axis = 'z'
 
                     if isinstance(value, bool) and value:
-                        supports.fixed_rotation(self.plotter, node.position, axis)
+                        supports.fixed_rotation(self.plotter,
+                                                node.position,
+                                                axis,
+                                                self.styles['support_scale'])
         # Mola na rotação *************************************************************************
         for node, support in self.analysis.supports.nodes_support.items():
             for index, value in enumerate(support):
@@ -130,7 +141,10 @@ class Structure:
                             axis = 'z'
 
                     if isinstance(value, float):
-                        supports.spring_rotation(self.plotter, node.position, axis)
+                        supports.spring_rotation(self.plotter,
+                                                node.position,
+                                                axis,
+                                                self.styles['support_scale'])
         # /////////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -53,7 +53,7 @@ def rotate_points(points: np.ndarray, axis: Literal['x', 'y', 'z'], rotation: fl
 def fixed_displacement(plotter: pv.Plotter,
                        base_point: list[float] | np.ndarray,
                        axis: Literal['x', 'y', 'z'],
-                       size: float = 1.0) -> None:
+                       scale: float = 1) -> None:
     """Desenha um apoio fixo no eixo
 
     Args:
@@ -65,6 +65,7 @@ def fixed_displacement(plotter: pv.Plotter,
     if not(axis == 'x' or axis == 'y' or axis == 'z'):
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
+    size = 1 * scale
     half = size / 2
     height = size * np.sqrt(3) / 2
 
@@ -128,7 +129,7 @@ def fixed_displacement(plotter: pv.Plotter,
 def fixed_rotation(plotter: pv.Plotter,
                    base_point: list[float] | np.ndarray,
                    axis: Literal['x',  'y', 'z'],
-                   size: float = 0.5) -> None:
+                   scale: float = 1) -> None:
     """Desenha um apoio tipo "rotação fixa" no eixo.
 
     Args:
@@ -146,6 +147,7 @@ def fixed_rotation(plotter: pv.Plotter,
     if not('x' in axis or 'y' in axis or 'z' in axis):
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
+    size = 0.5 * scale
     points_line = np.array([[0.0, 0.0, 0.0],
                             [2*size, 0.0, 0.0]], dtype=float)
 
@@ -187,7 +189,7 @@ def fixed_rotation(plotter: pv.Plotter,
 def spring_displacement(plotter: pv.Plotter,
                         base_point: list[float] | np.ndarray,
                         axis: Literal['x',  'y', 'z'],
-                        size: float = 0.3) -> None:
+                        scale: float = 1) -> None:
     """Desenha um apoio tipo "mola" no eixo.
 
     Args:
@@ -205,6 +207,7 @@ def spring_displacement(plotter: pv.Plotter,
     if not('x' in axis or 'y' in axis or 'z' in axis):
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
+    size = 0.3 * scale
     points_base = np.array([[0.0, 0.0, 0.0],
                             [size, size, 0.0],
                             [2*size, -size, 0.0],
@@ -244,7 +247,7 @@ def spring_displacement(plotter: pv.Plotter,
 def spring_rotation(plotter: pv.Plotter,
                     base_point: list[float] | np.ndarray,
                     axis: Literal['x',  'y', 'z'],
-                    size: float = 1) -> None:
+                    scale: float = 1) -> None:
     """Desenha um apoio tipo "mola" no eixo.
 
     Args:
@@ -262,6 +265,7 @@ def spring_rotation(plotter: pv.Plotter,
     if not('x' in axis or 'y' in axis or 'z' in axis):
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
+    size = 1 * scale
     # Points of line
     points_line_base = np.array([[0, 0, 0], [size, 0, 0]], dtype=float)
 
