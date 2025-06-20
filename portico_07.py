@@ -51,7 +51,7 @@ n6 = eng.Node('N6', [10, 3, 3])
 nodes.append(n6)
 b4 = eng.Bar('B3', n5, n6, section, material, rotation=np.deg2rad(37))
 bars.append(b4)
-support.add_fixed_support(n5)
+support.add_support(n5, [True, True, True, 10e6, True, True])
 load.add_node_load('FN2', n6, fz=10000)
 
 linear_analysis = analysis.Linear(nodes, bars, loads, support)

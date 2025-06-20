@@ -29,6 +29,7 @@ class Support:
         if len(supports) != 6:
             raise ValueError("Insira todos os valores para os apoios. " \
                              "3 deslocamentos e 3 rotações)")
+
         if not node in self.nodes_support:
             self.nodes_support[node] = []
 

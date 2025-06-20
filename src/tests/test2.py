@@ -1,5 +1,5 @@
-a = [1, 2, 3]
+import numpy as np
 
-
-for i, j in enumerate(a):
-    print(i)
+a = np.array([0, 0, 0])
+a += 1
+print(a)

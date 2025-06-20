@@ -83,14 +83,14 @@ def fixed_displacement(plotter: pv.Plotter,
         [half, -height/3, 0],   # canto direito da base
         [0, 2*height/3, 0],     # vértice oposto (topo)
         [-half, -height/3, 0]   # fecha o triângulo
-    ])
+    ], dtype=float)
 
     # Linha "chão"
     base = size * 0.3  # 30% maior que a base
     base_line_xy = np.array([
         [-half - base/2, -height/3 - 0.1, 0],  # um pouco abaixo da base
         [half + base/2, -height/3 - 0.1, 0]
-    ])
+    ], dtype=float)
 
     tri_pts = map2plane(points_xy, axis)
     base_line_pts = map2plane(base_line_xy, axis)
@@ -106,8 +106,8 @@ def fixed_displacement(plotter: pv.Plotter,
     base_line_pts = rotate_points(base_line_pts, axis, rotation)
 
     # Agora volta para a posição base_point
-    tri_pts += np.array(base_point)
-    base_line_pts += np.array(base_point)
+    tri_pts += np.array(base_point, dtype=float)
+    base_line_pts += np.array(base_point, dtype=float)
 
     # Desenhos
     match axis:
@@ -126,9 +126,9 @@ def fixed_displacement(plotter: pv.Plotter,
 
 
 def fixed_rotation(plotter: pv.Plotter,
-                        base_point: list[float] | np.ndarray,
-                        axis: Literal['x',  'y', 'z'],
-                        size: float = 0.5) -> None:
+                   base_point: list[float] | np.ndarray,
+                   axis: Literal['x',  'y', 'z'],
+                   size: float = 0.5) -> None:
     """Desenha um apoio tipo "rotação fixa" no eixo.
 
     Args:
@@ -147,12 +147,12 @@ def fixed_rotation(plotter: pv.Plotter,
         raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
 
     points_line = np.array([[0.0, 0.0, 0.0],
-                            [2*size, 0.0, 0.0]])
+                            [2*size, 0.0, 0.0]], dtype=float)
 
     points_square = np.array([[2*size, size, size],
                               [2*size, -size, size],
                               [2*size, -size, -size],
-                              [2*size, size, -size]])
+                              [2*size, size, -size]], dtype=float)
 
     # Desenho para fica apontando para o sentido positivo
     match axis:
@@ -164,9 +164,9 @@ def fixed_rotation(plotter: pv.Plotter,
             rotation = np.deg2rad(-90)
 
     points_line = rotate_points(map2plane(points_line, axis), axis, rotation)
-    points_line += np.array(base_point)
+    points_line += np.array(base_point, dtype=float)
     points_square = rotate_points(map2plane(points_square, axis), axis, rotation)
-    points_square += np.array(base_point)
+    points_square += np.array(base_point, dtype=float)
 
     # Color
     match axis:
@@ -214,10 +214,7 @@ def spring_displacement(plotter: pv.Plotter,
                             [6*size, -size, 0.0],
                             [7*size, 0.0, 0.0],
                             [7*size, 2*size, 0.0],
-                            [7*size, -2*size, 0.0]])
-
-    # Reorganiza pontos para o plano correto
-
+                            [7*size, -2*size, 0.0]], dtype=float)
 
     # Desenho para fica apontando para o sentido positivo
     match axis:
@@ -229,7 +226,7 @@ def spring_displacement(plotter: pv.Plotter,
             rotation = np.deg2rad(90)
 
     points = rotate_points(map2plane(points_base, axis), axis, rotation)
-    points += np.array(base_point)
+    points += np.array(base_point, dtype=float)
 
     # Color
     match axis:
@@ -241,4 +238,77 @@ def spring_displacement(plotter: pv.Plotter,
             color = 'blue'
 
     lines_line = pv.lines_from_points(points, close=False)
+    plotter.add_mesh(lines_line, color=color, line_width=2)
+
+
+def spring_rotation(plotter: pv.Plotter,
+                    base_point: list[float] | np.ndarray,
+                    axis: Literal['x',  'y', 'z'],
+                    size: float = 1) -> None:
+    """Desenha um apoio tipo "mola" no eixo.
+
+    Args:
+        plotter (pv.Plotter): Plotter em que será desenhado
+        base_point (list[float] | np.ndarray): Ponto base
+        axis (Literal[&#39;x&#39;,  &#39;y&#39;, &#39;z&#39;]): Eixo
+        size (float, optional): Tamanho do desenho. Defaults to 0.3.
+
+    Raises:
+        ValueError: Se o valor para 'axis' for diferente de 'x', 'y' ou 'z'.
+
+    Returns:
+        None: Sem retorno
+    """
+    if not('x' in axis or 'y' in axis or 'z' in axis):
+        raise ValueError("O eixo deve ser 'x', 'y' ou 'z'.")
+
+    # Points of line
+    points_line_base = np.array([[0, 0, 0], [size, 0, 0]], dtype=float)
+
+    # Parâmetros da espiral
+    points_number = 100 # Número de pontos para suavizar a curva
+    initial_radius = 0.0001
+    end_radius = size
+    laps_number = 3 # Número de voltas
+
+    # Criar os ângulos da espiral
+    theta = np.linspace(0, 2 * np.pi * laps_number, points_number)
+    raio = np.linspace(initial_radius, end_radius, points_number)
+
+    # Coordenadas no plano YZ
+    x = np.zeros(points_number) + size # Espiral plana no YZ afastada 'size' unidades
+    y = raio * np.cos(theta)
+    z = raio * np.sin(theta)
+
+    # Criar os pontos da espiral
+    points_spiral_base = np.column_stack((x, y, z))
+
+    # Desenho para fica apontando para o sentido positivo
+    match axis:
+        case 'x':
+            rotation = 0
+        case 'y':
+            rotation = 0
+        case 'z':
+            rotation = np.deg2rad(-90)
+
+    points_spiral = rotate_points(map2plane(points_spiral_base, axis), axis, rotation)
+    points_spiral += np.array(base_point, dtype=float)
+
+    points_line = rotate_points(map2plane(points_line_base, axis), axis, rotation)
+    points_line += np.array(base_point, dtype=float)
+
+    # Color
+    match axis:
+        case 'x':
+            color = 'red'
+        case 'y':
+            color = 'green'
+        case 'z':
+            color = 'blue'
+
+    lines_spiral = pv.lines_from_points(points_spiral)
+    plotter.add_mesh(lines_spiral, color=color, line_width=2)
+
+    lines_line = pv.lines_from_points(points_line)
     plotter.add_mesh(lines_line, color=color, line_width=2)

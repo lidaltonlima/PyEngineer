@@ -71,37 +71,37 @@ class Structure:
 
         # Apoios //////////////////////////////////////////////////////////////////////////////////
         # Fixo no deslocamento ********************************************************************
-        # for node, support in self.analysis.supports.nodes_support.items():
-        #     for index, value in enumerate(support):
-        #         if index > 2:
-        #             break
+        for node, support in self.analysis.supports.nodes_support.items():
+            for index, value in enumerate(support):
+                if index > 2:
+                    break
 
-        #         match index:
-        #             case 0:
-        #                 axis = 'x'
-        #             case 1:
-        #                 axis = 'y'
-        #             case 2:
-        #                 axis = 'z'
+                match index:
+                    case 0:
+                        axis = 'x'
+                    case 1:
+                        axis = 'y'
+                    case 2:
+                        axis = 'z'
 
-        #         if isinstance(value, bool) and value:
-        #             supports.fixed_displacement(self.plotter, node.position, axis)
+                if isinstance(value, bool) and value:
+                    supports.fixed_displacement(self.plotter, node.position, axis)
         # Mola no deslocamento ********************************************************************
-        # for node, support in self.analysis.supports.nodes_support.items():
-        #     for index, value in enumerate(support):
-        #         if index > 2:
-        #             break
+        for node, support in self.analysis.supports.nodes_support.items():
+            for index, value in enumerate(support):
+                if index > 2:
+                    break
 
-        #         match index:
-        #             case 0:
-        #                 axis = 'x'
-        #             case 1:
-        #                 axis = 'y'
-        #             case 2:
-        #                 axis = 'z'
+                match index:
+                    case 0:
+                        axis = 'x'
+                    case 1:
+                        axis = 'y'
+                    case 2:
+                        axis = 'z'
 
-        #         if isinstance(value, float):
-        #             supports.spring_displacement(self.plotter, node.position, axis)
+                if isinstance(value, float):
+                    supports.spring_displacement(self.plotter, node.position, axis)
 
         # Fixo na rotação *************************************************************************
         for node, support in self.analysis.supports.nodes_support.items():
@@ -117,6 +117,21 @@ class Structure:
 
                     if isinstance(value, bool) and value:
                         supports.fixed_rotation(self.plotter, node.position, axis)
+        # Mola na rotação *************************************************************************
+        for node, support in self.analysis.supports.nodes_support.items():
+            for index, value in enumerate(support):
+                if index >= 3:
+                    match index:
+                        case 3:
+                            axis = 'x'
+                        case 4:
+                            axis = 'y'
+                        case 5:
+                            axis = 'z'
+
+                    if isinstance(value, float):
+                        supports.spring_rotation(self.plotter, node.position, axis)
+        # /////////////////////////////////////////////////////////////////////////////////////////
 
 
     def _config(self) -> None:
