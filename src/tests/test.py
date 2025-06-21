@@ -1,97 +1,98 @@
-import pyvista as pv
 import numpy as np
+import pyvista as pv
+from scipy.spatial.transform import Rotation as R
 
-def desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1.0, color='red', plano='xy', rot_deg=0):
-    half = size / 2
-    height = size * np.sqrt(3) / 2
+def desenhar_momento_fletor_vetorial(
+    centro=(0, 0, 0),
+    raio=1.0,
+    eixo=(0, 0, 1),
+    sentido="positivo",  # 'positivo' = regra da mão direita
+    valor=None,  # valor numérico exibido no "pé" do momento
+    cor_linha="blue",
+    cor_seta="red",
+    cor_texto="black",
+    escala_seta=0.2,
+    n_pontos=100,
+    plotter=None
+):
+    """
+    Desenha um momento fletor como um arco semicircular com uma seta, usando PyVista,
+    com base em um vetor eixo qualquer.
 
-    # Triângulo equilátero no plano XY com base centrada na origem e vértice oposto em cima
-    points_xy = np.array([
-        [-half, -height/3, 0],  # canto esquerdo da base
-        [half, -height/3, 0],   # canto direito da base
-        [0, 2*height/3, 0],     # vértice oposto (topo)
-        [-half, -height/3, 0]   # fecha o triângulo
-    ])
+    Parâmetros:
+        centro (tuple): Centro do arco (x, y, z).
+        raio (float): Raio do arco.
+        eixo (tuple): Vetor que define a direção do momento (eixo de rotação).
+        sentido (str): 'positivo' ou 'negativo', segundo a regra da mão direita.
+        valor (float | str): Valor do momento a ser exibido no pé do arco.
+        cor_linha (str): Cor do arco.
+        cor_seta (str): Cor da seta.
+        cor_texto (str): Cor do texto do valor.
+        escala_seta (float): Escala da seta.
+        n_pontos (int): Número de pontos do arco.
+        plotter (pv.Plotter): Um plotter opcional.
+    
+    Retorno:
+        pv.Plotter: Plotter com o momento desenhado.
+    """
+    centro = np.array(centro, dtype=float)
+    eixo = np.array(eixo, dtype=float)
+    norm = np.linalg.norm(eixo)
+    if norm == 0:
+        raise ValueError("O vetor do eixo não pode ser nulo.")
+    eixo_unit = eixo / norm
 
-    # Linha "chão": ligeiramente maior que a base
-    base_extra = size * 0.2  # 20% maior que a base
-    base_line_xy = np.array([
-        [-half - base_extra/2, -height/3 - 0.05, 0],  # um pouco abaixo da base
-        [half + base_extra/2, -height/3 - 0.05, 0]
-    ])
+    # Geração dos ângulos para o arco
+    if sentido == "positivo":
+        theta = np.linspace(0, np.pi, n_pontos)
+    else:
+        theta = np.linspace(0, -np.pi, n_pontos)
 
-    # Escolhe e reorganiza pontos para o plano correto
-    def map_to_plane(points):
-        if plano == 'xy':
-            return points
-        elif plano == 'xz':
-            return points[:, [0, 2, 1]]
-        elif plano == 'yz':
-            return points[:, [2, 0, 1]]
-        else:
-            raise ValueError("Plano deve ser 'xy', 'xz' ou 'yz'.")
+    # Criar um arco no plano XY
+    x = raio * np.cos(theta)
+    y = raio * np.sin(theta)
+    z = np.zeros_like(x)
+    arco_local = np.vstack((x, y, z)).T
 
-    tri_pts = map_to_plane(points_xy)
-    base_line_pts = map_to_plane(base_line_xy)
+    # Rotacionar o arco para o plano definido pelo eixo
+    r = R.align_vectors([eixo_unit], [[0, 0, 1]])[0]
+    arco_rotacionado = r.apply(arco_local)
 
-    # O ponto base é o vértice oposto à base (no nosso pts_xy é o 3º ponto - índice 2)
-    # Ajustamos triângulo para que esse ponto fique na origem (0,0,0) para rotacionar em torno dele
-    pivot = tri_pts[2].copy()  # vértice oposto à base
-    tri_pts -= pivot
-    base_line_pts -= pivot
+    # Transladar para o centro
+    arco_final = arco_rotacionado + centro
 
-    # Rotaciona os pontos em torno do eixo perpendicular ao plano, usando ângulo em graus
-    theta = np.radians(rot_deg)
-    c, s = np.cos(theta), np.sin(theta)
+    # Criar curva e seta
+    arco_spline = pv.Spline(arco_final, n_points=len(arco_final))
+    ponta = arco_final[-1]
+    anterior = arco_final[-2]
+    direcao = ponta - anterior
+    direcao /= np.linalg.norm(direcao)
+    seta = pv.Arrow(start=ponta - direcao * escala_seta * 0.5, direction=direcao, scale=escala_seta)
 
-    # Matriz rotação 2D no plano XY (no plano escolhido, o eixo perpendicular é o eixo “não usado”)
-    # Identificamos qual é o eixo que fica fixo (perpendicular)
-    axes = {'xy': 2, 'xz': 1, 'yz': 0}
-    perp_axis = axes[plano]
+    # Criar ou usar plotter
+    if plotter is None:
+        plotter = pv.Plotter()
+        externo = True
+    else:
+        externo = False
 
-    def rotacionar_pontos(pontos):
-        pts_rot = pontos.copy()
-        for i, _j in enumerate(pts_rot):
-            p = pts_rot[i]
-            # Componentes do plano
-            v1 = (perp_axis + 1) % 3
-            v2 = (perp_axis + 2) % 3
-            x, y = p[v1], p[v2]
-            # Rotaciona 2D
-            x_new = c*x - s*y
-            y_new = s*x + c*y
-            pts_rot[i, v1] = x_new
-            pts_rot[i, v2] = y_new
-        return pts_rot
+    plotter.add_mesh(arco_spline, color=cor_linha, line_width=3)
+    plotter.add_mesh(seta, color=cor_seta)
 
-    tri_pts = rotacionar_pontos(tri_pts)
-    base_line_pts = rotacionar_pontos(base_line_pts)
+    # Adicionar valor (texto) no pé do arco (início da curva)
+    if valor is not None:
+        texto_pos = arco_final[0] - 0.1 * raio * eixo_unit  # deslocar um pouco na direção oposta ao eixo
+        plotter.add_point_labels([texto_pos], [str(valor)], font_size=14, text_color=cor_texto, point_color=None, shape_opacity=0)
 
-    # Agora volta para a posição base_point
-    tri_pts += np.array(base_point)
-    base_line_pts += np.array(base_point)
+    if externo:
+        plotter.show_axes()
+        plotter.show()
 
-    # Desenha triângulo
-    tri_lines = pv.lines_from_points(tri_pts, close=False)
-    plotter.add_mesh(tri_lines, color=color, line_width=2)
+    return plotter
 
-    # Desenha linha "chão"
-    base_line = pv.lines_from_points(base_line_pts, close=False)
-    plotter.add_mesh(base_line, color=color, line_width=3, opacity=0.5)
-
-# Exemplo de uso:
-plotter = pv.Plotter()
-plotter.add_axes()
-
-# Define a coordenada do ponto
-ponto = [[0, 0, 0]]  # formato de lista de listas
-nuvem_de_pontos = pv.PolyData(ponto)
-plotter.add_mesh(nuvem_de_pontos, color='blue', point_size=15)
-
-# Triângulo no plano XY, base_point no vértice oposto (0,0,0), rotacionado 30 graus
-desenhar_triangulo_com_base(plotter, base_point=(-0.5,0,0), size=1, color='red', plano='xy', rot_deg=-90)
-desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='blue', plano='xz', rot_deg=0)
-desenhar_triangulo_com_base(plotter, base_point=(0,0,0), size=1, color='green', plano='yz', rot_deg=90)
-
-
-plotter.show()
+desenhar_momento_fletor_vetorial(
+    centro=(0, 0, 0),
+    eixo=(0, 0, 1),
+    sentido='positivo',
+    valor="120 kNm"
+)
