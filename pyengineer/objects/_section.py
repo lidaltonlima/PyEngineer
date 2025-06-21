@@ -1,17 +1,27 @@
 """Módulo para criar seções que serão usadas na estrutura"""
+import typing as tp
+
+class ISectionProperties(tp.TypedDict):
+    """Typing for section properties"""
+    area: float
+    Ix: float
+    Iy: float
+    Iz: float
 
 class Section:
     """Seções que serão usadas na estrutura"""
-    def __init__(self, name: str, area: float, inertias: list[float]):
-        """Construtor
+    def __init__(self,
+                 name: str,
+                 area: float,
+                 ix: float, iy: float, iz: float):
+        """Seção
 
         Args:
-            name (str): Nome da seção
-            area (float): Área da seção
-            inertias (list[float]): Inércias em x, y e z (Ix, Iy, Iz)
+            name (str): Section name
+            area (float): Section area
+            ix (float): Inertia in 'x' of the section
+            iy (float): Inertia in 'y' of the section
+            iz (float): Inertia in 'z' of the section
         """
         self.name = name
-        self.area = area
-        self.ix = inertias[0]
-        self.iy = inertias[1]
-        self.iz = inertias[2]
+        self.properties: ISectionProperties = {'area': area, 'Ix': ix, 'Iy': iy, 'Iz': iz}

@@ -69,12 +69,12 @@ class Bar:
         kl = np.zeros([12, 12])
 
         l = self.length
-        a = self.section.area
-        ix = self.section.ix
-        iy = self.section.iy
-        iz = self.section.iz
-        e = self.material.e
-        g = self.material.g
+        a = self.section.properties['area']
+        ix = self.section.properties['Ix']
+        iy = self.section.properties['Iy']
+        iz = self.section.properties['Iz']
+        e = self.material.properties['E']
+        g = self.material.properties['G']
 
         kl[0][0] = (e * a) / l
         kl[0][6] = -kl[0][0]

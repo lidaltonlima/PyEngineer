@@ -24,16 +24,16 @@ class Linear:
         self.supports = supports
         self.matrix_order = 6 * len(nodes)
         self.calculated = False
-        self.displacements = None
-        self.reactions = None
-        self.kg = None
-        self.kg_solution = None
-        self.forces_vector = None
+        self.displacements: dict[Load, np.ndarray] = {}
+        self.reactions: dict[Load, np.ndarray] = {}
+        self.kg: np.ndarray = np.array([])
+        self.kg_solution: np.ndarray = np.array([])
+        self.forces_vector: dict[Load,  np.ndarray ] = {}
 
     def calculate_structure(self) -> None:
         """Realiza a calculo"""
         self.displacements = {}
-        self.reactions = {}
+        self.reactions: dict[Load, np.ndarray] = {}
         self.kg_solution = self.calculate_kg_solution()
         self.forces_vector = self.calculate_forces_vector()
 
@@ -46,13 +46,13 @@ class Linear:
 
         self.calculated = True
 
-    def calculate_forces_vector(self) -> dict:
+    def calculate_forces_vector(self) -> dict[Load, np.ndarray]:
         """Calcula o vetor de forças para cada caso de carga e cria um dicionário
 
         Returns:
             dict: Vetor de forças
         """
-        forces = {}
+        forces: dict[Load, np.ndarray] = {}
         for load in self.loads:
             f_load = np.zeros(self.matrix_order, dtype=float)
 
@@ -60,8 +60,10 @@ class Linear:
                 node_position = (self.nodes.index(node) + 1) * 6 - 6
 
                 for force in load.nodes_loads[node].values():
-                    for index in range(6):
-                        f_load[node_position + index] += force[index]
+                    index = 0
+                    for key in force.keys():
+                        f_load[node_position + index] += force[key]
+                        index += 1
 
             forces[load] = f_load.copy()
 
@@ -102,25 +104,25 @@ class Linear:
             # Índices globais de cada nó
             node_index = self.nodes.index(node)
 
-            index_support = []
-            index_spring = {}
+            support_indices: list[int] = []
+            spring_index = {}
             index = 0
-            for support in self.supports.nodes_support[node]:
+            for support in self.supports.nodes_support[node].values():
                 if support:
-                    if not isinstance(support, bool):
-                        index_spring[6 * (node_index + 1) - (6 - index)] = support
-                    index_support.append(6 * (node_index + 1) - (6 - index))
+                    if isinstance(support, float):
+                        spring_index[6 * (node_index + 1) - (6 - index)] = support
+                    support_indices.append(6 * (node_index + 1) - (6 - index))
 
                 index += 1
 
 
             # Colocar número grande na diagonal
-            for i in index_support:
-                for j in index_support:
+            for i in support_indices:
+                for j in support_indices:
                     if i == j:
                         # Se tiver mola, soma apenas a mola
-                        if i in index_spring:
-                            kg_solution[i][j] += index_spring[i]
+                        if i in spring_index:
+                            kg_solution[i][j] += spring_index[i]
                         else:
                             kg_solution[i][j] += 1e25
 
@@ -156,6 +158,7 @@ class Linear:
         Returns:
             ndarray: Deslocamentos
         """
+        node_displacements: np.ndarray = np.array([])
         for load in self.loads:
             if load.name == load_name:
                 for node in self.nodes:
@@ -180,6 +183,7 @@ class Linear:
         Returns:
             ndarray: Reações
         """
+        node_reactions: np.ndarray = np.array([])
         for load in self.loads:
             if load.name == load_name:
                 for node in self.nodes:

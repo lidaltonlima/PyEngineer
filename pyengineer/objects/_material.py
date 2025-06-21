@@ -1,4 +1,13 @@
 """Módulo para materiais que serão usados na estrutura"""
+import typing as tp
+
+class IMaterialProperties(tp.TypedDict):
+    """Typing for properties attribute"""
+    E: float
+    G: float
+    ni: float
+    rho: float
+
 class Material:
     """Cria um material"""
     def __init__(self, name: str, e: float, g: float, ni: float, rho: float):
@@ -12,7 +21,4 @@ class Material:
             rho (float): Massa específica
         """
         self.name = name
-        self.e = e
-        self.g = g
-        self.ni = ni
-        self.rho = rho
+        self.properties: IMaterialProperties = {'E': e, 'G': g, 'ni': ni, 'rho': rho}

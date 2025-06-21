@@ -1,5 +1,16 @@
 """Módulo para carregamentos/esforços"""
+import typing as tp
+
 from ._node import Node
+
+class ILoadLoads(tp.TypedDict):
+    """Type of loads"""
+    Fx: float
+    Fy: float
+    Fz: float
+    Mx: float
+    My: float
+    Mz: float
 
 class Load:
     """Casos de carga que serão usadas na estrutura"""
@@ -10,7 +21,7 @@ class Load:
             name (str): Nome da carga
         """
         self.name = name
-        self.nodes_loads = {}
+        self.nodes_loads: dict[Node, dict[str, ILoadLoads]] = {}
         self.bars_loads_pt = {}
         self.bars_loads_dist = {}
 
@@ -33,31 +44,4 @@ class Load:
         if not node in self.nodes_loads:
             self.nodes_loads[node] = {}
 
-        self.nodes_loads[node][name] = [fx, fy, fz, mx, my, mz]
-
-    # def add_bar_load_pt(self, name: str, bar: Bar, position: float,
-    #                        fx: float = 0, fy: float = 0, fz: float = 0,
-    #                        mx: float = 0, my: float = 0, mz: float = 0,
-    #                        local_reference: bool = False):
-
-    #     if not bar.name in self.bars_loads_pt:
-    #         self.bars_loads_pt[bar.name] = dict()
-
-    #     self.bars_loads_pt[bar.name][name] = {'position': position,
-    #                                       'forces': [fx, fy, fz, mx, my, mz],
-    #                                       'local_reference': local_reference}
-
-    # def add_bar_load_dist(self, name: str, bar: Bar,
-    #                       start_position: float, end_position: float,
-    #                       start_forces: list = [0, 0, 0, 0, 0, 0],
-    #                       end_forces: list = [0, 0, 0, 0, 0, 0],
-    #                       local_reference: bool = False):
-
-    #     if not bar.name in self.bars_loads_dist:
-    #             self.bars_loads_dist[bar.name] = dict()
-
-    #     self.bars_loads_dist[bar.name][name] = {'start_position': start_position,
-    #                                             'end_position': end_position,
-    #                                             'start_forces': start_forces,
-    #                                             'end_forces': end_forces,
-    #                                             'local_reference': local_reference}
+        self.nodes_loads[node][name] = {'Fx': fx, 'Fy': fy, 'Fz': fz, 'Mx': mx, 'My': my, 'Mz': mz}

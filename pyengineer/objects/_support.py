@@ -1,5 +1,15 @@
 """Apoios que serão usados na estrutura"""
+import typing as tp
 from ._node import Node
+
+class ISupportSupports(tp.TypedDict):
+    """Typing for supports"""
+    Dx: bool | float
+    Dy: bool | float
+    Dz: bool | float
+    Rx: bool | float
+    Ry: bool | float
+    Rz: bool | float
 
 class Support:
     """Apoios da estrutura"""
@@ -10,9 +20,12 @@ class Support:
             name (str): Nome do conjunto de apoios
         """
         self.name = name
-        self.nodes_support = {}
+        self.nodes_support: dict[Node, ISupportSupports] = {}
 
-    def add_support(self, node: Node, supports: list[bool | float]):
+    def add_support(self,
+                    node: Node,
+                    dx: bool | float = False, dy: bool | float = False, dz: bool | float = False,
+                    rx: bool | float = False, ry: bool | float = False, rz: bool | float = False):
         """Adiciona um apoio
 
         Args:
@@ -21,17 +34,11 @@ class Support:
                 Restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
                 Pode ser fixo/livre (bool) ou uma mola (float).
         """
-        for value in supports:
+        supports: ISupportSupports = {'Dx': dx, 'Dy': dy, 'Dz': dz, 'Rx': rx, 'Ry': ry, 'Rz': rz}
+        for value in supports.values():
             if not isinstance(value, bool) and value == 0:
                 raise ValueError("Um apoio não pode ter uma mola com valor '0'." \
-                                 "Para apoio nulo use 'false'")
-
-        if len(supports) != 6:
-            raise ValueError("Insira todos os valores para os apoios. " \
-                             "3 deslocamentos e 3 rotações)")
-
-        if not node in self.nodes_support:
-            self.nodes_support[node] = []
+                                 "Para apoio nulo use 'False'")
 
         self.nodes_support[node] = supports
 
@@ -41,10 +48,9 @@ class Support:
         Args:
             node (Node): Nó em que será colocado o apoio
         """
-        if not node in self.nodes_support:
-            self.nodes_support[node] = []
 
-        self.nodes_support[node] = [True, True, True, True, True, True]
+        self.nodes_support[node] = {'Dx': True, 'Dy': True, 'Dz': True,
+                                    'Rx': True, 'Ry': True, 'Rz': True}
 
     def add_pinned_support(self, node: Node):
         """Adiciona um apoio fixo, mas que permite rotações
@@ -52,11 +58,10 @@ class Support:
         Args:
             node (Node): Nó em ue será colocado o apoio
         """
-        if not node in self.nodes_support:
-            self.nodes_support[node] = []
 
-        self.nodes_support[node] = [True, True, True, False, False, False]
+        self.nodes_support[node] = {'Dx': True, 'Dy': True, 'Dz': True,
+                                    'Rx': False, 'Ry': False, 'Rz': False}
     # def add_node_cantilever_roller_x(self, node: Node):
     #     if not node.name in self.nodes_support:
-    #         self.nodes_support[node.name] = list()    
+    #         self.nodes_support[node.name] = list()
     #     self.nodes_support[node.name] = [False, True, True, False, False, False]
