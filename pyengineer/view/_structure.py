@@ -5,6 +5,7 @@ import vtk
 from ..analysis import Linear
 from .objects import supports
 
+
 class IStyles(tp.TypedDict):
     """Interface para estilos"""
     theme: str
@@ -145,7 +146,7 @@ class Structure:
                                                 node.position,
                                                 axis,
                                                 self.styles['support_scale'])
-        # /////////////////////////////////////////////////////////////////////////////////////////
+        # Interface ///////////////////////////////////////////////////////////////////////////////
 
 
     def _config(self) -> None:
@@ -156,15 +157,37 @@ class Structure:
         pv.set_plot_theme(self.styles['theme']) # Tema geral
 
         self.plotter.background_color = self.styles['background_color'] # Cor de fundo
-        self.plotter.enable_terrain_style(mouse_wheel_zooms=True) # Orbit com o limite no topo
+        self.plotter.enable_terrain_style() # Orbit com o limite no topo
         self.plotter.camera.view_up = (0, 0, 1) # Eixo "z" para cima
-        self.plotter.add_axes() # Visualização do eixos globais
 
         self.plotter.camera_position = [
             (50, -50, 50),  # posição da câmera (x, y, z)
             (0, 0, 0),     # ponto focal (olhando pro centro da cena)
             (0, 0, 1)      # view-up (o eixo Z é o "cima" da tela)
         ]
+        # Helps objects ///////////////////////////////////////////////////////////////////////////
+        # Axes in origem **************************************************************************
+        axes_origem = self.plotter.add_axes_at_origin()
+        # Acessa os textos e diminui a escala dos labels
+        axes_origem.GetXAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_origem.GetXAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
+
+        axes_origem.GetYAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_origem.GetYAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
+
+        axes_origem.GetZAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_origem.GetZAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
+
+        # Axes in viewport ************************************************************************
+        axes_viewport = self.plotter.add_axes() # Viewport axes
+        axes_viewport.GetXAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_viewport.GetXAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
+
+        axes_viewport.GetYAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_viewport.GetYAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
+
+        axes_viewport.GetZAxisCaptionActor2D().GetTextActor().SetTextScaleModeToNone()
+        axes_viewport.GetZAxisCaptionActor2D().GetTextActor().GetTextProperty().SetFontSize(12)
 
         # Grid ////////////////////////////////////////////////////////////////////////////////////
         # Cell ************************************************************************************
