@@ -13,13 +13,12 @@ class ISupportSupports(tp.TypedDict):
 
 class Support:
     """Apoios da estrutura"""
-    def __init__(self, name: str):
+    def __init__(self):
         """Construtor
 
         Args:
             name (str): Nome do conjunto de apoios
         """
-        self.name = name
         self.nodes_support: dict[Node, ISupportSupports] = {}
 
     def add_support(self,

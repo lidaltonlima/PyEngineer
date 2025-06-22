@@ -9,7 +9,7 @@ from ..objects import Support
 class Linear:
     """Análise linear"""
     def __init__(self, nodes: list[Node], bars: list[Bar],
-                 loads: list[Load], supports: Support):
+                 loads: list[Load], supports: Support, calculate: bool = True):
         """Construtor
 
         Args:
@@ -29,6 +29,9 @@ class Linear:
         self.kg: np.ndarray = np.array([])
         self.kg_solution: np.ndarray = np.array([])
         self.forces_vector: dict[Load,  np.ndarray ] = {}
+
+        if calculate:
+            self.calculate_structure()
 
     def calculate_structure(self) -> None:
         """Realiza a calculo"""
