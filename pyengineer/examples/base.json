@@ -34,7 +34,15 @@
 	"bars": [
 		{
 			"name": "B1",
-			"start_node": "N1",
+			"start_node": {
+				"name": "N1",
+				"Dx": 5e6,
+				"Dy": true,
+				"Dz": true,
+				"Rx": false,
+				"Ry": false,
+				"Rz": false
+			},
 			"end_node": "N2",
 			"section": "section_01",
 			"material": "material_01",

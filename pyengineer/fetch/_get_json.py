@@ -9,7 +9,7 @@ from ..objects import Support
 from ..objects import Load
 from ..analysis import Linear
 
-def load_json(path: str) -> Linear:
+def get_json(path: str) -> Linear:
     """Analysis structure in json file
 
     Args:

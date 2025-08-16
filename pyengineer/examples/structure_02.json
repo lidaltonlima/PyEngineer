@@ -25,7 +25,8 @@
 
 	"nodes": [
 		{ "name": "N1", "position": [0, 0, 0] },
-		{ "name": "N2", "position": [5, 0, 0] }
+		{ "name": "N2", "position": [0, 0, 5] },
+		{ "name": "N3", "position": [5, 0, 5] }
 	],
 
 	"bars": [
@@ -36,12 +37,31 @@
 			"section": "w150x13",
 			"material": "steel",
 			"rotation": 0
+		},
+		{
+			"name": "B2",
+			"start_node": "N2",
+			"end_node": "N3",
+			"section": "w150x13",
+			"material": "steel",
+			"rotation": 0
 		}
 	],
 
 	"supports": [
 		{
 			"node": "N1",
+			"supports": {
+				"Dx": true,
+				"Dy": true,
+				"Dz": true,
+				"Rx": true,
+				"Ry": true,
+				"Rz": true
+			}
+		},
+		{
+			"node": "N3",
 			"supports": {
 				"Dx": true,
 				"Dy": true,
