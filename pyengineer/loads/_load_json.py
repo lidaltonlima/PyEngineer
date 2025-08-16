@@ -1,8 +1,6 @@
 """Analysis structure in json file"""
 import json
 
-import numpy as np
-
 from ..objects import Node
 from ..objects import Bar
 from ..objects import Material
@@ -72,7 +70,7 @@ def load_json(path: str) -> Linear:
                         end_node,
                         section_bar,
                         material_bar,
-                        np.deg2rad(bar['rotation'])))
+                        bar['rotation']))
 
     # Supports *************************************************************************************
     supports = Support()

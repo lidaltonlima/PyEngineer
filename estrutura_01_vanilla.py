@@ -8,6 +8,7 @@ from pyengineer import analysis
 np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)
 
 
+
 material = pg.Material('steel', 2e11, 7.692308e10, 0.3, 7850)
 # section = pg.Section('w150x13', area=15.74e-4, ix=1.15e-8, iy=596.48e-8, iz=81.76e-8)
 section = pg.Section('w150x13', area=1.66026e-3, ix=1.968782e-8, iy=6.34966e-6, iz=8.19534e-7)
@@ -21,7 +22,7 @@ nodes.append(n2)
 
 # Bars
 bars: list[pg.Bar] = []
-b1 = pg.Bar('B1', n1, n2, section, material, 45)
+b1 = pg.Bar('B1', n1, n2, section, material, 23)
 bars.append(b1)
 
 
