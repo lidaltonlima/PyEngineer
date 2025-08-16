@@ -25,6 +25,7 @@ class Bar:
             end_node (Node): Nó final (j)
             section (Section): Seção
             material (Material): Material
+            rotation (float): rotação
         """
         self.name = name
         self.start_node = start_node
@@ -138,6 +139,7 @@ class Bar:
             aux = np.array([x1 + 1, y1, z1])
 
         # Rotação do ponto auxiliar em torno da barra *********************************************
+        self.rotation = np.deg2rad(self.rotation)
         aux = space_3d.rotate_point_around_line(aux,
                                                 self.start_node.position,
                                                 self.end_node.position,
