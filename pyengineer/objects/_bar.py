@@ -133,7 +133,7 @@ class Bar:
 
         # Ponto auxiliar para determinar o plano "xy" da barra ////////////////////////////////////
         # Ponto auxiliar inicial ******************************************************************
-        if dx != 0 or dy != 0:
+        if dx != 0 or dz != 0:
             aux = np.array([x1, y1 + 1, z1])
         else:
             aux = np.array([x1 + 1, y1, z1])

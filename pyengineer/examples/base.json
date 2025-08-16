@@ -1,118 +1,107 @@
 {
-	"materials": [
-		{
-			"name": "material_01",
-			"properties": {
-				"E": 2e11,
-				"G": 7.692308e10,
-				"ni": 0.3,
-				"rho": 7850
-			}
-		}
-	],
+    "materials": [
+        {
+            "name": "material_01",
+            "properties": { "E": 2e11, "G": 7.692308e10, "ni": 0.3, "rho": 7850 }
+        }
+    ],
 
-	"sections": [
-		{
-			"name": "section_01",
-			"area": 1.66026e-3,
-			"inertias": {
-				"Ix": 1.968782e-8,
-				"Iy": 6.34966e-6,
-				"Iz": 8.19534e-7
-			}
-		}
-	],
+    "sections": [
+        {
+            "name": "section_01",
+            "area": 1.66026e-3,
+            "inertias": { "Ix": 1.968782e-8, "Iy": 6.34966e-6, "Iz": 8.19534e-7 }
+        }
+    ],
 
-	"nodes": [
-		{
-			"name": "N1",
-			"position": [0, 0, 0],
-			"type": "Fixed-Hinged-spring-blend"
-		}
-	],
+    "nodes": [
+        { "name": "N1", "position": [0, 0, 0], "type": "Fixed-Hinged-spring-blend" },
+        { "name": "N2", "position": [0, 0, 0], "type": "Fixed-Hinged-spring-blend" }
+    ],
 
-	"bars": [
-		{
-			"name": "B1",
-			"start_node": {
-				"name": "N1",
-				"Dx": 5e6,
-				"Dy": true,
-				"Dz": true,
-				"Rx": false,
-				"Ry": false,
-				"Rz": false
-			},
-			"end_node": "N2",
-			"section": "section_01",
-			"material": "material_01",
-			"rotation": 0,
-			"start_connection": "Fixed-Hinged-spring",
-			"end_connection": "Fixed-Hinged-spring"
-		}
-	],
+    "bars": [
+        {
+            "name": "B1",
+            "start_node": {
+                "name": "N1",
+                "Dx": true,
+                "Dy": false,
+                "Dz": true,
+                "Rx": true,
+                "Ry": true,
+                "Rz": false
+            },
+            "end_node": {
+                "name": "N2",
+                "Dx": true,
+                "Dy": true,
+                "Dz": true,
+                "Rx": true,
+                "Ry": true,
+                "Rz": true
+            },
+            "section": "section_01",
+            "material": "material_01",
+            "rotation": 0,
+            "start_connection": "Fixed-Hinged-spring",
+            "end_connection": "Fixed-Hinged-spring"
+        }
+    ],
 
-	"supports": [
-		{
-			"node": "N1",
-			"supports": {
-				"Dx": 5e6,
-				"Dy": true,
-				"Dz": true,
-				"Rx": false,
-				"Ry": false,
-				"Rz": false
-			}
-		}
-	],
+    "supports": [
+        {
+            "node": "N1",
+            "supports": { "Dx": 5e6, "Dy": true, "Dz": true, "Rx": false, "Ry": false, "Rz": false }
+        }
+    ],
 
-	"loads": [
-		{
-			"name": "L1",
-			"nodes_loads": [
-				{
-					"node": "N1",
-					"loads": {
-						"Fx": 100,
-						"Fy": 100,
-						"Fz": 100,
-						"Mx": 200,
-						"My": 200,
-						"Mz": 200
-					}
-				}
-			],
-			"bars_loads": {
-				"points": [
-					{
-						"bar": "B1",
-						"position": [0, 1, 0],
-						"reference": "local",
-						"loads": {
-							"Fx": 100,
-							"Fy": 100,
-							"Fz": 100,
-							"Mx": 200,
-							"My": 200,
-							"Mz": 200
-						}
-					}
-				],
-				"distributed": [
-					{
-						"bar": "B1",
-						"reference": "local",
-						"loads": {
-							"Fx": 100,
-							"Fy": 100,
-							"Fz": 100,
-							"Mx": 200,
-							"My": 200,
-							"Mz": 200
-						}
-					}
-				]
-			}
-		}
-	]
+    "loads": [
+        {
+            "name": "L1",
+            "nodes_loads": [
+                {
+                    "node": "N1",
+                    "loads": {
+                        "Fx": 100,
+                        "Fy": 100,
+                        "Fz": 100,
+                        "Mx": 200,
+                        "My": 200,
+                        "Mz": 200
+                    }
+                }
+            ],
+            "bars_loads": {
+                "points": [
+                    {
+                        "bar": "B1",
+                        "position": [0, 1, 0],
+                        "reference": "local",
+                        "loads": {
+                            "Fx": 100,
+                            "Fy": 100,
+                            "Fz": 100,
+                            "Mx": 200,
+                            "My": 200,
+                            "Mz": 200
+                        }
+                    }
+                ],
+                "distributed": [
+                    {
+                        "bar": "B1",
+                        "reference": "local",
+                        "loads": {
+                            "Fx": 100,
+                            "Fy": 100,
+                            "Fz": 100,
+                            "Mx": 200,
+                            "My": 200,
+                            "Mz": 200
+                        }
+                    }
+                ]
+            }
+        }
+    ]
 }
