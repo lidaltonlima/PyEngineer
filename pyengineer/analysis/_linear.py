@@ -82,7 +82,9 @@ class Linear:
 
         for bar in self.bars:
             spread_vector = self.calculate_spread_vector(bar)
-            bar.klg = bar.klg
+            bar.calculate_kl()
+            bar.calculate_r()
+            bar.klg = bar.calculate_klg()
 
             line_local = -1 # Índice da linha localmente
             for line_global in spread_vector:

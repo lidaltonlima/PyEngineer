@@ -37,9 +37,23 @@ class Bar:
         self.dy = end_node.y - start_node.y
         self.dz = end_node.z - start_node.z
         self.length = np.sqrt(self.dx**2 + self.dy**2 + self.dz**2)
-        self.kl = self.calculate_kl() # Matriz de rigidez nas coordenadas locais
-        self.r = self.calculate_r() # Matriz de rotação
-        self.klg = self.calculate_klg() # Matriz de rigidez nas coordenadas globais
+        self.releases: dict[str, bool] = {
+            'Dxi': False,
+            'Dyi': False,
+            'Dzi': False,
+            'Rxi': False,
+            'Ryi': False,
+            'Rzi': False,
+            'Dxj': False,
+            'Dyj': False,
+            'Dzj': False,
+            'Rxj': False,
+            'Ryj': False,
+            'Rzj': False,
+        }
+        self.kl: np.ndarray =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
+        self.r: np.ndarray  = np.zeros([12, 12]) # Matriz de rotação
+        self.klg: np.ndarray  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
 
     def calculate_klg(self) -> np.ndarray:
         """Transforma a matriz de rigidez local e global
@@ -50,8 +64,8 @@ class Bar:
         Returns:
             ndarray: Matriz de rigidez global
         """
-        r = self.r
-        klg = r.T @ self.kl @ r
+        r = self.r.copy()
+        klg = self.r.T @ self.kl @ r
 
         self.klg = klg # Atribui ao objeto
 
@@ -104,6 +118,30 @@ class Bar:
         kl[10][10] = kl[4][4]
         kl[11][11] = kl[5][5]
         kl = kl + kl.T - np.diag(kl.diagonal())
+
+        # Apply releases //////////////////////////////////////////////////////////////////////////
+        kl_releases = np.zeros([12, 12])
+        releases_calculates: list[int] = []
+        for index, value in enumerate(self.releases.values()):
+            if value:
+                l = index
+            else:
+                continue
+
+            for j in range(12):
+                if j in releases_calculates:
+                    continue
+
+                kl_bar = kl[j, l] / kl[l, l]
+                for k in range(12):
+                    if k in releases_calculates:
+                        continue
+                    kl_releases[j, k] = kl[j, k] - kl_bar * kl[l, k]
+
+            kl = kl_releases.copy()
+            releases_calculates.append(l)
+
+        # /////////////////////////////////////////////////////////////////////////////////////////
 
         self.kl = kl # Atribui ao objeto
 

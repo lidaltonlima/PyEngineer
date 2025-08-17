@@ -26,13 +26,21 @@ nodes.append(n3)
 bars: list[pg.Bar] = []
 b1 = pg.Bar('B1', n1, n2, section, material)
 bars.append(b1)
+
 b2 = pg.Bar('B2', n2, n3, section, material)
+b2.releases['Dxi'] = True
+b2.releases['Dyi'] = True
+b2.releases['Dzi'] = True
+b2.releases['Rxi'] = True
+b2.releases['Ryi'] = True
+b2.releases['Rzi'] = True
 bars.append(b2)
 
 # Loads
 loads: list[pg.Load] = []
 load = pg.Load('L1')
-load.add_node_load('FN1', n2, 10e3, 11e3, 12e3, 10e3, 11e3, 12e3)
+# load.add_node_load('FN1', n2, 10e3, 11e3, 12e3, 10e3, 11e3, 12e3)
+load.add_node_load('FN1', n2, 10e3, 11e3, 12e3)
 loads.append(load)
 
 # Supports
@@ -43,3 +51,4 @@ support.add_support(n3, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 linear_analysis = analysis.Linear(nodes, bars, loads, support)
 
 print(linear_analysis.get_displacements('N2', 'L1'))
+# print(b2.kl)

@@ -50,4 +50,4 @@ for release in releases:
     s = s_linha
     releases_calculates.append(release)
 
-print(s_linha)
+print(s)
