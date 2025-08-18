@@ -7,6 +7,8 @@ from ._section import Section
 
 from ..functions import space_3d
 
+from ..types import ReleasesType
+
 
 class Bar:
     """Cria uma barra para ser usada na estrutura"""
@@ -37,19 +39,11 @@ class Bar:
         self.dy = end_node.y - start_node.y
         self.dz = end_node.z - start_node.z
         self.length = np.sqrt(self.dx**2 + self.dy**2 + self.dz**2)
-        self.releases: dict[str, bool] = {
-            'Dxi': False,
-            'Dyi': False,
-            'Dzi': False,
-            'Rxi': False,
-            'Ryi': False,
-            'Rzi': False,
-            'Dxj': False,
-            'Dyj': False,
-            'Dzj': False,
-            'Rxj': False,
-            'Ryj': False,
-            'Rzj': False,
+        self.releases: dict[ReleasesType, bool] = {
+            'Dxi': False, 'Dyi': False, 'Dzi': False,
+            'Rxi': False, 'Ryi': False, 'Rzi': False,
+            'Dxj': False, 'Dyj': False, 'Dzj': False,
+            'Rxj': False, 'Ryj': False, 'Rzj': False,
         }
         self.kl: np.ndarray =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
         self.r: np.ndarray  = np.zeros([12, 12]) # Matriz de rotação
@@ -171,13 +165,20 @@ class Bar:
 
         # Ponto auxiliar para determinar o plano "xy" da barra ////////////////////////////////////
         # Ponto auxiliar inicial ******************************************************************
-        if dx != 0 or dz != 0:
-            aux = np.array([x1, y1 + 1, z1])
+        # Y up ------------------------------------------------------------------------------------
+        # if dx != 0 or dz != 0:
+        #     aux = np.array([x1, y1 + 1, z1])
+        # else:
+        #     aux = np.array([x1 + 1, y1, z1])
+
+        # Z up ------------------------------------------------------------------------------------
+        if dx != 0 or dy != 0:
+            aux = np.array([x1, y1, z1 + 1])
         else:
             aux = np.array([x1 + 1, y1, z1])
 
         # Rotação do ponto auxiliar em torno da barra *********************************************
-        self.rotation = np.deg2rad(self.rotation)
+        self.rotation = np.deg2rad(self.rotation + 90)
         aux = space_3d.rotate_point_around_line(aux,
                                                 self.start_node.position,
                                                 self.end_node.position,

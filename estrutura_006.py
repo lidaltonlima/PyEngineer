@@ -4,14 +4,14 @@ import numpy as np
 import pyengineer as pg
 from pyengineer import analysis
 
-
+# Output format
 np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)
 
-
-
+# Materials
 material = pg.Material('steel', 2e11, 7.692308e10, 0.3, 7850)
-# section = pg.Section('w150x13', area=15.74e-4, ix=1.15e-8, iy=596.48e-8, iz=81.76e-8)
-section = pg.Section('w150x13', area=1.66026e-3, ix=1.968782e-8, iy=6.34966e-6, iz=8.19534e-7)
+
+# Sections
+section = pg.Section('w150x13', area=1.63e-3, ix=1.39e-8, iy=6.2e-6, iz=8.28e-7)
 
 # Nodes
 nodes: list[pg.Node] = []
@@ -25,28 +25,19 @@ nodes.append(n3)
 # Bars
 bars: list[pg.Bar] = []
 b1 = pg.Bar('B1', n1, n2, section, material)
+b1.releases['Rxi'] = True
+b1.releases['Ryi'] = True
+b1.releases['Rzi'] = True
+b1.releases['Dyi'] = True
 bars.append(b1)
-
 b2 = pg.Bar('B2', n2, n3, section, material)
-b2.releases['Dxi'] = True
-b2.releases['Dyi'] = False
-b2.releases['Dzi'] = True
-b2.releases['Rxi'] = False
-b2.releases['Ryi'] = False
-b2.releases['Rzi'] = False
-b2.releases['Dxj'] = False
-b2.releases['Dyj'] = True
-b2.releases['Dzj'] = False
-b2.releases['Rxj'] = False
-b2.releases['Ryj'] = False
-b2.releases['Rzj'] = True
 bars.append(b2)
+
 
 # Loads
 loads: list[pg.Load] = []
 load = pg.Load('L1')
-# load.add_node_load('FN1', n2, 10e3, 11e3, 12e3, 10e3, 11e3, 12e3)
-load.add_node_load('FN1', n2, 10e3, 11e3, 12e3)
+load.add_node_load('FN1', n2, 1e3, 2e3, 3e3, 4e3, 5e3, 6e3)
 loads.append(load)
 
 # Supports
@@ -54,7 +45,8 @@ support = pg.Support()
 support.add_support(n1, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 support.add_support(n3, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 
+# Analysis
 linear_analysis = analysis.Linear(nodes, bars, loads, support)
 
+# Results
 print(linear_analysis.get_displacements('N2', 'L1'))
-# print(b2.kl)
