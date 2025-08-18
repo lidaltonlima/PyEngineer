@@ -9,7 +9,7 @@ from ..objects import Support
 from ..objects import Load
 from ..analysis import Linear
 
-def get_json(path: str) -> Linear:
+def calculate_json(path: str) -> Linear:
     """Analysis structure in json file
 
     Args:
@@ -18,7 +18,7 @@ def get_json(path: str) -> Linear:
     Returns:
         Linear: the result of linear analysis
     """
-    with open(path, encoding='utf-8') as file:
+    with open(path, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
     # Create objects ///////////////////////////////////////////////////////////////////////////////

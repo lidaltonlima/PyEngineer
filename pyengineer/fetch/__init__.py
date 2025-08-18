@@ -1,4 +1,4 @@
 """Export functions"""
-from ._get_json import get_json
+from ._calculate_json import calculate_json
 
-__all__ = ['get_json']
+__all__ = ['calculate_json']
