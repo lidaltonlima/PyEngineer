@@ -50,7 +50,7 @@ class Bar:
         self.klg: np.ndarray  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
 
     def calculate_klg(self) -> np.ndarray:
-        """Transforma a matriz de rigidez local e global
+        """Transforma a matriz de rigidez local em global
 
         Args:
             bar (Bar): Barra

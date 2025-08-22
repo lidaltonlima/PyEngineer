@@ -26,10 +26,10 @@ def calculate_json(path: str) -> Linear:
     materials: list[Material] = []
     for material in data['materials']:
         materials.append(Material(material['name'],
-                                    material['properties']['E'],
-                                    material['properties']['G'],
-                                    material['properties']['ni'],
-                                    material['properties']['rho']))
+                                  material['properties']['E'],
+                                  material['properties']['G'],
+                                  material['properties']['ni'],
+                                  material['properties']['rho']))
     # Sections *************************************************************************************
     sections: list[Section] = []
     for section in data['sections']:
@@ -50,7 +50,7 @@ def calculate_json(path: str) -> Linear:
     section_bar = Section('ERROR', 0, 0, 0, 0)
     material_bar = Material('ERROR', 0, 0, 0, 0)
     bars: list[Bar] = []
-    for bar in data['bars']:
+    for index, bar in enumerate(data['bars']):
         for node in nodes:
             if node.name == bar['start_node']:
                 start_node: Node = node
@@ -71,6 +71,7 @@ def calculate_json(path: str) -> Linear:
                         section_bar,
                         material_bar,
                         bar['rotation']))
+        bars[index].releases = bar['releases']
 
     # Supports *************************************************************************************
     supports = Support()
