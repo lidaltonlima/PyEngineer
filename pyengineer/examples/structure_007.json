@@ -21,8 +21,8 @@
 
   "nodes": [
     { "name": "N1", "position": [0, 0, 0] },
-    { "name": "N2", "position": [0, 0, 5] },
-    { "name": "N3", "position": [5, 0, 5] }
+    { "name": "N2", "position": [5, 5, 5] },
+    { "name": "N3", "position": [5, 5, 0] }
   ],
 
   "bars": [
@@ -32,13 +32,13 @@
       "end_node": "N2",
       "section": "w150x13",
       "material": "steel",
-      "rotation": 45,
+      "rotation": 23,
       "rotate_releases": true,
       "releases": {
         "Dxi": false,
-        "Dyi": false,
+        "Dyi": true,
         "Dzi": false,
-        "Rxi": false,
+        "Rxi": true,
         "Ryi": true,
         "Rzi": true,
         "Dxj": false,

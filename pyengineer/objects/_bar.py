@@ -177,8 +177,8 @@ class Bar:
         else:
             aux = np.array([x1 + 1, y1, z1])
 
-        # Rotação do ponto auxiliar em torno da barra *********************************************
-        self.rotation = np.deg2rad(self.rotation + 90)
+        # Rotate auxiliary point around axis x ****************************************************
+        self.rotation = np.deg2rad(self.rotation + 90) # sum 90 deg for z up
         aux = space_3d.rotate_point_around_line(aux,
                                                 self.start_node.position,
                                                 self.end_node.position,
