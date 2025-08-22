@@ -23,6 +23,7 @@ nodes.append(n2)
 # Bars
 bars: list[pg.Bar] = []
 b1 = pg.Bar('B1', n1, n2, section, material)
+# b1.y_up = True
 bars.append(b1)
 
 

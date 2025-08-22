@@ -48,6 +48,7 @@ class Bar:
         self.kl: np.ndarray =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
         self.r: np.ndarray  = np.zeros([12, 12]) # Matriz de rotação
         self.klg: np.ndarray  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
+        self.y_up = False # Modify default up for compare with PyNite
 
     def calculate_klg(self) -> np.ndarray:
         """Transforma a matriz de rigidez local em global
@@ -165,20 +166,20 @@ class Bar:
 
         # Ponto auxiliar para determinar o plano "xy" da barra ////////////////////////////////////
         # Ponto auxiliar inicial ******************************************************************
-        # Y up ------------------------------------------------------------------------------------
-        # if dx != 0 or dz != 0:
-        #     aux = np.array([x1, y1 + 1, z1])
-        # else:
-        #     aux = np.array([x1 + 1, y1, z1])
-
-        # Z up ------------------------------------------------------------------------------------
-        if dx != 0 or dy != 0:
-            aux = np.array([x1, y1, z1 + 1])
+        if self.y_up:
+            if dx != 0 or dz != 0:
+                aux = np.array([x1, y1 + 1, z1])
+            else:
+                aux = np.array([x1 + 1, y1, z1])
         else:
-            aux = np.array([x1 + 1, y1, z1])
+            if dx != 0 or dy != 0:
+                aux = np.array([x1, y1, z1 + 1])
+            else:
+                aux = np.array([x1 + 1, y1, z1])
 
         # Rotate auxiliary point around axis x ****************************************************
-        self.rotation = np.deg2rad(self.rotation + 90) # sum 90 deg for z up
+        axis_up = 0 if self.y_up else 90
+        self.rotation = np.deg2rad(self.rotation + axis_up) # sum 90 deg for z up
         aux = space_3d.rotate_point_around_line(aux,
                                                 self.start_node.position,
                                                 self.end_node.position,
