@@ -1,5 +1,7 @@
 """Faz a análise linear da estrutura"""
 import numpy as np
+from numpy.typing import NDArray
+from numpy import float64
 
 from ..objects import Node
 from ..objects import Bar
@@ -24,11 +26,11 @@ class Linear:
         self.supports = supports
         self.matrix_order = 6 * len(nodes)
         self.calculated = False
-        self.displacements: dict[Load, np.ndarray] = {}
-        self.reactions: dict[Load, np.ndarray] = {}
-        self.kg: np.ndarray = np.array([])
-        self.kg_solution: np.ndarray = np.array([])
-        self.forces_vector: dict[Load,  np.ndarray ] = {}
+        self.displacements: dict[Load, NDArray[float64]] = {}
+        self.reactions: dict[Load, NDArray[float64]] = {}
+        self.kg: NDArray[float64] = np.array([])
+        self.kg_solution: NDArray[float64] = np.array([])
+        self.forces_vector: dict[Load,  NDArray[float64] ] = {}
 
         if calculate:
             self.calculate_structure()
@@ -36,7 +38,7 @@ class Linear:
     def calculate_structure(self) -> None:
         """Realiza a calculo"""
         self.displacements = {}
-        self.reactions: dict[Load, np.ndarray] = {}
+        self.reactions: dict[Load, NDArray[float64]] = {}
         self.kg_solution = self.calculate_kg_solution()
         self.forces_vector = self.calculate_forces_vector()
 
@@ -47,15 +49,17 @@ class Linear:
             # Calculate reactions
             self.reactions[load] = self.kg @ self.displacements[load] - self.forces_vector[load]
 
+        self.calculate_extremes_bars_forces()
+
         self.calculated = True
 
-    def calculate_forces_vector(self) -> dict[Load, np.ndarray]:
+    def calculate_forces_vector(self) -> dict[Load, NDArray[float64]]:
         """Calcula o vetor de forças para cada caso de carga e cria um dicionário
 
         Returns:
             dict: Vetor de forças
         """
-        forces: dict[Load, np.ndarray] = {}
+        forces: dict[Load, NDArray[float64]] = {}
         for load in self.loads:
             f_load = np.zeros(self.matrix_order, dtype=float)
 
@@ -72,7 +76,7 @@ class Linear:
 
         return forces
 
-    def calculate_kg(self) -> np.ndarray:
+    def calculate_kg(self) -> NDArray[float64]:
         """ Calcula a matriz de rigidez global
 
         Returns:
@@ -96,7 +100,7 @@ class Linear:
 
         return kg
 
-    def calculate_kg_solution(self) -> np.ndarray:
+    def calculate_kg_solution(self) -> NDArray[float64]:
         """Aplica os apoios na matriz
 
         Returns:
@@ -153,7 +157,7 @@ class Linear:
         return spread_vector
 
 
-    def get_displacements(self, node_name: str, load_name: str) -> np.ndarray:
+    def get_displacements(self, node_name: str, load_name: str) -> NDArray[float64]:
         """Pega os deslocamentos
 
         Args:
@@ -163,7 +167,7 @@ class Linear:
         Returns:
             ndarray: Deslocamentos
         """
-        node_displacements: np.ndarray = np.array([])
+        node_displacements: NDArray[float64] = np.array([])
         for load in self.loads:
             if load.name == load_name:
                 for node in self.nodes:
@@ -178,7 +182,7 @@ class Linear:
 
         return node_displacements
 
-    def get_reactions(self, node_name: str, load_name: str) -> np.ndarray:
+    def get_reactions(self, node_name: str, load_name: str) -> NDArray[float64]:
         """Pega as reações
 
         Args:
@@ -188,7 +192,7 @@ class Linear:
         Returns:
             ndarray: Reações
         """
-        node_reactions: np.ndarray = np.array([])
+        node_reactions: NDArray[float64] = np.array([])
         for load in self.loads:
             if load.name == load_name:
                 for node in self.nodes:
@@ -202,3 +206,15 @@ class Linear:
                 break
 
         return node_reactions
+
+    def calculate_extremes_bars_forces(self):
+        """Calculate extreme forces in bars
+        """
+        for load in self.loads:
+            for bar in self.bars:
+                for load in self.loads:
+                    start_displacements = self.get_displacements(bar.start_node.name, load.name)
+                    end_displacements = self.get_displacements(bar.end_node.name, load.name)
+                    displacements = np.concatenate((start_displacements, end_displacements))
+
+                    bar.extreme_forces[load.name] = bar.r @ (bar.klg @ displacements)

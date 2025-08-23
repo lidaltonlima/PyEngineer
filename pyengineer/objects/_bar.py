@@ -1,5 +1,7 @@
 """Módulo para operações matemáticas"""
 import numpy as np
+from numpy.typing import NDArray
+from numpy import float64
 
 from ._material import Material
 from ._node import Node
@@ -45,12 +47,13 @@ class Bar:
             'Dxj': False, 'Dyj': False, 'Dzj': False,
             'Rxj': False, 'Ryj': False, 'Rzj': False,
         }
-        self.kl: np.ndarray =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
-        self.r: np.ndarray  = np.zeros([12, 12]) # Matriz de rotação
-        self.klg: np.ndarray  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
+        self.kl: NDArray[float64] =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
+        self.r: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rotação
+        self.klg: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
         self.y_up = False # Modify default up for compare with PyNite
+        self.extreme_forces: dict[str, NDArray[float64]] = {}
 
-    def calculate_klg(self) -> np.ndarray:
+    def calculate_klg(self) -> NDArray[float64]:
         """Transforma a matriz de rigidez local em global
 
         Args:
@@ -67,7 +70,7 @@ class Bar:
         return klg
 
 
-    def calculate_kl(self) -> np.ndarray:
+    def calculate_kl(self) -> NDArray[float64]:
         """Calcula a matriz de rigidez local da barra
 
         Args:
