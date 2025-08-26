@@ -14,5 +14,6 @@
   "material-icon-theme.folders.associations": {
       "analysis": "core",
       "objects": "sandbox"
-  }
+},
+"python-envs.pythonProjects": []
 }

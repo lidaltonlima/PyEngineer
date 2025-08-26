@@ -24,7 +24,9 @@ nodes.append(n3)
 
 # Bars
 bars: list[pg.Bar] = []
-b1 = pg.Bar('B1', n1, n2, section, material, 45)
+b1 = pg.Bar('B1', n1, n2, section, material, 23)
+b1.releases['Dyi'] = True
+b1.releases['Rxi'] = True
 b1.releases['Ryi'] = True
 b1.releases['Rzi'] = True
 bars.append(b1)

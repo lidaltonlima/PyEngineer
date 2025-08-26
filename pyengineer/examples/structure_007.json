@@ -2,12 +2,7 @@
   "materials": [
     {
       "name": "steel",
-      "properties": {
-        "E": 2e11,
-        "G": 7.692308e10,
-        "ni": 0.3,
-        "rho": 7850
-      }
+      "properties": { "E": 2e11, "G": 7.692308e10, "ni": 0.3, "rho": 7850 }
     }
   ],
 
@@ -21,8 +16,8 @@
 
   "nodes": [
     { "name": "N1", "position": [0, 0, 0] },
-    { "name": "N2", "position": [5, 5, 5] },
-    { "name": "N3", "position": [5, 5, 0] }
+    { "name": "N2", "position": [0, 0, 5] },
+    { "name": "N3", "position": [5, 0, 5] }
   ],
 
   "bars": [

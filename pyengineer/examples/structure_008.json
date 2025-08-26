@@ -2,12 +2,7 @@
 	"materials": [
 		{
 			"name": "steel",
-			"properties": {
-				"E": 2e11,
-				"G": 7.692308e10,
-				"ni": 0.3,
-				"rho": 7850
-			}
+			"properties": { "E": 2e11, "G": 7.692308e10, "ni": 0.3, "rho": 7850 }
 		}
 	],
 
@@ -100,26 +95,12 @@
 					"bar": "B1",
 					"position": [0, 1, 0],
 					"system": "local",
-					"loads": {
-						"Fx": 0,
-						"Fy": 0,
-						"Fz": 0,
-						"Mx": 0,
-						"My": 0,
-						"Mz": 0
-					}
+					"loads": { "Fx": 0, "Fy": 0, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
 				},
 				"distributed": {
 					"bar": "B2",
 					"system": "local",
-					"loads": {
-						"Fx": 0,
-						"Fy": 0,
-						"Fz": 0,
-						"Mx": 0,
-						"My": 0,
-						"Mz": 0
-					}
+					"loads": { "Fx": 0, "Fy": 0, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
 				}
 			}
 		}
