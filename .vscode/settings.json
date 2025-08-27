@@ -13,7 +13,8 @@
       // Ícones personalizados para as pastas com nome diferente
   "material-icon-theme.folders.associations": {
       "analysis": "core",
-      "objects": "sandbox"
+      "objects": "sandbox",
+      "fetch": "download",
 },
 "python-envs.pythonProjects": []
 }
