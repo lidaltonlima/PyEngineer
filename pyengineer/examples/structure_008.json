@@ -28,21 +28,7 @@
 			"section": "w150x13",
 			"material": "steel",
 			"rotation": 45,
-			"rotate_releases": true,
-			"releases": {
-				"Dxi": false,
-				"Dyi": false,
-				"Dzi": false,
-				"Rxi": false,
-				"Ryi": false,
-				"Rzi": false,
-				"Dxj": false,
-				"Dyj": false,
-				"Dzj": false,
-				"Rxj": false,
-				"Ryj": false,
-				"Rzj": false
-			}
+			"releases": []
 		},
 		{
 			"name": "B2",
@@ -51,21 +37,7 @@
 			"section": "w150x13",
 			"material": "steel",
 			"rotation": 0,
-			"rotate_releases": true,
-			"releases": {
-				"Dxi": false,
-				"Dyi": false,
-				"Dzi": false,
-				"Rxi": false,
-				"Ryi": false,
-				"Rzi": false,
-				"Dxj": false,
-				"Dyj": false,
-				"Dzj": false,
-				"Rxj": false,
-				"Ryj": false,
-				"Rzj": false
-			}
+			"releases": []
 		}
 	],
 

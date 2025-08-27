@@ -33,7 +33,6 @@
       "section": "w150x13",
       "material": "steel",
       "rotation": 23,
-      "rotate_releases": true,
       "releases": ["Dyi", "Rxi", "Ryi", "Rzi"]
     },
     {
@@ -43,7 +42,6 @@
       "section": "w150x13",
       "material": "steel",
       "rotation": 0,
-      "rotate_releases": true,
       "releases": []
     }
   ],
