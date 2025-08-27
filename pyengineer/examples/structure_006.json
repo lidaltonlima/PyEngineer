@@ -34,20 +34,7 @@
       "material": "steel",
       "rotation": 23,
       "rotate_releases": true,
-      "releases": {
-        "Dxi": false,
-        "Dyi": true,
-        "Dzi": false,
-        "Rxi": true,
-        "Ryi": true,
-        "Rzi": true,
-        "Dxj": false,
-        "Dyj": false,
-        "Dzj": false,
-        "Rxj": false,
-        "Ryj": false,
-        "Rzj": false
-      }
+      "releases": ["Dyi", "Rxi", "Ryi", "Rzi"]
     },
     {
       "name": "B2",
@@ -57,20 +44,7 @@
       "material": "steel",
       "rotation": 0,
       "rotate_releases": true,
-      "releases": {
-        "Dxi": false,
-        "Dyi": false,
-        "Dzi": false,
-        "Rxi": false,
-        "Ryi": false,
-        "Rzi": false,
-        "Dxj": false,
-        "Dyj": false,
-        "Dzj": false,
-        "Rxj": false,
-        "Ryj": false,
-        "Rzj": false
-      }
+      "releases": []
     }
   ],
 
@@ -100,26 +74,12 @@
           "bar": "B1",
           "position": [0, 1, 0],
           "system": "local",
-          "loads": {
-            "Fx": 0,
-            "Fy": 0,
-            "Fz": 0,
-            "Mx": 0,
-            "My": 0,
-            "Mz": 0
-          }
+          "loads": { "Fx": 0, "Fy": 0, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
         },
         "distributed": {
           "bar": "B2",
           "system": "local",
-          "loads": {
-            "Fx": 0,
-            "Fy": 0,
-            "Fz": 0,
-            "Mx": 0,
-            "My": 0,
-            "Mz": 0
-          }
+          "loads": { "Fx": 0, "Fy": 0, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
         }
       }
     }

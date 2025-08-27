@@ -1,5 +1,6 @@
 """Analysis structure in json file"""
 import json
+from typing import List
 
 from ..objects import Node
 from ..objects import Bar
@@ -8,6 +9,8 @@ from ..objects import Section
 from ..objects import Support
 from ..objects import Load
 from ..analysis import Linear
+
+from ..types import ReleasesType
 
 def calculate_json(path: str) -> Linear:
     """Analysis structure in json file
@@ -71,7 +74,34 @@ def calculate_json(path: str) -> Linear:
                         section_bar,
                         material_bar,
                         bar['rotation']))
-        bars[index].releases = bar['releases']
+
+        releases: List[ReleasesType]= bar['releases']
+        for release in releases:
+            match release:
+                case 'Dxi':
+                    bars[index].releases['Dxi'] = True
+                case 'Dyi':
+                    bars[index].releases['Dyi'] = True
+                case 'Dzi':
+                    bars[index].releases['Dzi'] = True
+                case 'Rxi':
+                    bars[index].releases['Rxi'] = True
+                case 'Ryi':
+                    bars[index].releases['Ryi'] = True
+                case 'Rzi':
+                    bars[index].releases['Rzi'] = True
+                case 'Dxj':
+                    bars[index].releases['Dxj'] = True
+                case 'Dyj':
+                    bars[index].releases['Dyj'] = True
+                case 'Dzj':
+                    bars[index].releases['Dzj'] = True
+                case 'Rxj':
+                    bars[index].releases['Rxj'] = True
+                case 'Ryj':
+                    bars[index].releases['Ryj'] = True
+                case 'Rzj':
+                    bars[index].releases['Rzj'] = True
 
     # Supports *************************************************************************************
     supports = Support()
