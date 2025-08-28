@@ -1,56 +1,178 @@
-"""Functions to calculate reactions in bars."""
-from typing import Tuple
+"""
+Functions to calculate reactions in bars.
+All functions fo point loads in "Análise de Estruturas" by
+    Umberto Lima Soriano and Silvio de Souza Lima.
+Distributed loads done with point load equivalents.
+"""
+from typing import Dict, Literal
 
-def dist_x_force(length: float,
-                     x1: float,
-                     p1:float,
-                     x2: float,
-                     p2: float) -> Tuple[float, float]:
-    """Calculates the reactions of a bar with a distributed axial load that varies linearly
-    between two points (x1, p1) and (x2, p2).
+
+def pt_force_x(length: float,
+               x: float,
+               p: float) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    """Calculates the reactions of a bar with a point axial load.
 
     Args:
         length (float): Length of the bar
-        x1 (float): Initial position of the load
-        p1 (float): Initial intensity of the load
-        x2 (float): Final position of the load
-        p2 (float): Final intensity of the load
+        x (float): Position of the load
+        p (float): Intensity of the load
 
     Raises:
-        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+        ValueError: If the position is not in the range 0 <= x <= L
 
     Returns:
-        Tuple[float, float]: The reactions at the two ends of the bar (A and B)
+        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
     """
-    if (0 <= x1 < x2 <= length) is False:
-        raise ValueError("Need 0 <= x1 < x2 <= L.")
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
 
-    dx = x2 - x1
-    # Resulting (área of the distributed load)
-    w = 0.5 * (p1 + p2) * dx
-    if abs(w) < 1e-14:
-        return 0.0, 0.0
+    a = x
+    b = length - x
+    l = length
+    reaction_a = -p * b / l
+    reaction_b = -p * a / l
 
-    # Angular coefficient of the linear load distribution
-    m = (p2 - p1) / dx
+    return {'Rxa': reaction_a, 'Rxb': reaction_b}
 
-    # First point: ∫ s*w(s) ds in [x1, x2]
-    num = (
-        p1 * ( (x2**2 - x1**2) / 2.0 )
-        + m  * ( ( (x2**3 - x1**3) / 3.0 ) - x1 * ( (x2**2 - x1**2) / 2.0 ) )
-    )
-    x_bar = num / w  # Centroid (baricentro) of the load in along the bar
+def pt_force_y(length: float,
+               x: float,
+               p: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    """Calculates the reactions of a bar with a point transverse load in y direction.
 
-    # Compatibility (u(L)-u(0)=0) => ra = -w*(L - x_bar)/L ; RB = -w*x_bar/L
-    reaction_a = -w * (length - x_bar) / length
-    reaction_b = -w *  x_bar      / length
-    return reaction_a, reaction_b
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
 
-# # Example of usage
-# L = 5.0   # Length of the bar
-# x1, p1 = 1, 1e3  # Load starts at 1m with intensity of 1kN/m
-# x2, p2 = 2.5, 3e3 # LOad ends at 2.5m with intensity of 3kN/m
+    Raises:
+        ValueError: If the position is not in the range 0 <= x <= L
 
-# RA, RB = dist_x_force(L, x1, p1, x2, p2)
-# print("Reação no apoio A:", RA)
-# print("Reação no apoio B:", RB)
+    Returns:
+        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
+
+    a = x
+    b = length - x
+    l = length
+
+    moment_a = -(p * a * b**2) / l**2
+    moment_b = (p * a**2 * b) / l**2
+    reaction_a = -((p * b / l) + (moment_a + moment_b) / l)
+    reaction_b = -((p * a / l) - (moment_a + moment_b) / l)
+
+    return {'Rya': reaction_a, 'Ryb': reaction_b, 'Mza': moment_a, 'Mzb': moment_b}
+
+def pt_force_z(length: float,
+               x: float,
+               p: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a point transverse load in z direction.
+
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
+
+    Raises:
+        ValueError: If the position is not in the range 0 <= x <= L
+
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
+
+    a = x
+    b = length - x
+    l = length
+
+    moment_a = (p * a * b**2) / l**2
+    moment_b = -(p * a**2 * b) / l**2
+    reaction_a = -((p * b / l) + (moment_a + moment_b) / l)
+    reaction_b = -((p * a / l) - (moment_a + moment_b) / l)
+
+    return {'Rza': reaction_a, 'Rzb': reaction_b, 'Mya': moment_a, 'Myb': moment_b}
+
+def pt_moment_x(length: float,
+                x: float,
+                m: float) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    """Calculates the reactions of a bar with a point moment around x axis.
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the moment
+        m (float): Intensity of the moment
+    Raises:
+        ValueError: If the position is not in the range 0 <= x <= L
+    Returns:
+        Dict[Literal['Mxa', 'Mxb'], float]: The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
+
+    a = x
+    b = length - x
+    l = length
+
+    torque_a = -m * b / l
+    torque_b = -m * a / l
+
+    return {'Mxa': torque_a, 'Mxb': torque_b}
+
+def pt_moment_y(length: float,
+                x: float,
+                m: float) -> Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
+    """Calculates the reactions of a bar with a point moment around y axis.
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the moment
+        m (float): Intensity of the moment
+    Raises:
+        ValueError: If the position is not in the range 0 <= x <= L
+    Returns:
+        Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
+
+    a = x
+    b = length - x
+    l = length
+
+    moment_a = ((m * b) / l**2) * (2*a - b)
+    moment_b = ((m * a) / l**2) * (2*b - a)
+    reaction_a = -(6 * m * a * b) / l**3
+    reaction_b = (6 * m * a * b) / l**3
+
+    return {'Mya': moment_a, 'Myb': moment_b, 'Rza': reaction_a, 'Rzb': reaction_b}
+
+def pt_moment_z(length: float,
+                x: float,
+                m: float) -> Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
+    """Calculates the reactions of a bar with a point moment around z axis.
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the moment
+        m (float): Intensity of the moment
+    Raises:
+        ValueError: If the position is not in the range 0 <= x <= L
+    Returns:
+        Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x <= length) is False:
+        raise ValueError("Need 0 <= x <= L.")
+
+    a = x
+    b = length - x
+    l = length
+
+    moment_a = ((m * b) / l**2) * (2*a - b)
+    moment_b = ((m * a) / l**2) * (2*b - a)
+    reaction_a = (6 * m * a * b) / l**3
+    reaction_b = -(6 * m * a * b) / l**3
+
+    return {'Mza': moment_a, 'Mzb': moment_b, 'Rya': reaction_a, 'Ryb': reaction_b}

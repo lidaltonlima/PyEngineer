@@ -11,7 +11,7 @@ from ._material import Material
 from ._node import Node
 from ._section import Section
 
-from ..functions import space_3d, reactions
+from ..functions import space_3d
 
 from ..types import ReleasesType
 
@@ -306,24 +306,24 @@ class Bar:
                 self.vector_loads += self.r.T @ loads_vector
 
         # Distributed loads in bars ///////////////////////////////////////////////////////////////
-        for value in load.bars_loads_dist.get(self, {}).values():
-            system = value['system']
-            fx1, fx2 = value['Fx']
-            # fy1, fy2 = value['Fy']
-            # fz1, fz2 = value['Fz']
-            # mx1, mx2 = value['Mx']
-            # my1, my2 = value['My']
-            # mz1, mz2 = value['Mz']
+        # for value in load.bars_loads_dist.get(self, {}).values():
+        #     system = value['system']
+        #     fx1, fx2 = value['Fx']
+        #     # fy1, fy2 = value['Fy']
+        #     # fz1, fz2 = value['Fz']
+        #     # mx1, mx2 = value['Mx']
+        #     # my1, my2 = value['My']
+        #     # mz1, mz2 = value['Mz']
 
-            x1 = value['x1']
-            x2 = value['x2']
-            l = self.length
+        #     x1 = value['x1']
+        #     x2 = value['x2']
+        #     l = self.length
 
-            loads_vector = np.zeros(12)
+        #     loads_vector = np.zeros(12)
 
-            if system == 'local':
-                rax, rbx = reactions.dist_x_force(l, x1, fx1, x2, fx2)
-                loads_vector[0] += -rax # Force in x initial
-                loads_vector[6] += -rbx # Force in x final
+        #     if system == 'local':
+        #         rax, rbx = reactions.dist_x_force(l, x1, fx1, x2, fx2)
+        #         loads_vector[0] += -rax # Force in x initial
+        #         loads_vector[6] += -rbx # Force in x final
 
-            self.vector_loads += self.r.T @ loads_vector
+        #     self.vector_loads += self.r.T @ loads_vector

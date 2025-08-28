@@ -31,11 +31,13 @@ loads: list[pg.Load] = []
 load = pg.Load('L1')
 loads.append(load)
 
-load.add_bar_load_dist('FB1', b1, 1, 2.5, 'local', fx=(1e3, 3e3))
+# load.add_bar_load_dist('FB1', b1, 1, 2.5, 'local', fx=(1e3, 3e3))
+load.add_bar_load_pt('FB1', b1, 0.5 + (2 / 3) * 2, 'local', mx=3e3)
 
 # Supports
 support = pg.Support()
 support.add_support(n1, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
+support.add_support(n2, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 
 # Analysis
 linear_analysis = analysis.Linear(nodes, bars, loads, support)
