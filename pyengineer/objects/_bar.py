@@ -176,20 +176,23 @@ class Bar:
         rot_aux[0, 1] = dy / self.length
         rot_aux[0, 2] = dz / self.length
 
-        # Ponto auxiliar para determinar o plano "xy" da barra ////////////////////////////////////
-        # Ponto auxiliar inicial ******************************************************************
+        # Assistant point for determinate xy to bar ////////////////////////////////////////////////
+        # Initial Assistant point ******************************************************************
         if self.y_up:
             if dx != 0 or dz != 0:
                 aux = np.array([x1, y1 + 1, z1])
             else:
                 aux = np.array([x1 + 1, y1, z1])
         else:
-            if dx != 0 or dy != 0:
+            if dx != 0 or dy != 0: # If not vertical
                 aux = np.array([x1, y1, z1 + 1])
             else:
-                aux = np.array([x1 - 1, y1, z1])
+                if dz > 0: # vertical up
+                    aux = np.array([x1 - 1, y1, z1])
+                else: # vertical down
+                    aux = np.array([x1 + 1, y1, z1])
 
-        # Rotate auxiliary point around axis x ****************************************************
+        # Rotate assistant point around x axis ****************************************************
         axis_up = 0 if self.y_up else -90  # sum -90 deg for z up
         self.rotation = np.deg2rad(self.rotation + axis_up)
         aux = space_3d.rotate_point_around_line(aux,
