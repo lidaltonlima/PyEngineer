@@ -72,6 +72,14 @@ class Linear:
                         f_load[node_position + index] += force[key]
                         index += 1
 
+                for bar in load.bars_loads_pt:
+                    if bar in self.bars:
+                        bar.calculate_forces_vector(load)
+                        spread_vector = self.calculate_spread_vector(bar)
+
+                        for i in range(12):
+                            f_load[spread_vector[i]] += bar.vector_loads[i]
+
             forces[load] = f_load.copy()
 
         return forces

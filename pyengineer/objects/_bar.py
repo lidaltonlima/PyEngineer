@@ -1,4 +1,8 @@
 """Módulo para operações matemáticas"""
+from __future__ import annotations
+
+import typing as tp
+
 import numpy as np
 from numpy.typing import NDArray
 from numpy import float64
@@ -10,6 +14,9 @@ from ._section import Section
 from ..functions import space_3d
 
 from ..types import ReleasesType
+
+if tp.TYPE_CHECKING:
+    from ._load import Load
 
 
 class Bar:
@@ -47,11 +54,13 @@ class Bar:
             'Dxj': False, 'Dyj': False, 'Dzj': False,
             'Rxj': False, 'Ryj': False, 'Rzj': False,
         }
-        self.kl: NDArray[float64] =  np.zeros([12, 12]) # Matriz de rigidez nas coordenadas locais
-        self.r: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rotação
+        self.kl: NDArray[float64] =  np.zeros([12, 12]) # Matriz of local stiffness
+        self.r: NDArray[float64]  = np.zeros([12, 12]) # Matriz of rotation
         self.klg: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
         self.y_up = False # Modify default up for compare with PyNite
         self.extreme_forces: dict[str, NDArray[float64]] = {}
+        self.vector_loads_local: NDArray[float64] = np.zeros(12) # Vector of loads in local coordinates
+        self.vector_loads: NDArray[float64] = np.zeros(12) # Vector of all loads in global coordinates
 
     def calculate_klg(self) -> NDArray[float64]:
         """Transforma a matriz de rigidez local em global
@@ -221,3 +230,65 @@ class Bar:
         self.r = rotation # Atribui matriz de rotação no objeto barra
 
         return rotation
+
+    def calculate_forces_vector(self, load: Load):
+        if self in load.bars_loads_pt:
+            for value in load.bars_loads_pt[self].values():
+                system = value['system']
+                fx = value['Fx']
+                fy = value['Fy']
+                fz = value['Fz']
+                mx = value['Mx']
+                my = value['My']
+                mz = value['Mz']
+
+                a = value['position']
+                b = self.length - a
+                l = self.length
+
+            # if system == 'local':
+            #     vector = self.vector_loads_local
+            #     may = -(fy * a * b**2) / l**2 # Moment in z initial because of shear in y
+            #     mby = (fy * a**2 * b) / l**2 # Moment in z final because of shear in y
+            #     maz = (fz * a * b**2) / l**2 # Moment in y initial because of shear in z
+            #     mbz = -(fz * a**2 * b) / l**2 # Moment in y final because of shear in z
+            #     fay = -(6 * my * a * b) / l**3 # Force in z initial because of moment in y
+            #     fby = (6 * my * a * b) / l**3 # Force in z final because of moment in y
+            #     faz = (6 * mz * a * b) / l**3 # Force in y initial because of moment in z
+            #     fbz = -(6 * mz * a * b) / l**3 # Force in y final because of moment in z
+            #     vector[0] += (fx * b) / l # Force in x initial
+            #     vector[6] += (fx * a) / l # Force in x final
+            #     vector[1] += -fy * b / l + (may + mby) / l + faz # Force in y initial
+            #     vector[7] += -fy * a / l - (may + mby) / l + fbz # Force in y final
+            #     vector[2] += -fz * b / l - (maz + mbz) / l + fay # Force in z initial
+            #     vector[8] += -fz * a / l + (maz + mbz) / l + fby # Force in z final
+            #     vector[3] += mx * b / l # Moment in x initial
+            #     vector[9] += mx * a / l # Moment in x final
+            #     vector[4] += maz + (((my * b) / l**2) * (2 * a - b)) # Moment in y initial
+            #     vector[10] += mbz + (((my * a) / l**2) * (2 * b - a)) # Moment in y final
+            #     vector[5] += may + (((mz * b) / l**2) * (2 * a - b)) # Moment in z initial
+            #     vector[11] += mby + (((mz * a) / l**2) * (2 * b - a)) # Moment in z final
+            if system == 'local':
+                vector = self.vector_loads_local
+                may = -(fy * a * b**2) / l**2 # Moment in z initial because of shear in y
+                mby = (fy * a**2 * b) / l**2 # Moment in z final because of shear in y
+                maz = (fz * a * b**2) / l**2 # Moment in y initial because of shear in z
+                mbz = -(fz * a**2 * b) / l**2 # Moment in y final because of shear in z
+                fay = -(6 * my * a * b) / l**3 # Force in z initial because of moment in y
+                fby = (6 * my * a * b) / l**3 # Force in z final because of moment in y
+                faz = (6 * mz * a * b) / l**3 # Force in y initial because of moment in z
+                fbz = -(6 * mz * a * b) / l**3 # Force in y final because of moment in z
+                vector[0] += (fx * b) / l # Force in x initial
+                vector[6] += (fx * a) / l # Force in x final
+                vector[1] += -fy * b / l + (may + mby) / l + faz # Force in y initial
+                vector[7] += -fy * a / l - (may + mby) / l + fbz # Force in y final
+                vector[2] += -fz * b / l - (maz + mbz) / l + fay # Force in z initial
+                vector[8] += -fz * a / l + (maz + mbz) / l + fby # Force in z final
+                vector[3] += mx * b / l # Moment in x initial
+                vector[9] += mx * a / l # Moment in x final
+                vector[4] += maz + (((my * b) / l**2) * (2 * a - b)) # Moment in y initial
+                vector[10] += mbz + (((my * a) / l**2) * (2 * b - a)) # Moment in y final
+                vector[5] += may + (((mz * b) / l**2) * (2 * a - b)) # Moment in z initial
+                vector[11] += mby + (((mz * a) / l**2) * (2 * b - a)) # Moment in z final
+
+            self.vector_loads = self.r.T @ self.vector_loads_local
