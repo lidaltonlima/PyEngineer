@@ -31,7 +31,7 @@ loads: list[pg.Load] = []
 load = pg.Load('L1')
 loads.append(load)
 
-load.add_bar_point_load('FB1', b1, 0.5, 'global', fz=1e3)
+load.add_bar_load_pt('FB1', b1, 0.5, 'global', fz=1e3)
 
 # Supports
 support = pg.Support()

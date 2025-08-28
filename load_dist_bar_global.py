@@ -17,7 +17,7 @@ section = pg.Section('w150x13', area=1.63e-3, ix=1.39e-8, iy=6.2e-6, iz=8.28e-7)
 nodes: list[pg.Node] = []
 n1 = pg.Node('N1', [0, 0, 0])
 nodes.append(n1)
-n2 = pg.Node('N2', [0, 0, 5])
+n2 = pg.Node('N2', [5, 0, 0])
 nodes.append(n2)
 
 # Bars
@@ -29,10 +29,9 @@ bars.append(b1)
 # Loads
 loads: list[pg.Load] = []
 load = pg.Load('L1')
-load.add_node_load('FN1', n2, 1e3, 2e3, 3e3, 4e3, 5e3, 6e3)
 loads.append(load)
 
-load.add_bar_load_pt('FB1', b1, 0.5, 'local', fx=1e3, fy=2e3, fz=3e3, mx=4e3, my=5e3, mz=6e3)
+load.add_bar_load_dist('FB1', b1, 1, 2.5, 'local', fx=(1e3, 3e3))
 
 # Supports
 support = pg.Support()
