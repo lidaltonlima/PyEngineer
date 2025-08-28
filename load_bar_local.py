@@ -17,7 +17,7 @@ section = pg.Section('w150x13', area=1.63e-3, ix=1.39e-8, iy=6.2e-6, iz=8.28e-7)
 nodes: list[pg.Node] = []
 n1 = pg.Node('N1', [0, 0, 0])
 nodes.append(n1)
-n2 = pg.Node('N2', [-5, -5, -5])
+n2 = pg.Node('N2', [0, 0, 5])
 nodes.append(n2)
 
 # Bars
