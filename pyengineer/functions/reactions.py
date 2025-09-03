@@ -9,7 +9,8 @@ from typing import Dict, Literal
 from .space_2d import root_line
 
 # Point loads /////////////////////////////////////////////////////////////////////////////////////
-# Force in x direction ****************************************************************************
+# Forces ******************************************************************************************
+# Force in x direction ----------------------------------------------------------------------------
 def pt_force_x(length: float,
                x: float,
                p: float) -> Dict[Literal['Rxa', 'Rxb'], float]:
@@ -37,7 +38,7 @@ def pt_force_x(length: float,
 
     return {'Rxa': reaction_a, 'Rxb': reaction_b}
 
-# Force in y direction ****************************************************************************
+# Force in y direction ----------------------------------------------------------------------------
 def pt_force_y(length: float,
                x: float,
                p: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
@@ -64,12 +65,12 @@ def pt_force_y(length: float,
 
     moment_a = -(p * a * b**2) / l**2
     moment_b = (p * a**2 * b) / l**2
-    reaction_a = -((p * b / l) + (moment_a + moment_b) / l)
-    reaction_b = -((p * a / l) - (moment_a + moment_b) / l)
+    reaction_a = -((p * b / l) - (moment_a + moment_b) / l)
+    reaction_b = -((p * a / l) + (moment_a + moment_b) / l)
 
     return {'Rya': reaction_a, 'Ryb': reaction_b, 'Mza': moment_a, 'Mzb': moment_b}
 
-# Force in z direction ****************************************************************************
+# Force in z direction ----------------------------------------------------------------------------
 def pt_force_z(length: float,
                x: float,
                p: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
@@ -101,7 +102,8 @@ def pt_force_z(length: float,
 
     return {'Rza': reaction_a, 'Rzb': reaction_b, 'Mya': moment_a, 'Myb': moment_b}
 
-# Moment in x direction ***************************************************************************
+# Moments *****************************************************************************************
+# Moment in x direction ---------------------------------------------------------------------------
 def pt_moment_x(length: float,
                 x: float,
                 m: float) -> Dict[Literal['Mxa', 'Mxb'], float]:
@@ -127,7 +129,7 @@ def pt_moment_x(length: float,
 
     return {'Mxa': torque_a, 'Mxb': torque_b}
 
-# Moment in y direction ***************************************************************************
+# Moment in y direction ---------------------------------------------------------------------------
 def pt_moment_y(length: float,
                 x: float,
                 m: float) -> Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
@@ -156,7 +158,7 @@ def pt_moment_y(length: float,
 
     return {'Mya': moment_a, 'Myb': moment_b, 'Rza': reaction_a, 'Rzb': reaction_b}
 
-# Moment in z direction ***************************************************************************
+# Moment in z direction ---------------------------------------------------------------------------
 def pt_moment_z(length: float,
                 x: float,
                 m: float) -> Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:

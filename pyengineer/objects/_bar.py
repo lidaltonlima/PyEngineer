@@ -12,6 +12,7 @@ from ._node import Node
 from ._section import Section
 
 from ..functions import space_3d
+from ..functions import reactions
 
 from ..types import ReleasesType
 
@@ -251,57 +252,54 @@ class Bar:
                 my = value['My']
                 mz = value['Mz']
 
-                a = value['position']
-                b = self.length - a
+                x = value['position']
                 l = self.length
 
                 loads_vector = np.zeros(12)
 
                 if system == 'local':
-                    may = (fy * a * b**2) / l**2 # Moment in z initial because of shear in y
-                    mby = -(fy * a**2 * b) / l**2 # Moment in z final because of shear in y
-                    maz = -(fz * a * b**2) / l**2 # Moment in y initial because of shear in z
-                    mbz = (fz * a**2 * b) / l**2 # Moment in y final because of shear in z
-                    fay = (6 * my * a * b) / l**3 # Force in z initial because of moment in y
-                    fby = -(6 * my * a * b) / l**3 # Force in z final because of moment in y
-                    faz = -(6 * mz * a * b) / l**3 # Force in y initial because of moment in z
-                    fbz = (6 * mz * a * b) / l**3 # Force in y final because of moment in z
-                    loads_vector[0] += (fx * b) / l # Force in x initial
-                    loads_vector[6] += (fx * a) / l # Force in x final
-                    loads_vector[1] += fy * b / l + (may + mby) / l + faz # Force in y initial
-                    loads_vector[7] += fy * a / l - (may + mby) / l + fbz # Force in y final
-                    loads_vector[2] += fz * b / l - (maz + mbz) / l + fay # Force in z initial
-                    loads_vector[8] += fz * a / l + (maz + mbz) / l + fby # Force in z final
-                    loads_vector[3] += mx * b / l # Moment in x initial
-                    loads_vector[9] += mx * a / l # Moment in x final
-                    loads_vector[4] += maz - (((my * b) / l**2) * (2 * a - b)) # Moment in y initial
-                    loads_vector[10] += mbz - (((my * a) / l**2) * (2 * b - a)) # Moment in y final
-                    loads_vector[5] += may - (((mz * b) / l**2) * (2 * a - b)) # Moment in z initial
-                    loads_vector[11] += mby - (((mz * a) / l**2) * (2 * b - a)) # Moment in z final
+                    fxr = reactions.pt_force_x(l, x, fx) # Reactions due to the force on x
+                    fyr = reactions.pt_force_y(l, x, fy) # Reactions due to the force on y
+                    fzr = reactions.pt_force_z(l, x, fz) # Reactions due to the force on z
+                    mxr = reactions.pt_moment_x(l, x, mx) # Reactions because of the moment on x
+                    myr = reactions.pt_moment_y(l, x, my) # Reactions because of the moment on y
+                    mzr = reactions.pt_moment_z(l, x, mz) # Reactions because of the moment on z
+
+                    loads_vector[0] -= fxr['Rxa'] # Force in x initial
+                    loads_vector[6] -= fxr['Rxb'] # Force in x final
+                    loads_vector[1] -= fyr['Rya'] + mzr['Rya'] # Force in y initial
+                    loads_vector[7] -= fyr['Ryb'] + mzr['Ryb'] # Force in y final
+                    loads_vector[2] -= fzr['Rza'] + myr['Rza'] # Force in z initial
+                    loads_vector[8] -= fzr['Rzb'] + myr['Rzb'] # Force in z final
+                    loads_vector[3] -= mxr['Mxa'] # Moment in x initial
+                    loads_vector[9] -= mxr['Mxb'] # Moment in x final
+                    loads_vector[4] -= fzr['Mya'] + myr['Mya'] # Moment in y initial
+                    loads_vector[10] -= fzr['Myb'] + myr['Myb'] # Moment in y final
+                    loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
+                    loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
 
                 elif system == 'global':
                     fx, fy, fz, mx, my, mz = self.r[0:6, 0:6] @ np.array([fx, fy, fz, mx, my, mz])
 
-                    may = (fy * a * b**2) / l**2 # Moment in z initial because of shear in y
-                    mby = -(fy * a**2 * b) / l**2 # Moment in z final because of shear in y
-                    maz = -(fz * a * b**2) / l**2 # Moment in y initial because of shear in z
-                    mbz = (fz * a**2 * b) / l**2 # Moment in y final because of shear in z
-                    fay = (6 * my * a * b) / l**3 # Force in z initial because of moment in y
-                    fby = -(6 * my * a * b) / l**3 # Force in z final because of moment in y
-                    faz = -(6 * mz * a * b) / l**3 # Force in y initial because of moment in z
-                    fbz = (6 * mz * a * b) / l**3 # Force in y final because of moment in z
-                    loads_vector[0] += (fx * b) / l # Force in x initial
-                    loads_vector[6] += (fx * a) / l # Force in x final
-                    loads_vector[1] += fy * b / l + (may + mby) / l + faz # Force in y initial
-                    loads_vector[7] += fy * a / l - (may + mby) / l + fbz # Force in y final
-                    loads_vector[2] += fz * b / l - (maz + mbz) / l + fay # Force in z initial
-                    loads_vector[8] += fz * a / l + (maz + mbz) / l + fby # Force in z final
-                    loads_vector[3] += mx * b / l # Moment in x initial
-                    loads_vector[9] += mx * a / l # Moment in x final
-                    loads_vector[4] += maz - (((my * b) / l**2) * (2 * a - b)) # Moment in y initial
-                    loads_vector[10] += mbz - (((my * a) / l**2) * (2 * b - a)) # Moment in y final
-                    loads_vector[5] += may - (((mz * b) / l**2) * (2 * a - b)) # Moment in z initial
-                    loads_vector[11] += mby - (((mz * a) / l**2) * (2 * b - a)) # Moment in z final
+                    fxr = reactions.pt_force_x(l, x, fx) # Reactions due to the force on x
+                    fyr = reactions.pt_force_y(l, x, fy) # Reactions due to the force on y
+                    fzr = reactions.pt_force_z(l, x, fz) # Reactions due to the force on z
+                    mxr = reactions.pt_moment_x(l, x, mx) # Reactions because of the moment on x
+                    myr = reactions.pt_moment_y(l, x, my) # Reactions because of the moment on y
+                    mzr = reactions.pt_moment_z(l, x, mz) # Reactions because of the moment on z
+
+                    loads_vector[0] -= fxr['Rxa'] # Force in x initial
+                    loads_vector[6] -= fxr['Rxb'] # Force in x final
+                    loads_vector[1] -= fyr['Rya'] + mzr['Rya'] # Force in y initial
+                    loads_vector[7] -= fyr['Ryb'] + mzr['Ryb'] # Force in y final
+                    loads_vector[2] -= fzr['Rza'] + myr['Rza'] # Force in z initial
+                    loads_vector[8] -= fzr['Rzb'] + myr['Rzb'] # Force in z final
+                    loads_vector[3] -= mxr['Mxa'] # Moment in x initial
+                    loads_vector[9] -= mxr['Mxb'] # Moment in x final
+                    loads_vector[4] -= fzr['Mya'] + myr['Mya'] # Moment in y initial
+                    loads_vector[10] -= fzr['Myb'] + myr['Myb'] # Moment in y final
+                    loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
+                    loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
 
                 self.vector_loads += self.r.T @ loads_vector
 

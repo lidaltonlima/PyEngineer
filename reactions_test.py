@@ -1,4 +1,4 @@
 """Test"""
-from pyengineer.functions.reactions import dist_force_x_trap
+from pyengineer.functions.reactions import pt_moment_z
 
-print(dist_force_x_trap(5, 1, 2.5, -3000, 5000))
+print(pt_moment_z(5, 0.5, 3e3))
