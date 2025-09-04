@@ -11,9 +11,11 @@ from .space_2d import root_line
 # Point loads /////////////////////////////////////////////////////////////////////////////////////
 # Forces ******************************************************************************************
 # Force in x direction ----------------------------------------------------------------------------
-def pt_force_x(length: float,
-               x: float,
-               p: float) -> Dict[Literal['Rxa', 'Rxb'], float]:
+def pt_force_x(
+        length: float,
+        x: float,
+        p: float
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a point axial load in x direction.
 
     Args:
@@ -39,9 +41,11 @@ def pt_force_x(length: float,
     return {'Rxa': reaction_a, 'Rxb': reaction_b}
 
 # Force in y direction ----------------------------------------------------------------------------
-def pt_force_y(length: float,
-               x: float,
-               p: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+def pt_force_y(
+        length: float,
+        x: float,
+        p: float
+    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a point transverse load in y direction.
 
     Args:
@@ -71,9 +75,11 @@ def pt_force_y(length: float,
     return {'Rya': reaction_a, 'Ryb': reaction_b, 'Mza': moment_a, 'Mzb': moment_b}
 
 # Force in z direction ----------------------------------------------------------------------------
-def pt_force_z(length: float,
-               x: float,
-               p: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+def pt_force_z(
+        length: float,
+        x: float,
+        p: float
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a point transverse load in z direction.
 
     Args:
@@ -104,9 +110,11 @@ def pt_force_z(length: float,
 
 # Moments *****************************************************************************************
 # Moment in x direction ---------------------------------------------------------------------------
-def pt_moment_x(length: float,
-                x: float,
-                m: float) -> Dict[Literal['Mxa', 'Mxb'], float]:
+def pt_moment_x(
+        length: float,
+        x: float,
+        m: float
+    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a point moment around x axis.
     Args:
         length (float): Length of the bar
@@ -130,9 +138,11 @@ def pt_moment_x(length: float,
     return {'Mxa': torque_a, 'Mxb': torque_b}
 
 # Moment in y direction ---------------------------------------------------------------------------
-def pt_moment_y(length: float,
-                x: float,
-                m: float) -> Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
+def pt_moment_y(
+        length: float,
+        x: float,
+        m: float
+    ) -> Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
     """Calculates the reactions of a bar with a point moment around y axis.
     Args:
         length (float): Length of the bar
@@ -159,9 +169,11 @@ def pt_moment_y(length: float,
     return {'Mya': moment_a, 'Myb': moment_b, 'Rza': reaction_a, 'Rzb': reaction_b}
 
 # Moment in z direction ---------------------------------------------------------------------------
-def pt_moment_z(length: float,
-                x: float,
-                m: float) -> Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
+def pt_moment_z(
+        length: float,
+        x: float,
+        m: float
+    ) -> Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
     """Calculates the reactions of a bar with a point moment around z axis.
     Args:
         length (float): Length of the bar
@@ -187,14 +199,141 @@ def pt_moment_z(length: float,
 
     return {'Mza': moment_a, 'Mzb': moment_b, 'Rya': reaction_a, 'Ryb': reaction_b}
 
+
 # Distributed loads ///////////////////////////////////////////////////////////////////////////////
 # Force in all length of the bar ******************************************************************
+# x direction -------------------------------------------------------------------------------------
+def all_dist_force_x_rec(
+        length: float,
+        p: float
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    """Calculates the reactions of a bar with a distributed load in x direction and in all length
+        of the bar.
+
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
+
+    Returns:
+        Dict[Literal['Rxa', 'Rxb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    l = length
+
+    reaction_a = -(p * l) / 2
+    reaction_b = -(p * l) / 2
+
+    return {'Rxa': reaction_a, 'Rxb': reaction_b}
+
+def all_dist_force_x_tri(
+        length: float,
+        p: float,
+        direction: Literal['up', 'down']
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    """Calculates the reactions of a bar with a distributed load in x direction and in all length
+        of the bar.
+
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
+
+    Returns:
+        Dict[Literal['Rxa', 'Rxb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    l = length
+
+    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+
+    match direction:
+        case 'up':
+            reactions['Rxa'] = -(p * l) / 6
+            reactions['Rxb'] = -(p * l) / 3
+        case 'down':
+            reactions['Rxa'] = -(p * l) / 3
+            reactions['Rxb'] = -(p * l) / 6
+        case _:
+            raise ValueError('Direction only "up" and "down"')
+
+    return reactions
+
+def all_dist_force_x_trap(
+        length: float,
+        p1: float, p2: float
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    """Calculates the reactions of a bar with a trapezoidal distributed axial load in x direction
+        and all length of the bar.
+    Args:
+        length (float): Length of the bar
+        p1 (float): Intensity of the load at the start position
+        p2 (float): Intensity of the load at the end position
+    Raises:
+        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+    Returns:
+        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+    """
+    if p1 == p2 == 0:
+        return {'Rxa': 0, 'Rxb': 0}
+
+    rectangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+    triangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+    if p1 >= 0 and p2 >= 0:
+        # If both loads are positive then we can have a rectangular and a triangular load.
+        # Both positive loads.
+        if p1 != 0 and p2 != 0:
+            rectangular_reactions = all_dist_force_x_rec(length, min(p1, p2))
+
+        # Verify if we have an ascending or descending triangle.
+        if p1 < p2:
+            triangular_reactions = all_dist_force_x_tri(length, p2 - p1, 'up')
+        elif p1 > p2:
+            triangular_reactions = all_dist_force_x_tri(length, p1 - p2, 'down')
+    elif p1 <= 0 and p2 <= 0:
+        # If both loads are positive then we can have a rectangular and a triangular load.
+        # Both negative loads.
+        if p1 != 0 and p2 != 0:
+            rectangular_reactions = all_dist_force_x_rec(length, max(p1, p2))
+
+        # Verify if we have an ascending or descending triangle.
+        if abs(p1) < abs(p2):
+            triangular_reactions = all_dist_force_x_tri(length, -(abs(p2) - abs(p1)), 'up')
+        elif abs(p1) > abs(p2):
+            triangular_reactions = all_dist_force_x_tri(length, -(abs(p1) - abs(p2)), 'down')
+    else:
+        # If the loads have different signs we have to split the trapezoid in two triangles.
+        # One positive load and one negative load.
+        root = root_line((0, p1), (length, p2)) # Find the root of the line
+
+        # Add reaction directly to the start of the bar
+        triangular_reactions_1 = all_dist_force_x_tri(root, p1, 'down')
+        triangular_reactions['Rxa'] += triangular_reactions_1['Rxa']
+
+        # Add reaction directly to the end of the bar
+        triangular_reactions_2 = all_dist_force_x_tri(length - root, p2, 'up')
+        triangular_reactions['Rxb'] += triangular_reactions_2['Rxb']
+
+        # Get reaction global because the reaction force local and add
+        force = -(triangular_reactions_1['Rxb'] + triangular_reactions_2['Rxa'])
+        triangular_reactions_aux_1 = pt_force_x(length, root, force)
+        triangular_reactions['Rxa'] += triangular_reactions_aux_1['Rxa']
+        triangular_reactions['Rxb'] += triangular_reactions_aux_1['Rxb']
+
+
+    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+        'Rxa': rectangular_reactions['Rxa'] + triangular_reactions['Rxa'],
+        'Rxb': rectangular_reactions['Rxb'] + triangular_reactions['Rxb']
+    }
+
+    return reactions
+
 # y direction -------------------------------------------------------------------------------------
 def all_dist_force_y_rec(
         length: float,
         p: float
     ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
-    """Calculates the reactions of a bar with a distributed load in x direction and in all length
+    """Calculates the reactions of a bar with a distributed load in y direction and in all length
         of the bar.
 
     Args:
@@ -269,7 +408,8 @@ def all_dist_force_y_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+            The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
@@ -341,11 +481,166 @@ def all_dist_force_y_trap(
 
     return reactions
 
-# Forces in x direction ***************************************************************************
-# Rectangular distributed load --------------------------------------------------------------------
-def dist_force_x_rec(length: float,
-                     x1: float, x2: float,
-                     p: float,) -> Dict[Literal['Rxa', 'Rxb'], float]:
+# z direction -------------------------------------------------------------------------------------
+def all_dist_force_z_rec(
+        length: float,
+        p: float
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a distributed load in z direction and in all length
+        of the bar.
+
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
+
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    l = length
+
+    moment_a = (p * l**2) / 12
+    moment_b = -(p * l**2) / 12
+    reaction_a = -(p * l) / 2
+    reaction_b = -(p * l) / 2
+
+    return {'Rza': reaction_a, 'Rzb': reaction_b, 'Mya': moment_a, 'Myb': moment_b}
+
+def all_dist_force_z_tri(
+        length: float,
+        p: float,
+        direction: Literal['up', 'down']
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a distributed load in z direction and in all length
+        of the bar.
+
+    Args:
+        length (float): Length of the bar
+        x (float): Position of the load
+        p (float): Intensity of the load
+
+    Raises:
+        ValueError: If the direction is not 'up' or 'down'
+
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    l = length
+
+    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+        {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
+
+    match direction:
+        case 'up':
+            reactions['Mya'] = (p * l**2) / 30
+            reactions['Myb'] = -(p * l**2) / 20
+            reactions['Rza'] = -(3 * p * l) / 20
+            reactions['Rzb'] = -(7 * p * l) / 20
+        case 'down':
+            reactions['Mya'] = (p * l**2) / 20
+            reactions['Myb'] = -(p * l**2) / 30
+            reactions['Rza'] = -(7 * p * l) / 20
+            reactions['Rzb'] = -(3 * p * l) / 20
+        case _:
+            raise ValueError('Direction only "up" and "down"')
+
+    return reactions
+
+def all_dist_force_z_trap(
+        length: float,
+        p1: float, p2: float
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a trapezoidal distributed axial load in z direction
+        and all length of the bar.
+    Args:
+        length (float): Length of the bar
+        p1 (float): Intensity of the load at the start position
+        p2 (float): Intensity of the load at the end position
+    Raises:
+        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if p1 == p2 == 0:
+        return {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
+
+    rectangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+        {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
+    triangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+        {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
+    if p1 >= 0 and p2 >= 0:
+        # If both loads are positive then we can have a rectangular and a triangular load.
+        # Both positive loads.
+        if p1 != 0 and p2 != 0:
+            rectangular_reactions = all_dist_force_z_rec(length, min(p1, p2))
+
+        # Verify if we have an ascending or descending triangle.
+        if p1 < p2:
+            triangular_reactions = all_dist_force_z_tri(length, p2 - p1, 'up')
+        elif p1 > p2:
+            triangular_reactions = all_dist_force_z_tri(length, p1 - p2, 'down')
+    elif p1 <= 0 and p2 <= 0:
+        # If both loads are positive then we can have a rectangular and a triangular load.
+        # Both negative loads.
+        if p1 != 0 and p2 != 0:
+            rectangular_reactions = all_dist_force_z_rec(length, max(p1, p2))
+
+        # Verify if we have an ascending or descending triangle.
+        if abs(p1) < abs(p2):
+            triangular_reactions = all_dist_force_z_tri(length, -(abs(p2) - abs(p1)), 'up')
+        elif abs(p1) > abs(p2):
+            triangular_reactions = all_dist_force_z_tri(length, -(abs(p1) - abs(p2)), 'down')
+    else:
+        # If the loads have different signs we have to split the trapezoid in two triangles.
+        # One positive load and one negative load.
+        root = root_line((0, p1), (length, p2)) # Find the root of the line
+
+        # Add reaction directly to the start of the bar
+        triangular_reactions_1 = all_dist_force_z_tri(root, p1, 'down')
+        triangular_reactions['Rza'] += triangular_reactions_1['Rza']
+        triangular_reactions['Mya'] += triangular_reactions_1['Mya']
+
+        # Add reaction directly to the end of the bar
+        triangular_reactions_2 = all_dist_force_z_tri(length - root, p2, 'up')
+        triangular_reactions['Rzb'] += triangular_reactions_2['Rzb']
+        triangular_reactions['Myb'] += triangular_reactions_2['Myb']
+
+        # Get reaction global because the reaction force local and add
+        force = -(triangular_reactions_1['Rzb'] + triangular_reactions_2['Rza'])
+        triangular_reactions_aux_1 = pt_force_z(length, root, force)
+        triangular_reactions['Rza'] += triangular_reactions_aux_1['Rza']
+        triangular_reactions['Rzb'] += triangular_reactions_aux_1['Rzb']
+        triangular_reactions['Mya'] += triangular_reactions_aux_1['Mya']
+        triangular_reactions['Myb'] += triangular_reactions_aux_1['Myb']
+
+        # Get reaction global because the reaction moment local and add
+        moment = -(triangular_reactions_1['Myb'] + triangular_reactions_2['Mya'])
+        triangular_reactions_aux_2 = pt_moment_y(length, root, moment)
+        triangular_reactions['Rza'] += triangular_reactions_aux_2['Rza']
+        triangular_reactions['Rzb'] += triangular_reactions_aux_2['Rzb']
+        triangular_reactions['Mya'] += triangular_reactions_aux_2['Mya']
+        triangular_reactions['Myb'] += triangular_reactions_aux_2['Myb']
+
+
+    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+        'Rza': rectangular_reactions['Rza'] + triangular_reactions['Rza'],
+        'Rzb': rectangular_reactions['Rzb'] + triangular_reactions['Rzb'],
+        'Mya': rectangular_reactions['Mya'] + triangular_reactions['Mya'],
+        'Myb': rectangular_reactions['Myb'] + triangular_reactions['Myb']
+    }
+
+    return reactions
+
+# Force on a section of the bar *******************************************************************
+# x direction -------------------------------------------------------------------------------------
+def dist_force_x_rec(
+        length: float,
+        x1: float, x2: float,
+        p: float
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in x direction.
 
     Args:
@@ -358,25 +653,33 @@ def dist_force_x_rec(length: float,
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        Dict[Literal['Rxa', 'Rxb'], float]:
+            The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
         raise ValueError("Need 0 <= x1 < x2 <= L.")
 
-    c = x2 - x1  # length of the distributed load
+    reactions_local = all_dist_force_x_rec(x2 - x1, p)
 
-    equivalent_force = p * c  # equivalent point force
-    point_application = x1 + c / 2 # point of application of the equivalent force
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_x(length, x1, -reactions_local['Rxa'])
+    aux_2 = pt_force_x(length, x2, -reactions_local['Rxb'])
 
-    reactions = pt_force_x(length, point_application, equivalent_force)
+
+    # Sum all reactions with principle of superposition of effects
+    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+        'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
+        'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
+    }
 
     return reactions
 
-# Triangular distributed load ---------------------------------------------------------------------
-def dist_force_x_tri(length: float,
-                     x1: float, x2: float,
-                     p: float,
-                     direction: Literal['up', 'down']) -> Dict[Literal['Rxa', 'Rxb'], float]:
+def dist_force_x_tri(
+        length: float,
+        x1: float, x2: float,
+        p: float,
+        direction: Literal['up', 'down']
+    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in x direction.
         Ascending or descending.
     Args:
@@ -390,27 +693,26 @@ def dist_force_x_tri(length: float,
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        Dict[Literal['Rxa', 'Rxb'], float]:
+            The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
         raise ValueError("Need 0 <= x1 < x2 <= L.")
 
-    c = x2 - x1  # length of the distributed load
-    equivalent_force = (p * c) / 2  # equivalent point force
+    reactions_local = all_dist_force_x_tri(x2 - x1, p, direction)
 
-    point_application: float = 0
-    if direction == 'up':
-        point_application = x1 + (2/3) * c # point of application of the equivalent force
-    elif direction == 'down':
-        point_application = x1 + (1/3) * c # point of application of the equivalent force
-    else:
-        raise ValueError("Direction must be 'up' or 'down'.")
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_x(length, x1, -reactions_local['Rxa'])
+    aux_2 = pt_force_x(length, x2, -reactions_local['Rxb'])
 
-    reactions = pt_force_x(length, point_application, equivalent_force)
+    # Sum all reactions with principle of superposition of effects
+    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+        'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
+        'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
+    }
 
     return reactions
 
-# Trapezoidal distributed load --------------------------------------------------------------------
 def dist_force_x_trap(length: float,
                       x1: float, x2: float,
                       p1: float, p2: float) -> Dict[Literal['Rxa', 'Rxb'], float]:
@@ -424,56 +726,27 @@ def dist_force_x_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        Dict[Literal['Rxa', 'Rxb', float]:
+            The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
         raise ValueError("Need 0 <= x1 < x2 <= L.")
-    if p1 == p2 == 0:
-        return {'Rxa': 0, 'Rxb': 0}
 
-    rectangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
-    triangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
-    if p1 >= 0 and p2 >= 0:
-        # If both loads are positive then we can have a rectangular and a triangular load.
-        # Both positive loads.
-        if p1 != 0 and p2 != 0:
-            rectangular_reactions = dist_force_x_rec(length, x1, x2, min(p1, p2))
+    reactions_local = all_dist_force_x_trap(x2 - x1, p1, p2)
 
-        # Verify if we have an ascending or descending triangle.
-        if p1 < p2:
-            triangular_reactions = dist_force_x_tri(length, x1, x2, p2 - p1, 'up')
-        elif p1 > p2:
-            triangular_reactions = dist_force_x_tri(length, x1, x2, p1 - p2, 'down')
-    elif p1 <= 0 and p2 <= 0:
-        # If both loads are positive then we can have a rectangular and a triangular load.
-        # Both negative loads.
-        if p1 != 0 and p2 != 0:
-            rectangular_reactions = dist_force_x_rec(length, x1, x2, max(p1, p2))
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_x(length, x1, -reactions_local['Rxa'])
+    aux_2 = pt_force_x(length, x2, -reactions_local['Rxb'])
 
-        # Verify if we have an ascending or descending triangle.
-        if abs(p1) < abs(p2):
-            triangular_reactions = dist_force_x_tri(length, x1, x2, -(abs(p2) - abs(p1)), 'up')
-        elif abs(p1) > abs(p2):
-            triangular_reactions = dist_force_x_tri(length, x1, x2, -(abs(p1) - abs(p2)), 'down')
-    else:
-        # If the loads have different signs we have to split the trapezoid in two triangles.
-        # One positive load and one negative load.
-        root = root_line((x1, p1), (x2, p2)) # Find the root of the line
-        triangular_reactions = dist_force_x_tri(length, x1, root, p1, 'down')
-        triangular_reactions_2 = dist_force_x_tri(length, root, x2, p2, 'up')
-        triangular_reactions['Rxa'] += triangular_reactions_2['Rxa']
-        triangular_reactions['Rxb'] += triangular_reactions_2['Rxb']
-
-
+    # Sum all reactions with principle of superposition of effects
     reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
-        'Rxa': rectangular_reactions['Rxa'] + triangular_reactions['Rxa'],
-        'Rxb': rectangular_reactions['Rxb'] + triangular_reactions['Rxb']
+        'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
+        'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
     }
 
     return reactions
 
-# Forces in y direction ***************************************************************************
-# Rectangular distributed load --------------------------------------------------------------------
+# y direction -------------------------------------------------------------------------------------
 def dist_force_y_rec(
         length: float,
         x1: float, x2: float,
@@ -515,7 +788,6 @@ def dist_force_y_rec(
 
     return reactions
 
-# Triangular distributed load ---------------------------------------------------------------------
 def dist_force_y_tri(
         length: float,
         x1: float, x2: float,
@@ -559,7 +831,6 @@ def dist_force_y_tri(
 
     return reactions
 
-# Trapezoidal distributed load --------------------------------------------------------------------
 def dist_force_y_trap(length: float,
                       x1: float, x2: float,
                       p1: float, p2: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
@@ -593,6 +864,128 @@ def dist_force_y_trap(length: float,
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
         'Mzb': aux_1['Mzb'] + aux_2['Mzb'] + aux_3['Mzb'] + aux_4['Mzb']
+    }
+
+    return reactions
+
+# z direction -------------------------------------------------------------------------------------
+def dist_force_z_rec(
+        length: float,
+        x1: float, x2: float,
+        p: float
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a distributed axial load in z direction.
+
+    Args:
+        length (float): Length of the bar
+        x1 (float): Start position of the load
+        x2 (float): End position of the load
+        p (float): Intensity of the load
+
+    Raises:
+        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+
+    Returns:
+        Dict[Literal['Rxa', 'Rxb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x1 < x2 <= length) is False:
+        raise ValueError("Need 0 <= x1 < x2 <= L.")
+
+    reactions_local = all_dist_force_z_rec(x2 - x1, p)
+
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_z(length, x1, -reactions_local['Rza'])
+    aux_2 = pt_force_z(length, x2, -reactions_local['Rzb'])
+    aux_3 = pt_moment_y(length, x1, -reactions_local['Mya'])
+    aux_4 = pt_moment_y(length, x2, -reactions_local['Myb'])
+
+    # Sum all reactions with principle of superposition of effects
+    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+        'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
+        'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
+        'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
+        'Myb': aux_1['Myb'] + aux_2['Myb'] + aux_3['Myb'] + aux_4['Myb']
+    }
+
+    return reactions
+
+def dist_force_z_tri(
+        length: float,
+        x1: float, x2: float,
+        p: float,
+        direction: Literal['up', 'down']
+    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a triangular distributed axial load in z direction.
+        Ascending or descending.
+    Args:
+        length (float): Length of the bar
+        x1 (float): Start position of the load
+        x2 (float): End position of the load
+        p (float): Intensity of the load at the larger end
+        direction (Literal['up', 'down']): Direction of the load.
+            'up' for ascending, 'down' for descending.
+    Raises:
+        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+        ValueError: If the direction is not 'up' or 'down'
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x1 < x2 <= length) is False:
+        raise ValueError("Need 0 <= x1 < x2 <= L.")
+
+    reactions_local = all_dist_force_z_tri(x2 - x1, p, direction)
+
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_z(length, x1, -reactions_local['Rza'])
+    aux_2 = pt_force_z(length, x2, -reactions_local['Rzb'])
+    aux_3 = pt_moment_y(length, x1, -reactions_local['Mya'])
+    aux_4 = pt_moment_y(length, x2, -reactions_local['Myb'])
+
+    # Sum all reactions with principle of superposition of effects
+    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+        'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
+        'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
+        'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
+        'Myb': aux_1['Myb'] + aux_2['Myb'] + aux_3['Myb'] + aux_4['Myb']
+    }
+
+    return reactions
+
+def dist_force_z_trap(length: float,
+                      x1: float, x2: float,
+                      p1: float, p2: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    """Calculates the reactions of a bar with a trapezoidal distributed axial load in y direction.
+    Args:
+        length (float): Length of the bar
+        x1 (float): Start position of the load
+        x2 (float): End position of the load
+        p1 (float): Intensity of the load at the start position
+        p2 (float): Intensity of the load at the end position
+    Raises:
+        ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
+    Returns:
+        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+            The reactions at the two ends of the bar (A and B)
+    """
+    if (0 <= x1 < x2 <= length) is False:
+        raise ValueError("Need 0 <= x1 < x2 <= L.")
+
+    reactions_local = all_dist_force_z_trap(x2 - x1, p1, p2)
+
+    # For local reaction calculate global reactions
+    aux_1 = pt_force_z(length, x1, -reactions_local['Rza'])
+    aux_2 = pt_force_z(length, x2, -reactions_local['Rzb'])
+    aux_3 = pt_moment_y(length, x1, -reactions_local['Mya'])
+    aux_4 = pt_moment_y(length, x2, -reactions_local['Myb'])
+
+    # Sum all reactions with principle of superposition of effects
+    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+        'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
+        'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
+        'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
+        'Myb': aux_1['Myb'] + aux_2['Myb'] + aux_3['Myb'] + aux_4['Myb']
     }
 
     return reactions
