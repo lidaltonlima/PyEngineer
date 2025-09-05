@@ -12,7 +12,7 @@ from ._node import Node
 from ._section import Section
 
 from ..functions import space_3d
-from ..functions import reactions
+from ..functions.reactions import point
 
 from ..types import ReleasesType
 
@@ -258,12 +258,12 @@ class Bar:
                 loads_vector = np.zeros(12)
 
                 if system == 'local':
-                    fxr = reactions.pt_force_x(l, x, fx) # Reactions due to the force on x
-                    fyr = reactions.pt_force_y(l, x, fy) # Reactions due to the force on y
-                    fzr = reactions.pt_force_z(l, x, fz) # Reactions due to the force on z
-                    mxr = reactions.pt_moment_x(l, x, mx) # Reactions because of the moment on x
-                    myr = reactions.pt_moment_y(l, x, my) # Reactions because of the moment on y
-                    mzr = reactions.pt_moment_z(l, x, mz) # Reactions because of the moment on z
+                    fxr = point.force_x(l, x, fx) # Reactions due to the force on x
+                    fyr = point.force_y(l, x, fy) # Reactions due to the force on y
+                    fzr = point.force_z(l, x, fz) # Reactions due to the force on z
+                    mxr = point.moment_x(l, x, mx) # Reactions because of the moment on x
+                    myr = point.moment_y(l, x, my) # Reactions because of the moment on y
+                    mzr = point.moment_z(l, x, mz) # Reactions because of the moment on z
 
                     loads_vector[0] -= fxr['Rxa'] # Force in x initial
                     loads_vector[6] -= fxr['Rxb'] # Force in x final
@@ -281,12 +281,12 @@ class Bar:
                 elif system == 'global':
                     fx, fy, fz, mx, my, mz = self.r[0:6, 0:6] @ np.array([fx, fy, fz, mx, my, mz])
 
-                    fxr = reactions.pt_force_x(l, x, fx) # Reactions due to the force on x
-                    fyr = reactions.pt_force_y(l, x, fy) # Reactions due to the force on y
-                    fzr = reactions.pt_force_z(l, x, fz) # Reactions due to the force on z
-                    mxr = reactions.pt_moment_x(l, x, mx) # Reactions because of the moment on x
-                    myr = reactions.pt_moment_y(l, x, my) # Reactions because of the moment on y
-                    mzr = reactions.pt_moment_z(l, x, mz) # Reactions because of the moment on z
+                    fxr = point.force_x(l, x, fx) # Reactions due to the force on x
+                    fyr = point.force_y(l, x, fy) # Reactions due to the force on y
+                    fzr = point.force_z(l, x, fz) # Reactions due to the force on z
+                    mxr = point.moment_x(l, x, mx) # Reactions because of the moment on x
+                    myr = point.moment_y(l, x, my) # Reactions because of the moment on y
+                    mzr = point.moment_z(l, x, mz) # Reactions because of the moment on z
 
                     loads_vector[0] -= fxr['Rxa'] # Force in x initial
                     loads_vector[6] -= fxr['Rxb'] # Force in x final
