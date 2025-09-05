@@ -12,7 +12,7 @@ from ._node import Node
 from ._section import Section
 
 from ..functions import space_3d
-from ..functions.reactions import point
+from ..functions.reactions import point, section
 
 from ..types import ReleasesType
 
@@ -256,7 +256,6 @@ class Bar:
                 l = self.length
 
                 loads_vector = np.zeros(12)
-
                 if system == 'local':
                     fxr = point.force_x(l, x, fx) # Reactions due to the force on x
                     fyr = point.force_y(l, x, fy) # Reactions due to the force on y
@@ -304,24 +303,66 @@ class Bar:
                 self.vector_loads += self.r.T @ loads_vector
 
         # Distributed loads in bars ///////////////////////////////////////////////////////////////
-        # for value in load.bars_loads_dist.get(self, {}).values():
-        #     system = value['system']
-        #     fx1, fx2 = value['Fx']
-        #     # fy1, fy2 = value['Fy']
-        #     # fz1, fz2 = value['Fz']
-        #     # mx1, mx2 = value['Mx']
-        #     # my1, my2 = value['My']
-        #     # mz1, mz2 = value['Mz']
+        for value in load.bars_loads_dist.get(self, {}).values():
+            print(value)
+            system = value['system']
+            fx1, fx2 = value['Fx']
+            fy1, fy2 = value['Fy']
+            fz1, fz2 = value['Fz']
+            mx1, mx2 = value['Mx']
+            my1, my2 = value['My']
+            mz1, mz2 = value['Mz']
 
-        #     x1 = value['x1']
-        #     x2 = value['x2']
-        #     l = self.length
+            x1 = value['x1']
+            x2 = value['x2']
+            l = self.length
 
-        #     loads_vector = np.zeros(12)
+            loads_vector = np.zeros(12)
 
-        #     if system == 'local':
-        #         rax, rbx = reactions.dist_x_force(l, x1, fx1, x2, fx2)
-        #         loads_vector[0] += -rax # Force in x initial
-        #         loads_vector[6] += -rbx # Force in x final
+            if system == 'local':
+                fxr = section.force_x_trap(l, x1, x2, fx1, fx2) # Reactions due to the force on x
+                fyr = section.force_y_trap(l, x1, x2, fy1, fy2) # Reactions due to the force on y
+                fzr = section.force_z_trap(l, x1, x2, fz1, fz2) # Reactions due to the force on z
+                mxr = section.moment_x_trap(l, x1, x2, mx1, mx2) # Reactions due to the moment on x
+                myr = section.moment_y_trap(l, x1, x2, my1, my2) # Reactions due to the moment on y
+                mzr = section.moment_z_trap(l, x1, x2, mz1, mz2) # Reactions due to the moment on z
 
-        #     self.vector_loads += self.r.T @ loads_vector
+                loads_vector[0] -= fxr['Rxa'] # Force in x initial
+                loads_vector[6] -= fxr['Rxb'] # Force in x final
+                loads_vector[1] -= fyr['Rya'] + mzr['Rya'] # Force in y initial
+                loads_vector[7] -= fyr['Ryb'] + mzr['Ryb'] # Force in y final
+                loads_vector[2] -= fzr['Rza'] + myr['Rza'] # Force in z initial
+                loads_vector[8] -= fzr['Rzb'] + myr['Rzb'] # Force in z final
+                loads_vector[3] -= mxr['Mxa'] # Moment in x initial
+                loads_vector[9] -= mxr['Mxb'] # Moment in x final
+                loads_vector[4] -= fzr['Mya'] + myr['Mya'] # Moment in y initial
+                loads_vector[10] -= fzr['Myb'] + myr['Myb'] # Moment in y final
+                loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
+                loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
+            elif system == 'global':
+                fx1, fy1, fz1, mx1, my1, mz1 = self.r[0:6, 0:6] @ np.array([fx1, fy1, fz1,
+                                                                            mx1, my1, mz1])
+                fx2, fy2, fz2, mx2, my2, mz2 = self.r[0:6, 0:6] @ np.array([fx2, fy2, fz2,
+                                                                            mx2, my2, mz2])
+
+                fxr = section.force_x_trap(l, x1, x2, fx1, fx2) # Reactions due to the force on x
+                fyr = section.force_y_trap(l, x1, x2, fy1, fy2) # Reactions due to the force on y
+                fzr = section.force_z_trap(l, x1, x2, fz1, fz2) # Reactions due to the force on z
+                mxr = section.moment_x_trap(l, x1, x2, mx1, mx2) # Reactions due to the moment on x
+                myr = section.moment_y_trap(l, x1, x2, my1, my2) # Reactions due to the moment on y
+                mzr = section.moment_z_trap(l, x1, x2, mz1, mz2) # Reactions due to the moment on z
+
+                loads_vector[0] -= fxr['Rxa'] # Force in x initial
+                loads_vector[6] -= fxr['Rxb'] # Force in x final
+                loads_vector[1] -= fyr['Rya'] + mzr['Rya'] # Force in y initial
+                loads_vector[7] -= fyr['Ryb'] + mzr['Ryb'] # Force in y final
+                loads_vector[2] -= fzr['Rza'] + myr['Rza'] # Force in z initial
+                loads_vector[8] -= fzr['Rzb'] + myr['Rzb'] # Force in z final
+                loads_vector[3] -= mxr['Mxa'] # Moment in x initial
+                loads_vector[9] -= mxr['Mxb'] # Moment in x final
+                loads_vector[4] -= fzr['Mya'] + myr['Mya'] # Moment in y initial
+                loads_vector[10] -= fzr['Myb'] + myr['Myb'] # Moment in y final
+                loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
+                loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
+
+            self.vector_loads += self.r.T @ loads_vector

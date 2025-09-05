@@ -37,12 +37,14 @@ bars.append(b3)
 # Loads
 loads: list[pg.Load] = []
 load = pg.Load('L1')
-load.add_node_load('FN1', n2, 1e3, 2e3, 3e3, 4e3, 5e3, 6e3)
+# load.add_node_load('FN1', n2, 1e3, 2e3, 3e3, 4e3, 5e3, 6e3)
 loads.append(load)
 
-load.add_bar_load_pt('FB1', b1, 0.5, 'local', fx=1e3, fy=2e3, fz=3e3, mx=4e3, my=5e3, mz=6e3)
-load.add_bar_load_pt('FB2', b2, 0.5, 'local', fx=1e3, fy=2e3, fz=3e3, mx=4e3, my=5e3, mz=6e3)
-load.add_bar_load_pt('FB3', b2, 2.5, 'global', fz=-7e3)
+# load.add_bar_load_pt('FB1', b1, 0.5, 'local', fx=1e3, fy=2e3, fz=3e3, mx=4e3, my=5e3, mz=6e3)
+# load.add_bar_load_pt('FB2', b2, 0.5, 'local', fx=1e3, fy=2e3, fz=3e3, mx=4e3, my=5e3, mz=6e3)
+# load.add_bar_load_pt('FB3', b2, 2.5, 'global', fz=-7e3)
+
+load.add_bar_load_dist('FB4', b2, 0.5, 3.5, 'global', fz=(-1e3, -3e3))
 
 # Supports
 support = pg.Support()
