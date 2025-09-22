@@ -16,8 +16,9 @@
 
 	"nodes": [
 		{ "name": "N1", "position": [0, 0, 0] },
-		{ "name": "N2", "position": [5, 5, 5] },
-		{ "name": "N3", "position": [5, 5, 0] }
+		{ "name": "N2", "position": [0, 0, 5] },
+		{ "name": "N3", "position": [5, 0, 5] },
+		{ "name": "N4", "position": [5, 0, 0] }
 	],
 
 	"bars": [
@@ -27,7 +28,7 @@
 			"end_node": "N2",
 			"section": "w150x13",
 			"material": "steel",
-			"rotation": 45,
+			"rotation": 23,
 			"releases": []
 		},
 		{
@@ -38,6 +39,15 @@
 			"material": "steel",
 			"rotation": 0,
 			"releases": []
+		},
+		{
+			"name": "B3",
+			"start_node": "N3",
+			"end_node": "N4",
+			"section": "w150x13",
+			"material": "steel",
+			"rotation": 30,
+			"releases": []
 		}
 	],
 
@@ -47,7 +57,7 @@
 			"supports": { "Dx": true, "Dy": true, "Dz": true, "Rx": true, "Ry": true, "Rz": true }
 		},
 		{
-			"node": "N3",
+			"node": "N4",
 			"supports": { "Dx": true, "Dy": true, "Dz": true, "Rx": true, "Ry": true, "Rz": true }
 		}
 	],
@@ -57,31 +67,37 @@
 			"name": "L1",
 			"nodes": [
 				{
-					"name": "F1",
+					"name": "FN1",
 					"node": "N2",
 					"loads": { "Fx": 1e3, "Fy": 2e3, "Fz": 3e3, "Mx": 4e3, "My": 5e3, "Mz": 6e3 }
 				}
 			],
 			"bars": {
-				"points": {
-					"bar": "B1",
-					"system": "local",
-					"position": 1.5,
-					"loads": { "Fx": 0, "Fy": 0, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
-				},
-				"distributed": {
-					"bar": "B2",
-					"system": "local",
-					"position": [0.5, 3.5],
-					"loads": {
-						"Fx": [0, 0],
-						"Fy": [0, 0],
-						"Fz": [0, 0],
-						"Mx": [0, 0],
-						"My": [0, 0],
-						"Mz": [0, 0]
+				"point": [
+					{
+						"name": "FB1",
+						"bar": "B1",
+						"system": "local",
+						"position": 1.5,
+						"loads": { "Fx": 1e3, "Fy": -2e3, "Fz": 3e3, "Mx": -4e3, "My": 5e3, "Mz": -6e3 }
 					}
-				}
+				],
+				"distributed": [
+					{
+						"name": "FDB4",
+						"bar": "B2",
+						"system": "global",
+						"position": [0.5, 3.5],
+						"loads": {
+							"Fx": [0, 0],
+							"Fy": [0, 0],
+							"Fz": [-1e3, -3e3],
+							"Mx": [0, 0],
+							"My": [0, 0],
+							"Mz": [0, 0]
+						}
+					}
+				]
 			}
 		}
 	]

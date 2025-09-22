@@ -124,16 +124,42 @@ def calculate_json(path: str) -> Linear:
         loads.append(Load(load['name']))
 
         for node in nodes:
-            for node_data in load['nodes_loads']:
+            for node_data in load['nodes']:
                 if node.name == node_data['node']:
                     loads[index].add_node_load(node_data['name'],
-                                            node,
-                                            node_data['loads']['Fx'],
-                                            node_data['loads']['Fy'],
-                                            node_data['loads']['Fz'],
-                                            node_data['loads']['Mx'],
-                                            node_data['loads']['My'],
-                                            node_data['loads']['Mz'])
+                                               node,
+                                               node_data['loads']['Fx'],
+                                               node_data['loads']['Fy'],
+                                               node_data['loads']['Fz'],
+                                               node_data['loads']['Mx'],
+                                               node_data['loads']['My'],
+                                               node_data['loads']['Mz'])
+        for bar in bars:
+            for point_data in load['bars']['point']:
+                if bar.name == point_data['bar']:
+                    loads[index].add_bar_load_pt(point_data['name'],
+                                                 bar,
+                                                 point_data['position'],
+                                                 point_data['system'],
+                                                 point_data['loads']['Fx'],
+                                                 point_data['loads']['Fy'],
+                                                 point_data['loads']['Fz'],
+                                                 point_data['loads']['Mx'],
+                                                 point_data['loads']['My'],
+                                                 point_data['loads']['Mz'])
+            for dist_data in load['bars']['distributed']:
+                if bar.name == dist_data['bar']:
+                    loads[index].add_bar_load_dist(dist_data['name'],
+                                                   bar,
+                                                   dist_data['position'][0],
+                                                   dist_data['position'][1],
+                                                   dist_data['system'],
+                                                   dist_data['loads']['Fx'],
+                                                   dist_data['loads']['Fy'],
+                                                   dist_data['loads']['Fz'],
+                                                   dist_data['loads']['Mx'],
+                                                   dist_data['loads']['My'],
+                                                   dist_data['loads']['Mz'])
 
 
     # Analysis and return /////////////////////////////////////////////////////////////////////////

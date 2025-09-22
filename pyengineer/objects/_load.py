@@ -75,7 +75,8 @@ class Load:
         self.nodes_loads[node][name] = {'Fx': fx, 'Fy': fy, 'Fz': fz, 'Mx': mx, 'My': my, 'Mz': mz}
 
     def add_bar_load_pt(self, name: str, bar: Bar,
-                           position: float, system: Literal['local', 'global'] = 'local',
+                           position: float,
+                           system: Literal['local', 'global'] = 'local',
                            fx: float = 0, fy: float = 0, fz: float = 0,
                            mx: float = 0, my: float = 0, mz: float = 0):
         """Adds point loads in bar

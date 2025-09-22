@@ -305,7 +305,6 @@ class Bar:
 
         # Distributed loads in bars ///////////////////////////////////////////////////////////////
         for value in load.bars_loads_dist.get(self, {}).values():
-            print(value)
             system = value['system']
             fx1, fx2 = value['Fx']
             fy1, fy2 = value['Fy']
