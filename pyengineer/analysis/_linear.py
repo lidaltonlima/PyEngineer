@@ -224,11 +224,20 @@ class Linear:
     def calculate_extremes_bars_forces(self):
         """Calculate extreme forces in bars
         """
-        for load in self.loads:
-            for bar in self.bars:
-                for load in self.loads:
-                    start_displacements = self.get_displacements(bar.start_node.name, load.name)
-                    end_displacements = self.get_displacements(bar.end_node.name, load.name)
-                    displacements = np.concatenate((start_displacements, end_displacements))
+        for bar in self.bars:
+            for load in self.loads:
+                # Get nodal displacements for this bar
+                start_displacements = self.get_displacements(bar.start_node.name, load.name)
+                end_displacements = self.get_displacements(bar.end_node.name, load.name)
+                displacements = np.concatenate((start_displacements, end_displacements))
 
-                    bar.extreme_forces[load.name] = bar.r @ (bar.klg @ displacements)
+                # Calculate bar forces: displacement forces - equivalent nodal forces
+                # The negative sign accounts for the fact that vector_loads are forces
+                # applied TO the bar, while we want forces IN the bar
+                displacement_forces = bar.klg @ displacements
+                bar_forces = displacement_forces - bar.vector_loads
+
+                # Transform to local coordinates and apply sign convention
+                bar.extreme_forces[load.name] = (bar.r @ bar_forces) * \
+                    np.array([-1,  1,  1,  1,  1, -1,
+                               1, -1, -1, -1, -1,  1])

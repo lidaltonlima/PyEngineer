@@ -52,4 +52,5 @@ support.add_support(n4, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 linear_analysis = analysis.Linear(nodes, bars, loads, support)
 
 # Results
-print(linear_analysis.get_displacements('N2', 'L1'))
+# print(linear_analysis.get_displacements('N2', 'L1'))
+print(b2.extreme_forces['L1'])
