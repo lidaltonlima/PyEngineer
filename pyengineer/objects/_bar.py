@@ -57,6 +57,8 @@ class Bar:
             'Rxj': False, 'Ryj': False, 'Rzj': False,
         }
         self.kl: NDArray[float64] =  np.zeros([12, 12]) # Matriz of local stiffness
+        # Matriz of local stiffness without releases
+        self.kl_nr: NDArray[float64] = np.zeros([12, 12])
         self.r: NDArray[float64]  = np.zeros([12, 12]) # Matriz of rotation
         self.klg: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
         self.y_up = False # Modify default up for compare with PyNite
@@ -127,6 +129,8 @@ class Bar:
         kl[10][10] = kl[4][4]
         kl[11][11] = kl[5][5]
         kl = kl + kl.T - np.diag(kl.diagonal())
+
+        self.kl_nr = kl.copy() # Stores the matrix without considering releases
 
         # Apply releases //////////////////////////////////////////////////////////////////////////
         kl_releases = np.zeros([12, 12])
@@ -280,10 +284,8 @@ class Bar:
                 loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
                 loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
 
-
-
                 # Apply releases to the loads vector before transforming to global coordinates
-                self.vector_loads += self.r.T @ loads_vector
+                self.vector_loads += self.r.T @ self.apply_loads_releases(self.kl_nr, loads_vector)
 
         # Distributed loads in bars ///////////////////////////////////////////////////////////////
         for value in load.bars_loads_dist.get(self, {}).values():
@@ -327,4 +329,65 @@ class Bar:
             loads_vector[5] -= fyr['Mza'] + mzr['Mza'] # Moment in z initial
             loads_vector[11] -= fyr['Mzb'] + mzr['Mzb'] # Moment in z final
 
-            self.vector_loads += self.r.T @ loads_vector
+            # Apply releases to the loads vector before transforming to global coordinates
+            self.vector_loads += self.r.T @ self.apply_loads_releases(self.kl_nr, loads_vector)
+
+    def apply_loads_releases(self,
+                             kl_nr: NDArray[float64],
+                             loads_vector: NDArray[float64],
+                             tol: float=1e-12):
+        """Apply releases to the loads vector before transforming to global coordinates
+
+        Args:
+            kl_nr (NDArray[float64]): Stiffness matrix without releases
+            loads_vector (NDArray[float64]): Vector of loads
+            tol (float, optional): Tolerance for singularity check. Defaults to 1e-12.
+
+        Returns:
+            NDArray[float64]: Condensed loads vector with released DOFs zeroed and loads
+                redistributed to maintained DOFs.
+        """
+        release_mask = np.array([
+                self.releases['Dxi'], self.releases['Dyi'], self.releases['Dzi'],
+                self.releases['Rxi'], self.releases['Ryi'], self.releases['Rzi'],
+                self.releases['Dxj'], self.releases['Dyj'], self.releases['Dzj'],
+                self.releases['Rxj'], self.releases['Ryj'], self.releases['Rzj']
+                ], dtype=bool)
+        # Index of maintained and released DOFs
+        r_idx = np.where(release_mask)[0]
+        k_idx = np.where(~release_mask)[0]
+
+        # If no releases, return as is
+        if r_idx.size == 0:
+            return loads_vector.copy()
+
+        # Partitions K and f
+        # k_kk = kl_no_releases[np.ix_(k_idx, k_idx)]
+        k_kr = kl_nr[np.ix_(k_idx, r_idx)]
+        k_rr = kl_nr[np.ix_(r_idx, r_idx)]
+
+        f_k = loads_vector[k_idx]
+        f_r = loads_vector[r_idx]
+
+        # Try resolving K_rr x = f_r; if singular, use pseudo-inverse
+        try:
+            # Check simple determinant/conditioning
+            if np.linalg.cond(k_rr) < 1.0 / tol:
+                krr_inv = np.linalg.inv(k_rr)
+            else:
+                krr_inv = np.linalg.pinv(k_rr)
+        except np.linalg.LinAlgError:
+            krr_inv = np.linalg.pinv(k_rr)
+
+        # Calculate the redistributed contribution
+        add_on_k = k_kr @ (krr_inv @ f_r)
+
+        # f_condensed for DOFs maintained:
+        f_k_cond = f_k - add_on_k
+
+        # Construct resulting vector (released = 0)
+        loads_condensed = np.zeros_like(loads_vector)
+        loads_condensed[k_idx] = f_k_cond
+        # loads_condensed[r_idx] = 0
+
+        return loads_condensed

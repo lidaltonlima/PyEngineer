@@ -29,7 +29,7 @@
 			"section": "w150x13",
 			"material": "steel",
 			"rotation": 23,
-			"releases": []
+			"releases": ["Dxi", "Ryi", "Rzi"]
 		},
 		{
 			"name": "B2",
@@ -38,7 +38,7 @@
 			"section": "w150x13",
 			"material": "steel",
 			"rotation": 0,
-			"releases": []
+			"releases": ["Ryi", "Rzi"]
 		},
 		{
 			"name": "B3",
@@ -79,7 +79,7 @@
 						"bar": "B1",
 						"system": "local",
 						"position": 1,
-						"loads": { "Fx": 0, "Fy": 3e3, "Fz": 0, "Mx": 0, "My": 0, "Mz": 0 }
+						"loads": { "Fx": 1e3, "Fy": 2e3, "Fz": 3e3, "Mx": 4e3, "My": 5e3, "Mz": 6e3 }
 					}
 				],
 				"distributed": [

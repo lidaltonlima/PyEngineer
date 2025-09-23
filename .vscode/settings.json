@@ -5,6 +5,7 @@
         "lightgreen",
         "linalg",
         "ndarray",
+        "pinv",
         "printoptions",
         "pyengineer",
         "pyright",
