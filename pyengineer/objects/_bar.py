@@ -200,11 +200,11 @@ class Bar:
 
         # Rotate assistant point around x axis ****************************************************
         axis_up = 0 if self.y_up else -90  # sum -90 deg for z up
-        self.rotation = np.deg2rad(self.rotation + axis_up)
+        rotation = np.deg2rad(self.rotation + axis_up)
         aux = space_3d.rotate_point_around_line(aux,
                                                 self.start_node.position,
                                                 self.end_node.position,
-                                                self.rotation)
+                                                rotation)
         # /////////////////////////////////////////////////////////////////////////////////////////
 
         dx = aux[0] - x1
