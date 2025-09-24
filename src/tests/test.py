@@ -1,3 +1,4 @@
-q = 3e3
-l = 5
-print(f'Ra: {(q * l) / 3}; Rb: {(q * l) / 6}')
+data = 'Dxi; Rxi; Dyi;'
+data_list = [item.strip() for item in data.split(';')]
+
+print('Rxj' in data_list)

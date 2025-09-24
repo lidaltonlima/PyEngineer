@@ -1,5 +1,5 @@
 """Exportar"""
 from ._linear import Linear
-from ._nonlinear import NonLinear
+from ._dynamic import Dynamic
 
-__all__ = ['Linear' , 'NonLinear']
+__all__ = ['Linear' , 'Dynamic']

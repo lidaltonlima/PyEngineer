@@ -1,5 +1,5 @@
 """Faz a análise não linear da estrutura"""
-class NonLinear:
+class Dynamic:
     """Análise não-linear"""
     def __init__(self):
         pass
