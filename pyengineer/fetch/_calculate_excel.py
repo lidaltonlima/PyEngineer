@@ -1,10 +1,14 @@
 """Calculate structure from excel file."""
 from typing import Dict
 
+import warnings
+
 from pandas import read_excel # type: ignore
 
 from pyengineer import Material, Section, Node, Bar, Support, Load
 from pyengineer.analysis import Linear
+
+warnings.filterwarnings("ignore", category=UserWarning, module='openpyxl')
 
 def calculate_excel(path: str, load_name: str) -> Linear:
     """Calculate structure from excel file."""
@@ -16,7 +20,7 @@ def calculate_excel(path: str, load_name: str) -> Linear:
         materials[row['Name']] = Material(name=row['Name'],
                                           e=row['E'],
                                           g=row['G'],
-                                          ni=row['ni'],
+                                          ni=row['nu'],
                                           rho=row['rho'])
 
     # Sections ************************************************************************************
