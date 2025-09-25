@@ -8,6 +8,7 @@
         "pinv",
         "printoptions",
         "pyengineer",
+        "pylint",
         "pyright",
         "pyvista",
         "Silvio"

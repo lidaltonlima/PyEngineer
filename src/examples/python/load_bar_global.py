@@ -1,4 +1,14 @@
-"""Cálculo do pórtico 3"""
+"""Example structure definition in Python."""
+# pylint: disable=C0413
+# Add project root to sys.path for imports ////////////////////////////////////////////////////////
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '..', '..', '..')
+sys.path.append(project_root)
+# /////////////////////////////////////////////////////////////////////////////////////////////////
+
 import numpy as np
 
 import pyengineer as pg

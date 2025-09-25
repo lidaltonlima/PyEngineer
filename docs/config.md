@@ -5,3 +5,4 @@ python.analysis.typeCheckingMode
 # Inorar avisos
 
 - pyright: reportUnusedImport=false
+- pylint: disable=C0413

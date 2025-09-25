@@ -1,4 +1,14 @@
-"""Cálculo do pórtico 3"""
+"""Example structure definition in Python."""
+# pylint: disable=C0413
+# Add project root to sys.path for imports ////////////////////////////////////////////////////////
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '..', '..', '..')
+sys.path.append(project_root)
+# /////////////////////////////////////////////////////////////////////////////////////////////////
+
 import numpy as np
 
 import pyengineer as pg
@@ -17,7 +27,7 @@ section = pg.Section('w150x13', area=1.63e-3, ix=1.39e-8, iy=6.2e-6, iz=8.28e-7)
 nodes: list[pg.Node] = []
 n1 = pg.Node('N1', [0, 0, 0])
 nodes.append(n1)
-n2 = pg.Node('N2', [5, 0, 0])
+n2 = pg.Node('N2', [0, 5, 0])
 nodes.append(n2)
 
 # Bars

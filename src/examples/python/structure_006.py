@@ -1,4 +1,14 @@
-"""Cálculo do pórtico 3"""
+"""Example structure definition in Python."""
+# pylint: disable=C0413
+# Add project root to sys.path for imports ////////////////////////////////////////////////////////
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '..', '..', '..')
+sys.path.append(project_root)
+# /////////////////////////////////////////////////////////////////////////////////////////////////
+
 import numpy as np
 
 import pyengineer as pg
@@ -17,13 +27,21 @@ section = pg.Section('w150x13', area=1.63e-3, ix=1.39e-8, iy=6.2e-6, iz=8.28e-7)
 nodes: list[pg.Node] = []
 n1 = pg.Node('N1', [0, 0, 0])
 nodes.append(n1)
-n2 = pg.Node('N2', [-5, -5, -5])
+n2 = pg.Node('N2', [0, 0, 5])
 nodes.append(n2)
+n3 = pg.Node('N3', [5, 0, 5])
+nodes.append(n3)
 
 # Bars
 bars: list[pg.Bar] = []
-b1 = pg.Bar('B1', n1, n2, section, material)
+b1 = pg.Bar('B1', n1, n2, section, material, 23)
+b1.releases['Rxi'] = True
+b1.releases['Ryi'] = True
+b1.releases['Rzi'] = True
+b1.releases['Dyi'] = True
 bars.append(b1)
+b2 = pg.Bar('B2', n2, n3, section, material)
+bars.append(b2)
 
 
 # Loads
@@ -35,6 +53,7 @@ loads.append(load)
 # Supports
 support = pg.Support()
 support.add_support(n1, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
+support.add_support(n3, dx=True, dy=True, dz=True, rx=True, ry=True, rz=True)
 
 # Analysis
 linear_analysis = analysis.Linear(nodes, bars, loads, support)
