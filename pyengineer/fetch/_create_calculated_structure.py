@@ -12,7 +12,7 @@ from pyengineer.objects._support import ISupportSupports
 from ..analysis._linear import Linear
 from ..objects import Material, Section
 
-def create_json_calculated_structure(path: str, analysis: Linear) -> None:
+def create_calculated_structure(path: str, analysis: Linear) -> None:
     """Create a JSON file representing the calculated structure.
 
     Args:

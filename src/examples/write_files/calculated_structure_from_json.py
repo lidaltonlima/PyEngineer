@@ -9,7 +9,7 @@ project_root = os.path.join(current_dir, '..', '..', '..')
 sys.path.append(project_root)
 # /////////////////////////////////////////////////////////////////////////////////////////////////
 
-from pyengineer.fetch import create_json_calculated_structure, calculate_json
+from pyengineer.fetch import create_calculated_structure, calculate_json
 
 
 # Calculate structure from json file
@@ -17,4 +17,4 @@ analysis = calculate_json('./src/examples/json/structures/structure_011.json')
 
 # Create json file from calculated structure
 PATH = './src/examples/json/generate_calculated_structure/calculated_structure_011_from_json.json'
-create_json_calculated_structure(PATH, analysis)
+create_calculated_structure(PATH, analysis)
