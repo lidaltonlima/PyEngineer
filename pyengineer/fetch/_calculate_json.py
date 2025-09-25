@@ -31,7 +31,7 @@ def calculate_json(path: str) -> Linear:
         materials.append(Material(material['name'],
                                   material['properties']['E'],
                                   material['properties']['G'],
-                                  material['properties']['ni'],
+                                  material['properties']['nu'],
                                   material['properties']['rho']))
     # Sections *************************************************************************************
     sections: list[Section] = []

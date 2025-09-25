@@ -5,12 +5,12 @@ class IMaterialProperties(tp.TypedDict):
     """Typing for properties attribute"""
     E: float
     G: float
-    ni: float
+    nu: float
     rho: float
 
 class Material:
     """Cria um material"""
-    def __init__(self, name: str, e: float, g: float, ni: float, rho: float):
+    def __init__(self, name: str, e: float, g: float, nu: float, rho: float):
         """Construtor
 
         Args:
@@ -21,4 +21,4 @@ class Material:
             rho (float): Massa específica
         """
         self.name = name
-        self.properties: IMaterialProperties = {'E': e, 'G': g, 'ni': ni, 'rho': rho}
+        self.properties: IMaterialProperties = {'E': e, 'G': g, 'nu': nu, 'rho': rho}

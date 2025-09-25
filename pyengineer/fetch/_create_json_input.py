@@ -37,7 +37,7 @@ def create_json_input(path: str, analysis: Linear) -> None:
             'properties': {
                 'E': material.properties['E'],
                 'G': material.properties['G'],
-                'ni': material.properties['ni'],
+                'nu': material.properties['nu'],
                 'rho': material.properties['rho']
             }
         })

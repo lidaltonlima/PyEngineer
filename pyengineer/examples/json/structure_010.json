@@ -2,7 +2,7 @@
 	"materials": [
 		{
 			"name": "steel",
-			"properties": { "E": 2e11, "G": 7.692308e10, "ni": 0.3, "rho": 7850 }
+			"properties": { "E": 2e11, "G": 7.692308e10, "nu": 0.3, "rho": 7850 }
 		}
 	],
 

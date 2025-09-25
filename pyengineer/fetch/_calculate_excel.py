@@ -20,7 +20,7 @@ def calculate_excel(path: str, load_name: str) -> Linear:
         materials[row['Name']] = Material(name=row['Name'],
                                           e=row['E'],
                                           g=row['G'],
-                                          ni=row['nu'],
+                                          nu=row['nu'],
                                           rho=row['rho'])
 
     # Sections ************************************************************************************
