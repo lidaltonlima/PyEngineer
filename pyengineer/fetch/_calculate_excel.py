@@ -1,5 +1,4 @@
 """Calculate structure from excel file."""
-from typing import Dict
 
 import warnings
 
@@ -15,7 +14,7 @@ def calculate_excel(path: str, load_name: str) -> Linear:
     # Load data from excel file ///////////////////////////////////////////////////////////////////
     # Materials ***********************************************************************************
     df_materials = read_excel(path, sheet_name='Materials')
-    materials: Dict[str, Material] = {}
+    materials: dict[str, Material] = {}
     for _index, row in df_materials.iterrows():
         materials[row['Name']] = Material(name=row['Name'],
                                           e=row['E'],
@@ -25,7 +24,7 @@ def calculate_excel(path: str, load_name: str) -> Linear:
 
     # Sections ************************************************************************************
     df_sections = read_excel(path, sheet_name='Sections')
-    sections: Dict[str, Section] = {}
+    sections: dict[str, Section] = {}
     for _index, row in df_sections.iterrows():
         sections[row['Name']] = Section(name=row['Name'],
                                         area=row['Area'],
@@ -35,14 +34,14 @@ def calculate_excel(path: str, load_name: str) -> Linear:
 
     # Nodes ***************************************************************************************
     df_nodes = read_excel(path, sheet_name='Nodes')
-    nodes: Dict[str, Node] = {}
+    nodes: dict[str, Node] = {}
     for _index, row in df_nodes.iterrows():
         nodes[row['Name']] = Node(name=row['Name'],
                                   position=[row['X'], row['Y'], row['Z']])
 
     # Bars ****************************************************************************************
     df_bars = read_excel(path, sheet_name='Bars')
-    bars: Dict[str, Bar] = {}
+    bars: dict[str, Bar] = {}
     for _index, row in df_bars.iterrows():
         bars[row['Name']] = Bar(name=row['Name'],
                                 start_node=nodes[row['Start Node']],

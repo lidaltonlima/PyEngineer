@@ -1,12 +1,10 @@
 """Functions for 2D space calculations."""
-from typing import Tuple
-
-def root_line(point_1: Tuple[float, float], point_2: Tuple[float, float]) -> float:
+def root_line(point_1: tuple[float, float], point_2: tuple[float, float]) -> float:
     """Calculate the root (x-intercept) of the line defined by two points in 2D space.
 
     Args:
-        point_1 (Tuple[float, float]): Initial point (x1, y1)
-        point_2 (Tuple[float, float]): End point (x2, y2)
+        point_1 (tuple[float, float]): Initial point (x1, y1)
+        point_2 (tuple[float, float]): End point (x2, y2)
 
     Raises:
         ValueError: If the line is vertical or horizontal and does not cross the x-axis.

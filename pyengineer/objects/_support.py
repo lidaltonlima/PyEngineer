@@ -1,8 +1,8 @@
 """Apoios que serão usados na estrutura"""
-import typing as tp
+from typing import TypedDict
 from ._node import Node
 
-class ISupportSupports(tp.TypedDict):
+class ISupportSupports(TypedDict):
     """Typing for supports"""
     Dx: bool | float
     Dy: bool | float

@@ -1,5 +1,4 @@
 """Create JSON results file for calculated structure"""
-from typing import Dict, List
 import json
 
 from ..analysis._linear import Linear
@@ -13,13 +12,13 @@ def create_json_results(path: str, analysis: Linear) -> None:
         analysis (Linear): The linear analysis object containing results.
     """
     # Results /////////////////////////////////////////////////////////////////////////////////////
-    results: List[Dict[str, str | list[Dict[str, str | float]]]] = []
+    results: list[dict[str, str | list[dict[str, str | float]]]] = []
 
     # Create dictionary structure for results *****************************************************
     for index_load, load in enumerate(analysis.loads):
         results.append({'load_case': load.name})
         # Get displacements for each node under the current load case -----------------------------
-        displacements: list[Dict[str, str | float]] = []
+        displacements: list[dict[str, str | float]] = []
         for node in analysis.nodes:
             disp_vector = analysis.get_displacements(node.name, load.name)
             displacements.append({'node': node.name,
@@ -32,7 +31,7 @@ def create_json_results(path: str, analysis: Linear) -> None:
         results[index_load]['displacements'] = displacements
 
         # Get reactions for each support under the current load case -----------------------------
-        reactions: list[Dict[str, str | float]] = []
+        reactions: list[dict[str, str | float]] = []
         for node in analysis.supports.nodes_support.keys():
             reactions_vector = analysis.get_reactions(node.name, load.name)
             reactions.append({'node': node.name,
@@ -45,7 +44,7 @@ def create_json_results(path: str, analysis: Linear) -> None:
         results[index_load]['reactions'] = reactions
 
         # Get extreme forces for each bar under the current load case -----------------------------
-        extreme_forces: list[Dict[str, str | float]] = []
+        extreme_forces: list[dict[str, str | float]] = []
         for bar in analysis.bars:
             forces_vector = bar.extreme_forces[load.name]
             extreme_forces.append({'bar': bar.name,

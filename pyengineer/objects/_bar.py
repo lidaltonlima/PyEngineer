@@ -1,7 +1,7 @@
 """Módulo para operações matemáticas"""
 from __future__ import annotations
 
-import typing as tp
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
@@ -17,7 +17,7 @@ from ..functions.reactions import section as sc
 
 from ..types import ReleasesType
 
-if tp.TYPE_CHECKING:
+if TYPE_CHECKING:
     from ._load import Load
 
 

@@ -4,8 +4,6 @@ This function is responsible for creating a JSON file that represents the calcul
 """
 import json
 
-from typing import List, Dict
-
 from pyengineer.objects._load import INodalLoadData
 from pyengineer.objects._support import ISupportSupports
 
@@ -23,8 +21,8 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
 
     # Materials and Sections //////////////////////////////////////////////////////////////////////
     # Get materials and sections from bars
-    materials: List[Material]  = []
-    sections: List[Section] = []
+    materials: list[Material]  = []
+    sections: list[Section] = []
     for bar in analysis.bars:
         if bar.material not in materials:
             materials.append(bar.material)
@@ -32,7 +30,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
             sections.append(bar.section)
 
     # Materials ***********************************************************************************
-    material_dict: List[Dict[str, str | Dict[str, float]]] = []
+    material_dict: list[dict[str, str | dict[str, float]]] = []
     for material in materials:
         material_dict.append({
             'name': material.name,
@@ -46,7 +44,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['materials'] = material_dict
 
     # Sections ************************************************************************************
-    sections_dict: List[Dict[str, str | float | Dict[str, float]]] = []
+    sections_dict: list[dict[str, str | float | dict[str, float]]] = []
     for section in sections:
         sections_dict.append({
             'name': section.name,
@@ -60,7 +58,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['sections'] = sections_dict
 
     # Nodes ///////////////////////////////////////////////////////////////////////////////////////
-    nodes_dict: List[Dict[str, str | List[float]]] = []
+    nodes_dict: list[dict[str, str | list[float]]] = []
     for node in analysis.nodes:
         nodes_dict.append({
             'name': node.name,
@@ -69,9 +67,9 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['nodes'] = nodes_dict
 
     # Bars ////////////////////////////////////////////////////////////////////////////////////////
-    bars_dict: List[Dict[str, str | float | List[str]]] = []
+    bars_dict: list[dict[str, str | float | list[str]]] = []
     for bar in analysis.bars:
-        releases: List[str] = []
+        releases: list[str] = []
         for key, value in bar.releases.items():
             if value:
                 releases.append(key)
@@ -87,7 +85,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['bars'] = bars_dict
 
     # Supports ////////////////////////////////////////////////////////////////////////////////////
-    supports_dict: List[Dict[str, str | ISupportSupports]] = []
+    supports_dict: list[dict[str, str | ISupportSupports]] = []
     for key, value in analysis.supports.nodes_support.items():
         supports_dict.append({
             'node': key.name,
@@ -96,17 +94,17 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['supports'] = supports_dict
 
     # Loads ///////////////////////////////////////////////////////////////////////////////////////
-    loads_dict: List[Dict[str,
+    loads_dict: list[dict[str,
                           str |
-                          List[Dict[str,
+                          list[dict[str,
                                     str | INodalLoadData]] |
-                          Dict[str,
-                               List[Dict[str, str | float | Dict[str, float]]] |
-                               List[Dict[str, str | List[float] | Dict[str, List[float]]]]]
+                          dict[str,
+                               list[dict[str, str | float | dict[str, float]]] |
+                               list[dict[str, str | list[float] | dict[str, list[float]]]]]
                           ]] = []
     for load in analysis.loads:
         # Nodal Loads *****************************************************************************
-        node_load_dict: List[Dict[str, str | INodalLoadData]] = []
+        node_load_dict: list[dict[str, str | INodalLoadData]] = []
         for node in load.nodes_loads:
             for name, node_load in load.nodes_loads[node].items():
                 node_load_dict.append({
@@ -117,7 +115,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
 
         # Bar Loads *******************************************************************************
         # Point loads -----------------------------------------------------------------------------
-        bar_load_pt_dict: List[Dict[str, str | float | Dict[str, float]]] = []
+        bar_load_pt_dict: list[dict[str, str | float | dict[str, float]]] = []
         for bar in load.bars_loads_pt:
             for name, bar_load in load.bars_loads_pt[bar].items():
                 bar_load_pt_dict.append({
@@ -135,7 +133,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
                     }
                 })
         # Distributed loads -----------------------------------------------------------------------
-        bar_load_dist_dict: List[Dict[str, str | List[float] | Dict[str, List[float]]]] = []
+        bar_load_dist_dict: list[dict[str, str | list[float] | dict[str, list[float]]]] = []
         for bar in load.bars_loads_dist:
             for name, bar_load in load.bars_loads_dist[bar].items():
                 bar_load_dist_dict.append({
@@ -165,13 +163,13 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
     structure['loads'] = loads_dict
 
     # Results /////////////////////////////////////////////////////////////////////////////////////
-    results: List[Dict[str, str | list[Dict[str, str | float]]]] = []
+    results: list[dict[str, str | list[dict[str, str | float]]]] = []
 
     # Create dictionary structure for results *****************************************************
     for index_load, load in enumerate(analysis.loads):
         results.append({'load_case': load.name})
         # Get displacements for each node under the current load case -----------------------------
-        displacements: list[Dict[str, str | float]] = []
+        displacements: list[dict[str, str | float]] = []
         for node in analysis.nodes:
             disp_vector = analysis.get_displacements(node.name, load.name)
             displacements.append({'node': node.name,
@@ -184,7 +182,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
         results[index_load]['displacements'] = displacements
 
         # Get reactions for each support under the current load case -----------------------------
-        reactions: list[Dict[str, str | float]] = []
+        reactions: list[dict[str, str | float]] = []
         for node in analysis.supports.nodes_support.keys():
             reactions_vector = analysis.get_reactions(node.name, load.name)
             reactions.append({'node': node.name,
@@ -197,7 +195,7 @@ def create_calculated_structure(path: str, analysis: Linear) -> None:
         results[index_load]['reactions'] = reactions
 
         # Get extreme forces for each bar under the current load case -----------------------------
-        extreme_forces: list[Dict[str, str | float]] = []
+        extreme_forces: list[dict[str, str | float]] = []
         for bar in analysis.bars:
             forces_vector = bar.extreme_forces[load.name]
             extreme_forces.append({'bar': bar.name,

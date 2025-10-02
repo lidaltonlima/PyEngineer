@@ -1,7 +1,7 @@
 """Módulo para criar seções que serão usadas na estrutura"""
-import typing as tp
+from typing import TypedDict
 
-class ISectionProperties(tp.TypedDict):
+class ISectionProperties(TypedDict):
     """Typing for section properties"""
     area: float
     Ix: float

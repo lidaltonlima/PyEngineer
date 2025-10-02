@@ -3,7 +3,7 @@ Functions to calculate reactions in bars with point load.
 All functions fo point loads in "Análise de Estruturas" by
     Umberto Lima Soriano and Silvio de Souza Lima.
 """
-from typing import Dict, Literal
+from typing import Literal
 
 
 # Forces //////////////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@ def force_x(
         length: float,
         x: float,
         p: float
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a point axial load in x direction.
 
     Args:
@@ -24,7 +24,7 @@ def force_x(
         ValueError: If the position is not in the range 0 <= x <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:
         raise ValueError("Need 0 <= x <= L.")
@@ -42,7 +42,7 @@ def force_y(
         length: float,
         x: float,
         p: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a point transverse load in y direction.
 
     Args:
@@ -54,7 +54,7 @@ def force_y(
         ValueError: If the position is not in the range 0 <= x <= L
 
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:
@@ -76,7 +76,7 @@ def force_z(
         length: float,
         x: float,
         p: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a point transverse load in z direction.
 
     Args:
@@ -88,7 +88,7 @@ def force_z(
         ValueError: If the position is not in the range 0 <= x <= L
 
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:
@@ -111,7 +111,7 @@ def moment_x(
         length: float,
         x: float,
         m: float
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a point moment around x axis.
     Args:
         length (float): Length of the bar
@@ -120,7 +120,7 @@ def moment_x(
     Raises:
         ValueError: If the position is not in the range 0 <= x <= L
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]: The reactions at the two ends of the bar (A and B)
+        dict[Literal['Mxa', 'Mxb'], float]: The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:
         raise ValueError("Need 0 <= x <= L.")
@@ -139,7 +139,7 @@ def moment_y(
         length: float,
         x: float,
         m: float
-    ) -> Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
+    ) -> dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
     """Calculates the reactions of a bar with a point moment around y axis.
     Args:
         length (float): Length of the bar
@@ -148,7 +148,7 @@ def moment_y(
     Raises:
         ValueError: If the position is not in the range 0 <= x <= L
     Returns:
-        Dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
+        dict[Literal['Mya', 'Myb', 'Rza', 'Rzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:
@@ -170,7 +170,7 @@ def moment_z(
         length: float,
         x: float,
         m: float
-    ) -> Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
+    ) -> dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
     """Calculates the reactions of a bar with a point moment around z axis.
     Args:
         length (float): Length of the bar
@@ -179,7 +179,7 @@ def moment_z(
     Raises:
         ValueError: If the position is not in the range 0 <= x <= L
     Returns:
-        Dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
+        dict[Literal['Mza', 'Mzb', 'Rya', 'Ryb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x <= length) is False:

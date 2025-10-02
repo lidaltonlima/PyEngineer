@@ -2,7 +2,7 @@
 Functions to calculate reactions in bars with section load.
 """
 
-from typing import Dict, Literal
+from typing import Literal
 
 from . import point, all_length
 
@@ -12,7 +12,7 @@ def force_x_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in x direction.
 
     Args:
@@ -25,7 +25,7 @@ def force_x_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]:
+        dict[Literal['Rxa', 'Rxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -39,7 +39,7 @@ def force_x_rec(
 
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+    reactions: dict[Literal['Rxa', 'Rxb'], float] = {
         'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
         'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
     }
@@ -51,7 +51,7 @@ def force_x_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in x direction.
         Ascending or descending.
     Args:
@@ -65,7 +65,7 @@ def force_x_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]:
+        dict[Literal['Rxa', 'Rxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -78,7 +78,7 @@ def force_x_tri(
     aux_2 = point.force_x(length, x2, -reactions_local['Rxb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+    reactions: dict[Literal['Rxa', 'Rxb'], float] = {
         'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
         'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
     }
@@ -87,7 +87,7 @@ def force_x_tri(
 
 def force_x_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Rxa', 'Rxb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in x direction.
     Args:
         length (float): Length of the bar
@@ -98,7 +98,7 @@ def force_x_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rxa', 'Rxb', float]:
+        dict[Literal['Rxa', 'Rxb', float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -111,7 +111,7 @@ def force_x_trap(length: float,
     aux_2 = point.force_x(length, x2, -reactions_local['Rxb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+    reactions: dict[Literal['Rxa', 'Rxb'], float] = {
         'Rxa': aux_1['Rxa'] + aux_2['Rxa'],
         'Rxb': aux_1['Rxb'] + aux_2['Rxb'],
     }
@@ -123,7 +123,7 @@ def moment_x_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in x direction.
 
     Args:
@@ -136,7 +136,7 @@ def moment_x_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]:
+        dict[Literal['Mxa', 'Mxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -150,7 +150,7 @@ def moment_x_rec(
 
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Mxa', 'Mxb'], float] = {
+    reactions: dict[Literal['Mxa', 'Mxb'], float] = {
         'Mxa': aux_1['Mxa'] + aux_2['Mxa'],
         'Mxb': aux_1['Mxb'] + aux_2['Mxb'],
     }
@@ -162,7 +162,7 @@ def moment_x_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in x direction.
         Ascending or descending.
     Args:
@@ -176,7 +176,7 @@ def moment_x_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]:
+        dict[Literal['Mxa', 'Mxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -189,7 +189,7 @@ def moment_x_tri(
     aux_2 = point.moment_x(length, x2, -reactions_local['Mxb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Mxa', 'Mxb'], float] = {
+    reactions: dict[Literal['Mxa', 'Mxb'], float] = {
         'Mxa': aux_1['Mxa'] + aux_2['Mxa'],
         'Mxb': aux_1['Mxb'] + aux_2['Mxb'],
     }
@@ -198,7 +198,7 @@ def moment_x_tri(
 
 def moment_x_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Mxa', 'Mxb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in x direction.
     Args:
         length (float): Length of the bar
@@ -209,7 +209,7 @@ def moment_x_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Mxa', 'Mxb', float]:
+        dict[Literal['Mxa', 'Mxb', float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -222,7 +222,7 @@ def moment_x_trap(length: float,
     aux_2 = point.moment_x(length, x2, -reactions_local['Mxb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Mxa', 'Mxb'], float] = {
+    reactions: dict[Literal['Mxa', 'Mxb'], float] = {
         'Mxa': aux_1['Mxa'] + aux_2['Mxa'],
         'Mxb': aux_1['Mxb'] + aux_2['Mxb'],
     }
@@ -235,7 +235,7 @@ def force_y_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in y direction.
 
     Args:
@@ -248,7 +248,7 @@ def force_y_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rxa', 'Rxb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -263,7 +263,7 @@ def force_y_rec(
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
@@ -277,7 +277,7 @@ def force_y_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in y direction.
         Ascending or descending.
     Args:
@@ -291,7 +291,7 @@ def force_y_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -306,7 +306,7 @@ def force_y_tri(
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
@@ -317,7 +317,7 @@ def force_y_tri(
 
 def force_y_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in y direction.
     Args:
         length (float): Length of the bar
@@ -328,7 +328,7 @@ def force_y_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -343,7 +343,7 @@ def force_y_trap(length: float,
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
@@ -357,7 +357,7 @@ def moment_y_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in y direction.
 
     Args:
@@ -370,7 +370,7 @@ def moment_y_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rxa', 'Rxb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -385,7 +385,7 @@ def moment_y_rec(
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -399,7 +399,7 @@ def moment_y_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in y direction.
         Ascending or descending.
     Args:
@@ -413,7 +413,7 @@ def moment_y_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -428,7 +428,7 @@ def moment_y_tri(
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -439,7 +439,7 @@ def moment_y_tri(
 
 def moment_y_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in y direction.
     Args:
         length (float): Length of the bar
@@ -450,7 +450,7 @@ def moment_y_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -465,7 +465,7 @@ def moment_y_trap(length: float,
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -480,7 +480,7 @@ def force_z_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in z direction.
 
     Args:
@@ -493,7 +493,7 @@ def force_z_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rxa', 'Rxb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -508,7 +508,7 @@ def force_z_rec(
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -522,7 +522,7 @@ def force_z_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in z direction.
         Ascending or descending.
     Args:
@@ -536,7 +536,7 @@ def force_z_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -551,7 +551,7 @@ def force_z_tri(
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -562,7 +562,7 @@ def force_z_tri(
 
 def force_z_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in z direction.
     Args:
         length (float): Length of the bar
@@ -573,7 +573,7 @@ def force_z_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -588,7 +588,7 @@ def force_z_trap(length: float,
     aux_4 = point.moment_y(length, x2, -reactions_local['Myb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': aux_1['Rza'] + aux_2['Rza'] + aux_3['Rza'] + aux_4['Rza'],
         'Rzb': aux_1['Rzb'] + aux_2['Rzb'] + aux_3['Rzb'] + aux_4['Rzb'],
         'Mya': aux_1['Mya'] + aux_2['Mya'] + aux_3['Mya'] + aux_4['Mya'],
@@ -602,7 +602,7 @@ def moment_z_rec(
         length: float,
         x1: float, x2: float,
         p: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed axial load in y direction.
 
     Args:
@@ -615,7 +615,7 @@ def moment_z_rec(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rxa', 'Rxb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -630,7 +630,7 @@ def moment_z_rec(
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
@@ -644,7 +644,7 @@ def moment_z_tri(
         x1: float, x2: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a triangular distributed axial load in z direction.
         Ascending or descending.
     Args:
@@ -658,7 +658,7 @@ def moment_z_tri(
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
         ValueError: If the direction is not 'up' or 'down'
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -673,7 +673,7 @@ def moment_z_tri(
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],
@@ -684,7 +684,7 @@ def moment_z_tri(
 
 def moment_z_trap(length: float,
                       x1: float, x2: float,
-                      p1: float, p2: float) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+                      p1: float, p2: float) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in z direction.
     Args:
         length (float): Length of the bar
@@ -695,7 +695,7 @@ def moment_z_trap(length: float,
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if (0 <= x1 < x2 <= length) is False:
@@ -710,7 +710,7 @@ def moment_z_trap(length: float,
     aux_4 = point.moment_z(length, x2, -reactions_local['Mzb'])
 
     # Sum all reactions with principle of superposition of effects
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': aux_1['Rya'] + aux_2['Rya'] + aux_3['Rya'] + aux_4['Rya'],
         'Ryb': aux_1['Ryb'] + aux_2['Ryb'] + aux_3['Ryb'] + aux_4['Ryb'],
         'Mza': aux_1['Mza'] + aux_2['Mza'] + aux_3['Mza'] + aux_4['Mza'],

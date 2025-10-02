@@ -1,7 +1,7 @@
 """Módulo para materiais que serão usados na estrutura"""
-import typing as tp
+from typing import TypedDict
 
-class IMaterialProperties(tp.TypedDict):
+class IMaterialProperties(TypedDict):
     """Typing for properties attribute"""
     E: float
     G: float

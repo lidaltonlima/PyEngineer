@@ -1,6 +1,5 @@
 """Analysis structure in json file"""
 import json
-from typing import List
 
 from ..objects import Node
 from ..objects import Bar
@@ -75,7 +74,7 @@ def calculate_json(path: str) -> Linear:
                         material_bar,
                         bar['rotation']))
 
-        releases: List[ReleasesType]= bar['releases']
+        releases: list[ReleasesType]= bar['releases']
         for release in releases:
             match release:
                 case 'Dxi':

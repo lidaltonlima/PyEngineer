@@ -1,7 +1,7 @@
 """Módulo para carregamentos/esforços"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Tuple, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 from ._node import Node
 
@@ -33,12 +33,12 @@ class IBarLoadDistributedData(TypedDict):
     x1: float
     x2: float
     system: Literal['local', 'global']
-    Fx: Tuple[float, float]
-    Fy: Tuple[float, float]
-    Fz: Tuple[float, float]
-    Mx: Tuple[float, float]
-    My: Tuple[float, float]
-    Mz: Tuple[float, float]
+    Fx: tuple[float, float]
+    Fy: tuple[float, float]
+    Fz: tuple[float, float]
+    Mx: tuple[float, float]
+    My: tuple[float, float]
+    Mz: tuple[float, float]
 
 class Load:
     """Casos de carga que serão usadas na estrutura"""
@@ -103,12 +103,12 @@ class Load:
     def add_bar_load_dist(self, name: str, bar: Bar,
                            x1: float, x2: float,
                            system: Literal['local', 'global'] = 'local',
-                           fx: Tuple[float, float] = (0, 0),
-                           fy: Tuple[float, float] = (0, 0),
-                           fz: Tuple[float, float] = (0, 0),
-                           mx: Tuple[float, float] = (0, 0),
-                           my: Tuple[float, float] = (0, 0),
-                           mz: Tuple[float, float] = (0, 0)):
+                           fx: tuple[float, float] = (0, 0),
+                           fy: tuple[float, float] = (0, 0),
+                           fz: tuple[float, float] = (0, 0),
+                           mx: tuple[float, float] = (0, 0),
+                           my: tuple[float, float] = (0, 0),
+                           mz: tuple[float, float] = (0, 0)):
         """Adds distributed loads in bar
 
         Args:

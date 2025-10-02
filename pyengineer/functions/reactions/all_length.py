@@ -2,7 +2,7 @@
 Functions to calculate reactions in bars with load in all length of the bar.
 """
 
-from typing import Dict, Literal
+from typing import Literal
 
 from ..space_2d import root_line
 from . import point
@@ -12,7 +12,7 @@ from . import point
 def force_x_rec(
         length: float,
         p: float
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a distributed load in x direction and in all length
         of the bar.
 
@@ -22,7 +22,7 @@ def force_x_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]:
+        dict[Literal['Rxa', 'Rxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
@@ -36,7 +36,7 @@ def force_x_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a distributed load in x direction and in all length
         of the bar.
 
@@ -46,12 +46,12 @@ def force_x_tri(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]:
+        dict[Literal['Rxa', 'Rxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+    reactions: dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
 
     match direction:
         case 'up':
@@ -68,7 +68,7 @@ def force_x_tri(
 def force_x_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Rxa', 'Rxb'], float]:
+    ) -> dict[Literal['Rxa', 'Rxb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in x direction
         and all length of the bar.
     Args:
@@ -78,13 +78,13 @@ def force_x_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
+        dict[Literal['Rxa', 'Rxb'], float]: The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rxa': 0, 'Rxb': 0}
 
-    rectangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
-    triangular_reactions: Dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+    rectangular_reactions: dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
+    triangular_reactions: dict[Literal['Rxa', 'Rxb'], float] = {'Rxa': 0, 'Rxb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
         # Both positive loads.
@@ -127,7 +127,7 @@ def force_x_trap(
         triangular_reactions['Rxb'] += triangular_reactions_aux_1['Rxb']
 
 
-    reactions: Dict[Literal['Rxa', 'Rxb'], float] = {
+    reactions: dict[Literal['Rxa', 'Rxb'], float] = {
         'Rxa': rectangular_reactions['Rxa'] + triangular_reactions['Rxa'],
         'Rxb': rectangular_reactions['Rxb'] + triangular_reactions['Rxb']
     }
@@ -138,7 +138,7 @@ def force_x_trap(
 def moment_x_rec(
         length: float,
         p: float
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a distributed load in x direction and in all length
         of the bar.
 
@@ -148,7 +148,7 @@ def moment_x_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]:
+        dict[Literal['Mxa', 'Mxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
@@ -162,7 +162,7 @@ def moment_x_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a distributed load in x direction and in all length
         of the bar.
 
@@ -172,12 +172,12 @@ def moment_x_tri(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]:
+        dict[Literal['Mxa', 'Mxb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
+    reactions: dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
 
     match direction:
         case 'up':
@@ -194,7 +194,7 @@ def moment_x_tri(
 def moment_x_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Mxa', 'Mxb'], float]:
+    ) -> dict[Literal['Mxa', 'Mxb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in x direction
         and all length of the bar.
     Args:
@@ -204,13 +204,13 @@ def moment_x_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Mxa', 'Mxb'], float]: The reactions at the two ends of the bar (A and B)
+        dict[Literal['Mxa', 'Mxb'], float]: The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Mxa': 0, 'Mxb': 0}
 
-    rectangular_reactions: Dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
-    triangular_reactions: Dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
+    rectangular_reactions: dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
+    triangular_reactions: dict[Literal['Mxa', 'Mxb'], float] = {'Mxa': 0, 'Mxb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
         # Both positive loads.
@@ -253,7 +253,7 @@ def moment_x_trap(
         triangular_reactions['Mxb'] += triangular_reactions_aux_1['Mxb']
 
 
-    reactions: Dict[Literal['Mxa', 'Mxb'], float] = {
+    reactions: dict[Literal['Mxa', 'Mxb'], float] = {
         'Mxa': rectangular_reactions['Mxa'] + triangular_reactions['Mxa'],
         'Mxb': rectangular_reactions['Mxb'] + triangular_reactions['Mxb']
     }
@@ -265,7 +265,7 @@ def moment_x_trap(
 def force_y_rec(
         length: float,
         p: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed load in y direction and in all length
         of the bar.
 
@@ -275,7 +275,7 @@ def force_y_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
@@ -291,7 +291,7 @@ def force_y_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed load in y direction and in all length
         of the bar.
 
@@ -304,12 +304,12 @@ def force_y_tri(
         ValueError: If the direction is not 'up' or 'down'
 
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
 
     match direction:
@@ -331,7 +331,7 @@ def force_y_tri(
 def force_y_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in y direction
         and all length of the bar.
     Args:
@@ -341,15 +341,15 @@ def force_y_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
 
-    rectangular_reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    rectangular_reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
-    triangular_reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    triangular_reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
@@ -405,7 +405,7 @@ def force_y_trap(
         triangular_reactions['Mzb'] += triangular_reactions_aux_2['Mzb']
 
 
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': rectangular_reactions['Rya'] + triangular_reactions['Rya'],
         'Ryb': rectangular_reactions['Ryb'] + triangular_reactions['Ryb'],
         'Mza': rectangular_reactions['Mza'] + triangular_reactions['Mza'],
@@ -417,7 +417,7 @@ def force_y_trap(
 # Moments *****************************************************************************************
 def moment_y_rec(
         p: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed load in y direction and in all length
         of the bar.
 
@@ -427,7 +427,7 @@ def moment_y_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
 
@@ -442,7 +442,7 @@ def moment_y_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed load in y direction and in all length
         of the bar.
 
@@ -455,12 +455,12 @@ def moment_y_tri(
         ValueError: If the direction is not 'up' or 'down'
 
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
 
     match direction:
@@ -482,7 +482,7 @@ def moment_y_tri(
 def moment_y_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in y direction
         and all length of the bar.
     Args:
@@ -492,15 +492,15 @@ def moment_y_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
 
-    rectangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    rectangular_reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
-    triangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    triangular_reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
@@ -556,7 +556,7 @@ def moment_y_trap(
         triangular_reactions['Myb'] += triangular_reactions_aux_2['Myb']
 
 
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': rectangular_reactions['Rza'] + triangular_reactions['Rza'],
         'Rzb': rectangular_reactions['Rzb'] + triangular_reactions['Rzb'],
         'Mya': rectangular_reactions['Mya'] + triangular_reactions['Mya'],
@@ -570,7 +570,7 @@ def moment_y_trap(
 def force_z_rec(
         length: float,
         p: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed load in z direction and in all length
         of the bar.
 
@@ -580,7 +580,7 @@ def force_z_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
@@ -596,7 +596,7 @@ def force_z_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a distributed load in z direction and in all length
         of the bar.
 
@@ -609,12 +609,12 @@ def force_z_tri(
         ValueError: If the direction is not 'up' or 'down'
 
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
 
     match direction:
@@ -636,7 +636,7 @@ def force_z_tri(
 def force_z_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+    ) -> dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in z direction
         and all length of the bar.
     Args:
@@ -646,15 +646,15 @@ def force_z_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
+        dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
 
-    rectangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    rectangular_reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
-    triangular_reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
+    triangular_reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = \
         {'Rza': 0, 'Rzb': 0, 'Mya': 0, 'Myb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
@@ -710,7 +710,7 @@ def force_z_trap(
         triangular_reactions['Myb'] += triangular_reactions_aux_2['Myb']
 
 
-    reactions: Dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
+    reactions: dict[Literal['Rza', 'Rzb', 'Mya', 'Myb'], float] = {
         'Rza': rectangular_reactions['Rza'] + triangular_reactions['Rza'],
         'Rzb': rectangular_reactions['Rzb'] + triangular_reactions['Rzb'],
         'Mya': rectangular_reactions['Mya'] + triangular_reactions['Mya'],
@@ -722,7 +722,7 @@ def force_z_trap(
 # Moments *****************************************************************************************
 def moment_z_rec(
         p: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed load in z direction and in all length
         of the bar.
 
@@ -732,7 +732,7 @@ def moment_z_rec(
         p (float): Intensity of the load
 
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
 
@@ -747,7 +747,7 @@ def moment_z_tri(
         length: float,
         p: float,
         direction: Literal['up', 'down']
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a distributed load in z direction and in all length
         of the bar.
 
@@ -760,12 +760,12 @@ def moment_z_tri(
         ValueError: If the direction is not 'up' or 'down'
 
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     l = length
 
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
 
     match direction:
@@ -787,7 +787,7 @@ def moment_z_tri(
 def moment_z_trap(
         length: float,
         p1: float, p2: float
-    ) -> Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+    ) -> dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
     """Calculates the reactions of a bar with a trapezoidal distributed axial load in z direction
         and all length of the bar.
     Args:
@@ -797,15 +797,15 @@ def moment_z_trap(
     Raises:
         ValueError: If the positions are not in the range 0 <= x1 < x2 <= L
     Returns:
-        Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
+        dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float]:
             The reactions at the two ends of the bar (A and B)
     """
     if p1 == p2 == 0:
         return {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
 
-    rectangular_reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    rectangular_reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
-    triangular_reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
+    triangular_reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = \
         {'Rya': 0, 'Ryb': 0, 'Mza': 0, 'Mzb': 0}
     if p1 >= 0 and p2 >= 0:
         # If both loads are positive then we can have a rectangular and a triangular load.
@@ -861,7 +861,7 @@ def moment_z_trap(
         triangular_reactions['Mzb'] += triangular_reactions_aux_2['Mzb']
 
 
-    reactions: Dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
+    reactions: dict[Literal['Rya', 'Ryb', 'Mza', 'Mzb'], float] = {
         'Rya': rectangular_reactions['Rya'] + triangular_reactions['Rya'],
         'Ryb': rectangular_reactions['Ryb'] + triangular_reactions['Ryb'],
         'Mza': rectangular_reactions['Mza'] + triangular_reactions['Mza'],
