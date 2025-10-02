@@ -8,6 +8,9 @@ from ..objects import Bar
 from ..objects import Load
 from ..objects import Support
 
+from ..utils import is_number
+
+
 class Linear:
     """Análise linear"""
     def __init__(self, nodes: list[Node], bars: list[Bar],
@@ -132,7 +135,7 @@ class Linear:
             index = 0
             for support in self.supports.nodes_support[node].values():
                 if support:
-                    if isinstance(support, float):
+                    if is_number(support):
                         spring_index[6 * (node_index + 1) - (6 - index)] = support
                     support_indices.append(6 * (node_index + 1) - (6 - index))
 
