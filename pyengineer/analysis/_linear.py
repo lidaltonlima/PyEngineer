@@ -219,6 +219,11 @@ class Linear:
                         end_index = 6 * (node_index + 1)
 
                         node_reactions = self.reactions[load][initial_index : end_index]
+
+                        for reaction_index, support in \
+                            enumerate(self.supports.nodes_support[node].values()):
+                            if not support:
+                                node_reactions[reaction_index] = 0.0
                         break
                 break
 
