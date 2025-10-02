@@ -9,16 +9,19 @@ class IMaterialProperties(TypedDict):
     rho: float
 
 class Material:
-    """Cria um material"""
+    """Material for elements of the structure"""
+    name: str # Name of the material
+    properties: IMaterialProperties # Properties of the material
+
     def __init__(self, name: str, e: float, g: float, nu: float, rho: float):
         """Construtor
 
         Args:
-            name (str): Nome do material
-            e (float): Módulo de elasticidade
-            g (float): Módulo de elasticidade transversal
-            ni (float): Coeficiente de Poisson
-            rho (float): Massa específica
+            name (str): Name of the material
+            e (float): Elastic modulus
+            g (float): Transverse elastic modulus
+            nu (float): Poisson's ratio
+            rho (float): Density
         """
         self.name = name
-        self.properties: IMaterialProperties = {'E': e, 'G': g, 'nu': nu, 'rho': rho}
+        self.properties = {'E': e, 'G': g, 'nu': nu, 'rho': rho}

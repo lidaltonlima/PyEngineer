@@ -41,22 +41,27 @@ class IBarLoadDistributedData(TypedDict):
     Mz: tuple[float, float]
 
 class Load:
-    """Casos de carga que serão usadas na estrutura"""
+    """Load cases used in the analysis"""
+    name: str # Name of the load
+    nodes_loads: dict[Node, dict[str, INodalLoadData]] # Node loads
+    bars_loads_pt: dict[Bar, dict[str, IBarLoadPointData]] # Point loads in bars
+    bars_loads_dist: dict[Bar, dict[str, IBarLoadDistributedData]] # Distributed loads in bars
+
     def __init__(self, name: str):
-        """Construtor
+        """Load cases used in the analysis
 
         Args:
-            name (str): Nome da carga
+            name (str): Name of the load
         """
         self.name = name
-        self.nodes_loads: dict[Node, dict[str, INodalLoadData]] = {}
-        self.bars_loads_pt: dict[Bar, dict[str, IBarLoadPointData]] = {}
-        self.bars_loads_dist: dict[Bar, dict[str, IBarLoadDistributedData]] = {}
+        self.nodes_loads = {}
+        self.bars_loads_pt = {}
+        self.bars_loads_dist = {}
 
     def add_node_load(self, name: str, node: Node,
                       fx: float = 0, fy: float = 0, fz: float = 0,
                       mx: float = 0, my: float = 0, mz: float = 0):
-        """Adiciona carregamentos e esforços
+        """Adds loads and efforts
 
         Args:
             name (str): Name of the load

@@ -22,7 +22,26 @@ if TYPE_CHECKING:
 
 
 class Bar:
-    """Cria uma barra para ser usada na estrutura"""
+    """Bar of the structure."""
+    name: str # Name of the bar
+    start_node: Node # Start node (i)
+    end_node: Node # End node (j)
+    section: Section # Section
+    material: Material # Material
+    rotation: float # Rotation in degrees around the bar axis
+    dx: float # Difference in x between end and start node
+    dy: float # Difference in y between end and start node
+    dz: float # Difference in z between end and start node
+    length: float # Length of the bar
+    releases: dict[ReleasesType, bool] # Releases at the ends of the bar
+    kl: NDArray[float64] # Matriz of local stiffness with releases
+    kl_nr: NDArray[float64] # Matriz of local stiffness without releases
+    r: NDArray[float64] # Matriz of rotation
+    klg: NDArray[float64] # Matriz of global stiffness
+    y_up: bool # Modify default up for compare with PyNite
+    extreme_forces: dict[str, NDArray[float64]]
+    vector_loads: NDArray[float64] # Vector of all loads in global coordinates
+
     def __init__(self,
                  name: str,
                  start_node: Node,
@@ -30,16 +49,17 @@ class Bar:
                  section: Section,
                  material: Material,
                  rotation: float = 0):
-        """Construtor
+        """Bar of the structure.
 
         Args:
-            name (str): Nome da barra
-            start_node (Node): Nó inicial (i)
-            end_node (Node): Nó final (j)
-            section (Section): Seção
+            name (str): Name of the bar
+            start_node (Node): Start node (i)
+            end_node (Node): End node (j)
+            section (Section): Section
             material (Material): Material
-            rotation (float): rotação
+            rotation (float): Rotation in degrees around the bar axis. Default is 0.
         """
+
         self.name = name
         self.start_node = start_node
         self.end_node = end_node
@@ -56,15 +76,13 @@ class Bar:
             'Dxj': False, 'Dyj': False, 'Dzj': False,
             'Rxj': False, 'Ryj': False, 'Rzj': False,
         }
-        self.kl: NDArray[float64] =  np.zeros([12, 12]) # Matriz of local stiffness
-        # Matriz of local stiffness without releases
-        self.kl_nr: NDArray[float64] = np.zeros([12, 12])
-        self.r: NDArray[float64]  = np.zeros([12, 12]) # Matriz of rotation
-        self.klg: NDArray[float64]  = np.zeros([12, 12]) # Matriz de rigidez nas coordenadas globais
-        self.y_up = False # Modify default up for compare with PyNite
-        self.extreme_forces: dict[str, NDArray[float64]] = {}
-        # Vector of all loads in global coordinates
-        self.vector_loads: NDArray[float64] = np.zeros(12)
+        self.kl =  np.zeros([12, 12])
+        self.kl_nr = np.zeros([12, 12])
+        self.r =  np.zeros([12, 12])
+        self.klg = np.zeros([12, 12])
+        self.y_up = False
+        self.extreme_forces = {}
+        self.vector_loads = np.zeros(12)
 
     def calculate_klg(self) -> NDArray[float64]:
         """Transforma a matriz de rigidez local em global

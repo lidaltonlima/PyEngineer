@@ -12,14 +12,16 @@ class ISupportSupports(TypedDict):
     Rz: bool | float
 
 class Support:
-    """Apoios da estrutura"""
+    """Supports for the structure"""
+    nodes_support: dict[Node, ISupportSupports] # Node supports
+
     def __init__(self):
-        """Construtor
+        """Supports for the structure
 
         Args:
-            name (str): Nome do conjunto de apoios
+            name (str): Name of the support set
         """
-        self.nodes_support: dict[Node, ISupportSupports] = {}
+        self.nodes_support = {}
 
     def add_support(self,
                     node: Node,

@@ -9,12 +9,15 @@ class ISectionProperties(TypedDict):
     Iz: float
 
 class Section:
-    """Seções que serão usadas na estrutura"""
+    """Section for elements of the structure"""
+    name: str # Name of the section
+    properties: ISectionProperties # Properties of the section
+
     def __init__(self,
                  name: str,
                  area: float,
                  ix: float, iy: float, iz: float):
-        """Seção
+        """Section for elements of the structure
 
         Args:
             name (str): Section name
@@ -24,4 +27,4 @@ class Section:
             iz (float): Inertia in 'z' of the section
         """
         self.name = name
-        self.properties: ISectionProperties = {'area': area, 'Ix': ix, 'Iy': iy, 'Iz': iz}
+        self.properties = {'area': area, 'Ix': ix, 'Iy': iy, 'Iz': iz}
