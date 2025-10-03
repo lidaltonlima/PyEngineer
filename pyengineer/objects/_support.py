@@ -27,13 +27,13 @@ class Support:
                     node: Node,
                     dx: bool | float = False, dy: bool | float = False, dz: bool | float = False,
                     rx: bool | float = False, ry: bool | float = False, rz: bool | float = False):
-        """Adiciona um apoio
+        """Add a support to a node
 
         Args:
-            node (Node): Nó em que estará o apoio.
+            node (Node): The node to which the support will be added.
             supports (list[bool | float]): (Dx, Dy, Dz, Rx, Ry, Rz)
-                Restrições a deslocamentos e rotações nos eixo x, y e z respectivamente.
-                Pode ser fixo/livre (bool) ou uma mola (float).
+                Restrictions on displacements and rotations in the x, y, and z axes, respectively.
+                Can be fixed/free (bool) or a spring (float).
         """
         supports: ISupportSupports = {'Dx': dx, 'Dy': dy, 'Dz': dz, 'Rx': rx, 'Ry': ry, 'Rz': rz}
         for value in supports.values():
@@ -44,25 +44,21 @@ class Support:
         self.nodes_support[node] = supports
 
     def add_fixed_support(self, node: Node):
-        """Adiciona um apoio do tipo fixo
+        """Add a fixed support to a node
 
         Args:
-            node (Node): Nó em que será colocado o apoio
+            node (Node): The node to which the support will be added
         """
 
         self.nodes_support[node] = {'Dx': True, 'Dy': True, 'Dz': True,
                                     'Rx': True, 'Ry': True, 'Rz': True}
 
     def add_pinned_support(self, node: Node):
-        """Adiciona um apoio fixo, mas que permite rotações
+        """Add a pinned support to a node
 
         Args:
-            node (Node): Nó em ue será colocado o apoio
+            node (Node): The node to which the support will be added
         """
 
         self.nodes_support[node] = {'Dx': True, 'Dy': True, 'Dz': True,
                                     'Rx': False, 'Ry': False, 'Rz': False}
-    # def add_node_cantilever_roller_x(self, node: Node):
-    #     if not node.name in self.nodes_support:
-    #         self.nodes_support[node.name] = list()
-    #     self.nodes_support[node.name] = [False, True, True, False, False, False]
