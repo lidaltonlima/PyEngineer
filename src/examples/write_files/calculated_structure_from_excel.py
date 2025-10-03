@@ -9,7 +9,7 @@ project_root = os.path.join(current_dir, '..', '..', '..')
 sys.path.append(project_root)
 # /////////////////////////////////////////////////////////////////////////////////////////////////
 
-from pyengineer.fetch import create_calculated_structure, calculate_excel
+from pyengineer.tools import create_calculated_structure, calculate_excel
 
 
 # Calculate structure from json file

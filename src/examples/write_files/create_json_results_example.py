@@ -13,7 +13,7 @@ import numpy as np
 
 import pyengineer as pg
 from pyengineer import analysis
-from pyengineer.fetch import create_json_results
+from pyengineer.tools import create_json_results
 
 # Output format
 np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)

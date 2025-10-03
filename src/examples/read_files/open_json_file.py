@@ -11,7 +11,7 @@ sys.path.append(project_root)
 
 import numpy as np
 
-from pyengineer.fetch import calculate_json#, create_json_input#, create_json_results
+from pyengineer.tools import calculate_json#, create_json_input#, create_json_results
 
 # Format output of numpy arrays
 np.set_printoptions(formatter={'float_kind': '{: .4e}'.format}, linewidth=200)
