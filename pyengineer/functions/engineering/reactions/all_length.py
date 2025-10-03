@@ -4,7 +4,7 @@ Functions to calculate reactions in bars with load in all length of the bar.
 
 from typing import Literal
 
-from ..space_2d import root_line
+from ...space_2d import root_line
 from . import point
 
 # x direction /////////////////////////////////////////////////////////////////////////////////////

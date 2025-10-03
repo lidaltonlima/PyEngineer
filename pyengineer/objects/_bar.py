@@ -12,8 +12,8 @@ from ._node import Node
 from ._section import Section
 
 from ..functions import space_3d
-from ..functions.reactions import point as pt
-from ..functions.reactions import section as sc
+from ..functions.engineering.reactions import point as pt
+from ..functions.engineering.reactions import section as sc
 
 from ..types import ReleasesType
 

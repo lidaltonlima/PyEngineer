@@ -1,4 +1,4 @@
-"""Módulo para criar seções que serão usadas na estrutura"""
+"""Sections for elements of the structure"""
 from typing import TypedDict
 
 class ISectionProperties(TypedDict):
@@ -22,7 +22,7 @@ class Section:
         Args:
             name (str): Section name
             area (float): Section area
-            ix (float): Inertia in 'x' of the section
+            ix (float): Inertia in 'x' of the section (polar inertia)
             iy (float): Inertia in 'y' of the section
             iz (float): Inertia in 'z' of the section
         """

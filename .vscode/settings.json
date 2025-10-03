@@ -20,8 +20,11 @@
 	// Ícones personalizados para as pastas com nome diferente
 	"material-icon-theme.folders.associations": {
 		"analysis": "core",
-		"objects": "sandbox",
-		"fetch": "download"
+		"objects": "delta",
+		"fetch": "download",
+    "engineering": "nuxt",
+    "reactions": "vercel",
+    "pyengineer": "nuxt",
 	},
 	"python-envs.pythonProjects": []
 }
