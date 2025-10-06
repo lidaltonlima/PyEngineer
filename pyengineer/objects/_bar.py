@@ -29,6 +29,7 @@ class Bar:
     section: Section # Section
     material: Material # Material
     rotation: float # Rotation in degrees around the bar axis
+    master: str | None = None # Name of the master bar for get results
     dx: float # Difference in x between end and start node
     dy: float # Difference in y between end and start node
     dz: float # Difference in z between end and start node
@@ -66,6 +67,7 @@ class Bar:
         self.section = section
         self.material = material
         self.rotation = rotation
+        self.master = None
         self.dx = end_node.x - start_node.x
         self.dy = end_node.y - start_node.y
         self.dz = end_node.z - start_node.z
