@@ -100,4 +100,3 @@ def distance_two_points(first_point: list[float] | NDArray[float64],
                        (second_point[1] - first_point[1])**2 +
                        (second_point[2] - first_point[2])**2)
     return distance
-
