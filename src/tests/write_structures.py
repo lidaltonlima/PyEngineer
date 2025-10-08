@@ -13,8 +13,8 @@ from pyengineer.tools import create_calculated_structure, calculate_excel
 
 
 # Calculate structure from json file
-analysis = calculate_excel('./src/examples/excel/matheus_romero.xlsx', 'L1')
+analysis = calculate_excel('./src/examples/excel/matheus_romero_02.xlsx', 'L1')
 
 # Create json file from calculated structure
-PATH = './src/tests/calculated_structure_matheus_romero.json'
+PATH = './src/tests/calculated_structure_matheus_romero_02.json'
 create_calculated_structure(PATH, analysis)
