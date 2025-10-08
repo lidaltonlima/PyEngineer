@@ -1,239 +1,114 @@
-"""Stresses due to point loads on beams"""
-from typing import TypedDict, Literal
+"""Efforts in segment"""
+from typing import TypedDict
 
 import numpy as np
 from numpy import float64
 from numpy.typing import NDArray
 
-class IForceEffort(TypedDict):
-    """Interface for force efforts on beams"""
-    N: NDArray[float64]  # Axial force
-    Vy: NDArray[float64]  # Shear force in y direction
-    Vz: NDArray[float64]  # Shear force in z direction
-    T: NDArray[float64]  # Torsional moment
-    My: NDArray[float64]  # Bending moment around y axis
-    Mz: NDArray[float64]  # Bending moment around z axis
 
-def force_effort(x: float,
-                 length: float,
-                 position: float,
-                 forces: dict[Literal['Fx', 'Fy', 'Fz',
-                                      'Mx', 'My', 'Mz'],
-                              float],
-                 reactions: dict[Literal['RFx', 'RFy', 'RFz',
-                                         'RMx', 'RMy', 'RMz'],
-                                 float]) -> IForceEffort:
-    """Calculate the internal forces and moments at a given point along a beam.
+class PointLoad(TypedDict):
+    """Point load in segment"""
+    position: float  # Position of the load in the segment (0 to 1)
+    system: str     # Coordinate system ('local' or 'global')
+    Fx: float      # Force in X direction
+    Fy: float      # Force in Y direction
+    Fz: float      # Force in Z direction
+    Mx: float      # Moment about X axis
+    My: float      # Moment about Y axis
+    Mz: float      # Moment about Z axis
 
-    Args:
-        x (float): Position along the beam where the efforts are calculated
-        length (float): Length of the beam
-        position (float): Position of the point load along the beam
-        forces (dict[Literal['Fx', 'Fy', 'Fz', 'Mx', 'My', 'Mz'], float]):
-            External forces applied to the beam
-        reactions (dict[Literal['RFx', 'RFy', 'RFz', 'RMx', 'RMy', 'RMz'], float]):
-            Support reactions at the beam's ends
 
-    Raises:
-        ValueError: If x is not between 0 and the length of the beam
-
-    Returns:
-        IForceEffort: Internal forces and moments at the given point
-    """
+def shear_y(x: float,
+            length: float,
+            pt_loads: list[PointLoad],
+            extreme_forces: NDArray[float64] = \
+                np.array([0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
+    """Shear force at position x due to point loads"""
     if x < 0 or x > length:
-        raise ValueError('x must be between 0 and the length of the beam')
+        raise ValueError("Position x is out of bounds")
 
-    efforts: IForceEffort = {
-        'N': np.array([0, 0], dtype=float64),
-        'Vy': np.array([0, 0], dtype=float64),
-        'Vz': np.array([0, 0], dtype=float64),
-        'T': np.array([0, 0], dtype=float64),
-        'My': np.array([0, 0], dtype=float64),
-        'Mz': np.array([0, 0], dtype=float64)
-    }
-
-    # Variables for functions /////////////////////////////////////////////////////////////////////
-    # Forces *************************************************************************************
-    fx = forces['Fx']
-    fy = forces['Fy']
-    fz = forces['Fz']
-    mx = forces['Mx']
-    my = forces['My']
-    mz = forces['Mz']
-
-    # Reactions ***********************************************************************************
-    rfx = reactions['RFx']
-    rfy = reactions['RFy']
-    rfz = reactions['RFz']
-    rmx = reactions['RMx']
-    rmy = reactions['RMy']
-    rmz = reactions['RMz']
-
-    # Axial ///////////////////////////////////////////////////////////////////////////////////////
-    # x direction *********************************************************************************
     if x == 0:
-        efforts['N'] += np.array([0, -rfx], dtype=float64)
-    elif x == position:
-        efforts['N'] += np.array([-rfx, -rfx - fx], dtype=float64)
-    elif x == length:
-        efforts['N'] += np.array([-rfx - fx, 0], dtype=float64)
-    elif x < position:
-        efforts['N'] += np.array([-rfx, -rfx], dtype=float64)
-    elif x > position:
-        efforts['N'] += np.array([-rfx - fx, -rfx - fx], dtype=float64)
+        return np.array([0, extreme_forces[1]], dtype=float64)
+    if x == length:
+        return np.array([extreme_forces[7], 0], dtype=float64)
 
-    # Shear ///////////////////////////////////////////////////////////////////////////////////////
-    # y direction *********************************************************************************
+    vy = np.array([extreme_forces[1], extreme_forces[1]], dtype=float64)
+    for load in pt_loads:
+        if load['position'] < x:
+            vy[0] += load['Fy']
+        if load['position'] <= x:
+            vy[1] += load['Fy']
+    return vy
+
+def moment_z(x: float,
+             length: float,
+             pt_loads: list[PointLoad],
+             extreme_forces: NDArray[float64] = \
+                 np.array([0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
+    """Bending moment at position x due to point loads"""
+    if x < 0 or x > length:
+        raise ValueError("Position x is out of bounds")
+
     if x == 0:
-        efforts['Vy'] += np.array([0, rfy], dtype=float64)
-    elif x == position:
-        efforts['Vy'] += np.array([rfy, rfy + fy], dtype=float64)
-    elif x == length:
-        efforts['Vy'] += np.array([rfy + fy, 0], dtype=float64)
-    elif x < position:
-        efforts['Vy'] += np.array([rfy, rfy], dtype=float64)
-    elif x > position:
-        efforts['Vy'] += np.array([rfy + fy, rfy + fy], dtype=float64)
+        return np.array([0, extreme_forces[5]], dtype=float64)
+    if x == length:
+        return np.array([extreme_forces[11], 0], dtype=float64)
 
-    # z direction *********************************************************************************
-    if x == 0:
-        efforts['Vz'] += np.array([0, rfz], dtype=float64)
-    elif x == position:
-        efforts['Vz'] += np.array([rfz, rfz + fz], dtype=float64)
-    elif x == length:
-        efforts['Vz'] += np.array([rfz + fz, 0], dtype=float64)
-    elif x < position:
-        efforts['Vz'] += np.array([rfz, rfz], dtype=float64)
-    elif x > position:
-        efforts['Vz'] += np.array([rfz + fz, rfz + fz], dtype=float64)
+    disc = sorted([load['position'] for load in pt_loads if 0 < load['position'] < length])
 
-    # Moment ///////////////////////////////////////////////////////////////////////////////////////
-    # x direction *********************************************************************************
-    # Because Mx ----------------------------------------------------------------------------------
-    if x == 0:
-        efforts['T'] += np.array([0, rmx], dtype=float64)
-    elif x == position:
-        efforts['T'] += np.array([rmx, rmx + mx], dtype=float64)
-    elif x == length:
-        efforts['T'] += np.array([rmx + mx, 0], dtype=float64)
-    elif x < position:
-        efforts['T'] += np.array([rmx, rmx], dtype=float64)
-    elif x > position:
-        efforts['T'] += np.array([rmx + mx, rmx + mx], dtype=float64)
+    mz = np.array([extreme_forces[5], extreme_forces[5]], dtype=float64)
 
-    # y direction *********************************************************************************
-    # Because the Fz ------------------------------------------------------------------------------
-    if x == 0:
-        efforts['My'] += np.array([0, rmy], dtype=float64)
-    elif x == position:
-        value = rmy + rfz * x
-        efforts['My'] += np.array([value, value], dtype=float64)
-    elif x == length:
-        value = rmy - fz * position + (rfz + fz) * x
-        efforts['My'] += np.array([value, 0], dtype=float64)
-    elif x < position:
-        value = rmy + rfz * x
-        efforts['My'] += np.array([value, value], dtype=float64)
-    elif x > position:
-        value = rmy - fz * position + (rfz + fz) * x
-        efforts['My'] += np.array([value, value], dtype=float64)
+    for load in pt_loads:
+        if load['position'] < x:
+            mz[0] -= load['Mz']
+        if load['position'] <= x:
+            mz[1] -= load['Mz']
 
-    # Because the My ------------------------------------------------------------------------------
-    if x == 0:
-        # This 0 because the moment at the start is already considered previously
-        pass
-    elif x == position:
-        # Not adding rfz * x because it is already considered previously
-        efforts['My'] += np.array([0, my], dtype=float64)
-    elif x == length:
-        # Not adding rfz * x because it is already considered previously
-        efforts['My'] += np.array([my, 0], dtype=float64)
-    elif x < position:
-        # This 0 because the moment at the start is already considered previously
-        pass
-    elif x > position:
-        # Not adding rfz * x because it is already considered previously
-        efforts['My'] += np.array([my, my], dtype=float64)
+    for i in range(len(disc) + 1):
+        # Initial position of the segment
+        if i == 0:
+            x0 = 0
+        else:
+            x0 = disc[i - 1]
 
-    # z direction *********************************************************************************
-    # Because the Fy ------------------------------------------------------------------------------
-    if x == 0:
-        efforts['Mz'] += np.array([0, -rmz], dtype=float64)
-    elif x == position:
-        value1 = -rmz + rfy * x
-        value2 = -rmz - fy * position + (rfy + fy) * x
-        efforts['Mz'] += np.array([value1, value2], dtype=float64)
-    elif x == length:
-        value = -rmz - fy * position + (rfy + fy) * x
-        efforts['Mz'] = np.array([value, 0], dtype=float64)
-    elif x < position:
-        value = -rmz + rfy * x
-        efforts['Mz'] = np.array([value, value], dtype=float64)
-    elif x > position:
-        value = -rmz - fy * position + (rfy + fy) * x
-        efforts['Mz'] = np.array([value, value], dtype=float64)
+        # Final position of the segment
+        if i == len(disc):
+            x1 = length
+        else:
+            x1 = disc[i]
 
-    # Because the Mz ------------------------------------------------------------------------------
-    if x == 0:
-        # This 0 because the moment at the start is already considered previously
-        pass
-    elif x == position:
-        efforts['Mz'] += np.array([0, -mz], dtype=float64)
-    elif x == length:
-        efforts['Mz'] += np.array([-mz, 0], dtype=float64)
-    elif x < position:
-        # This 0 because the moment at the start is already considered previously
-        pass
-    elif x > position:
-        efforts['Mz'] += np.array([-mz, -mz], dtype=float64)
+        if x0 < x <= x1:
+            mz[0] += shear_y(x, length, pt_loads, extreme_forces)[0] * (x - x0)
+            mz[1] += shear_y(x, length, pt_loads, extreme_forces)[0] * (x - x0)
+            break
 
-    # Return //////////////////////////////////////////////////////////////////////////////////////
-    return efforts
+        mz[0] += shear_y(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
+        mz[1] += shear_y(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
 
 
-# Test Fx /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(4,
-#                    5,
-#                    2,
-#                    {'Fx': 100, 'Fy': 0, 'Fz': 0, 'Mx': 0, 'My': 0, 'Mz': 0},
-#                    {'RFx': -60, 'RFy': 0, 'RFz': 0, 'RMx': 0, 'RMy': 0, 'RMz': 0})['N'])
+    return mz
 
-# Test Fy /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(5,
-#                    5,
-#                    2,
-#                    {'Fx': 0, 'Fy': 100, 'Fz': 0, 'Mx': 0, 'My': 0, 'Mz': 0},
-#                    {'RFx': 0, 'RFy': -64.8, 'RFz':0, 'RMx': 0, 'RMy': 0, 'RMz': -72})['Mz'])
+extreme_forces1 = np.array([0, -164.80, 0, 0, 0, 194.5,
+                           0, 435.20, 0, 0, 0, 320.5], dtype=float64)
 
-# Test Fz /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(5,
-#                    5,
-#                    2,
-#                    {'Fx': 0, 'Fy': 0, 'Fz': 100, 'Mx': 0, 'My': 0, 'Mz': 0},
-#                    {'RFx': 0, 'RFy': 0, 'RFz': -64.8, 'RMx': 0, 'RMy': 72, 'RMz': 0})['My'])
+point_loads: list[PointLoad] = [
+    {'position': 3, 'system': 'local',
+     'Fx': 0, 'Fy': 200, 'Fz': 0,
+     'Mx': 0, 'My': 0, 'Mz': 0},
+    {'position': 1, 'system': 'local',
+     'Fx': 0, 'Fy': 100, 'Fz': 0,
+     'Mx': 0, 'My': 0, 'Mz': 0},
+    {'position': 4.5, 'system': 'local',
+     'Fx': 0, 'Fy': 300, 'Fz': 0,
+     'Mx': 0, 'My': 0, 'Mz': 0},
+    {'position': 3.5, 'system': 'local',
+     'Fx': 0, 'Fy': 0, 'Fz': 0,
+     'Mx': 0, 'My': 0, 'Mz': -100},
+    {'position': 2, 'system': 'local',
+     'Fx': 0, 'Fy': 0, 'Fz': 0,
+     'Mx': 0, 'My': 0, 'Mz': 100}
+]
 
-# Test Mx /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(5,
-#                    5,
-#                    2,
-#                    {'Fx': 0, 'Fy': 0, 'Fz': 0, 'Mx': 100, 'My': 0, 'Mz': 0},
-#                    {'RFx': 0, 'RFy': 0, 'RFz': 0, 'RMx': -60, 'RMy': 0, 'RMz': 0})['T'])
-
-# Test My /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(2,
-#                    5,
-#                    2,
-#                    {'Fx': 0, 'Fy': 0, 'Fz': 0, 'Mx': 0, 'My': 100, 'Mz': 0},
-#                    {'RFx': 0, 'RFy': 0, 'RFz': -28.8, 'RMx': 0, 'RMy': 12, 'RMz': 0})['Vz'])
-
-# Test Mz /////////////////////////////////////////////////////////////////////////////////////////
-# print(force_effort(1,
-#                    5,
-#                    2,
-#                    {'Fx': 0, 'Fy': 0, 'Fz': 0, 'Mx': 0, 'My': 0, 'Mz': 100},
-#                    {'RFx': 0, 'RFy': 0, 'RFz': 0, 'RMx': 0, 'RMy': 0, 'RMz': -100})['Mz'])
-print(force_effort(3,
-                   5,
-                   2,
-                   {'Fx': 0, 'Fy': 0, 'Fz': 0, 'Mx': 0, 'My': 0, 'Mz': 100},
-                   {'RFx': 0, 'RFy': 28.8, 'RFz': 0, 'RMx': 0, 'RMy': 0, 'RMz': 12})['Vy'])
+print(moment_z(4.5, 5, point_loads, extreme_forces1))
