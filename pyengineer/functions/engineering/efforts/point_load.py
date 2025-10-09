@@ -87,6 +87,30 @@ def shear_z(x: float,
             vz[1] += load['Fz']
     return vz
 
+def moment_x(x: float,
+             length: float,
+             pt_loads: list[PointLoad],
+             extreme_forces: NDArray[float64] = \
+                 np.array([0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
+    """Bending moment at position x due to point loads"""
+    if x < 0 or x > length:
+        raise ValueError("Position x is out of bounds")
+
+    if x == 0:
+        return np.array([0, extreme_forces[3]], dtype=float64)
+    if x == length:
+        return np.array([extreme_forces[9], 0], dtype=float64)
+
+    mx = np.array([extreme_forces[3], extreme_forces[3]], dtype=float64)
+    for load in pt_loads:
+        if load['position'] < x:
+            mx[0] += load['Mx']
+        if load['position'] <= x:
+            mx[1] += load['Mx']
+
+    return mx
+
 def moment_y(x: float,
              length: float,
              pt_loads: list[PointLoad],
@@ -103,9 +127,7 @@ def moment_y(x: float,
         return np.array([extreme_forces[10], 0], dtype=float64)
 
     disc = sorted([load['position'] for load in pt_loads if 0 < load['position'] < length])
-
     my = np.array([extreme_forces[4], extreme_forces[4]], dtype=float64)
-
     for load in pt_loads:
         if load['position'] < x:
             my[0] += load['My']
@@ -152,9 +174,7 @@ def moment_z(x: float,
         return np.array([extreme_forces[11], 0], dtype=float64)
 
     disc = sorted([load['position'] for load in pt_loads if 0 < load['position'] < length])
-
     mz = np.array([extreme_forces[5], extreme_forces[5]], dtype=float64)
-
     for load in pt_loads:
         if load['position'] < x:
             mz[0] -= load['Mz']
@@ -227,17 +247,32 @@ def moment_z(x: float,
 # ]
 # print(moment_y(5, 5, loads02, forces02))
 
-forces03 = np.array([190, 0, 0, 0, 0, 0,
-                     -410, 0, 0, 0, 0, 0], dtype=float64)
+# forces03 = np.array([190, 0, 0, 0, 0, 0,
+#                      -410, 0, 0, 0, 0, 0], dtype=float64)
+# loads03: list[PointLoad] = [
+#     {'position': 3, 'system': 'local',
+#      'Fx': 200, 'Fy': 0, 'Fz': 0,
+#      'Mx': 0, 'My': 0, 'Mz': 0},
+#     {'position': 1, 'system': 'local',
+#      'Fx': 100, 'Fy': 0, 'Fz': 0,
+#      'Mx': 0, 'My': 0, 'Mz': 0},
+#     {'position': 4.5, 'system': 'local',
+#      'Fx': 300, 'Fy': 0, 'Fz': 0,
+#      'Mx': 0, 'My': 0, 'Mz': 0}
+# ]
+# print(normal(5, 5, loads03, forces03))
+
+forces03 = np.array([0, 0, 0, -65, 0, 0,
+                     0, 0, 0, 135, 0, 0], dtype=float64)
 loads03: list[PointLoad] = [
-    {'position': 3, 'system': 'local',
-     'Fx': 200, 'Fy': 0, 'Fz': 0,
-     'Mx': 0, 'My': 0, 'Mz': 0},
+    {'position': 2, 'system': 'local',
+     'Fx': 0, 'Fy': 0, 'Fz': 0,
+     'Mx': 100, 'My': 0, 'Mz': 0},
     {'position': 1, 'system': 'local',
-     'Fx': 100, 'Fy': 0, 'Fz': 0,
-     'Mx': 0, 'My': 0, 'Mz': 0},
-    {'position': 4.5, 'system': 'local',
-     'Fx': 300, 'Fy': 0, 'Fz': 0,
-     'Mx': 0, 'My': 0, 'Mz': 0}
+     'Fx': 0, 'Fy': 0, 'Fz': 0,
+     'Mx': -50, 'My': 0, 'Mz': 0},
+    {'position': 3.5, 'system': 'local',
+     'Fx': 0, 'Fy': 0, 'Fz': 0,
+     'Mx': 150, 'My': 0, 'Mz': 0}
 ]
-print(normal(5, 5, loads03, forces03))
+print(moment_x(3.5, 5, loads03, forces03))
