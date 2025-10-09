@@ -13,7 +13,9 @@ import numpy as np
 
 import pyengineer as pg
 from pyengineer import analysis
-from pyengineer.functions.engineering.efforts import point_load
+
+from pyengineer.functions.engineering.efforts.point_load import moment_z
+
 
 # Output format
 np.set_printoptions(formatter={'float_kind': '{: .2f}'.format}, linewidth=200)
@@ -41,8 +43,8 @@ bars.append(b1)
 loads: list[pg.Load] = []
 load = pg.Load('L1')
 loads.append(load)
-load.add_bar_load_pt('PT1', b1, 1, 'local', fx=100, fy=200, fz=300, mx=100, my=200, mz=300)
-load.add_bar_load_pt('PT2', b1, 3, 'local', fx=123, fy=123, fz=123, mx=123, my=123, mz=123)
+load.add_bar_load_pt('PT1', b1, 1, 'local', fx=100, fy=200, fz=300, mx=400, my=500, mz=600)
+load.add_bar_load_pt('PT2', b1, 3, 'global', fx=100, fy=200, fz=300, mx=400, my=500, mz=600)
 
 # Supports
 support = pg.Support()
@@ -56,15 +58,7 @@ linear_analysis = analysis.Linear(nodes, bars, loads, support)
 bar_loads = list(loads[0].bars_loads_pt[b1].values())
 bar_extreme_forces = bars[0].extreme_forces['L1']
 
-# print(point_load.moment_y(0.0, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(0.5, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(1.0, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(1.5, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(2.0, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(2.5, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(3.0, b1.length, bar_loads, bar_extreme_forces))
-print(point_load.moment_y(3.5, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(4.0, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(4.5, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(5.0, b1.length, bar_loads, bar_extreme_forces))
-# print(point_load.moment_y(b1.length, b1.length, bar_loads, bar_extreme_forces))
+print(moment_z(0, b1.length, bar_loads, b1.r, bar_extreme_forces))
+print(moment_z(1, b1.length, bar_loads, b1.r, bar_extreme_forces))
+print(moment_z(3, b1.length, bar_loads, b1.r, bar_extreme_forces))
+print(moment_z(b1.length, b1.length, bar_loads, b1.r, bar_extreme_forces))

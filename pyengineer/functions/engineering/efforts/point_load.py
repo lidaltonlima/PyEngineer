@@ -1,24 +1,34 @@
 """Efforts in segment"""
+from math import isclose
+
 import numpy as np
 from numpy import float64
 from numpy.typing import NDArray
+
 from ....types import PtLoad
+from ..loads.system import global2local_pt
+
 
 def normal(x: float,
            length: float,
            pt_loads: list[PtLoad],
+           rotation_matrix: NDArray[float64],
            extreme_forces: NDArray[float64] = \
                np.array([0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
     """Normal force at position x due to point loads"""
-
-    # Calculate normal force at position x due to point loads
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate normal force at position x due to point loads
     if x == 0:
         return np.array([0, extreme_forces[0]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[6], 0], dtype=float64)
 
     n = np.array([extreme_forces[0], extreme_forces[0]], dtype=float64)
@@ -32,6 +42,7 @@ def normal(x: float,
 def shear_y(x: float,
             length: float,
             pt_loads: list[PtLoad],
+            rotation_matrix: NDArray[float64],
             extreme_forces: NDArray[float64] = \
                 np.array([0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
@@ -39,9 +50,15 @@ def shear_y(x: float,
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate shear force at position x due to point loads
     if x == 0:
         return np.array([0, extreme_forces[1]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[7], 0], dtype=float64)
 
     vy = np.array([extreme_forces[1], extreme_forces[1]], dtype=float64)
@@ -55,6 +72,7 @@ def shear_y(x: float,
 def shear_z(x: float,
             length: float,
             pt_loads: list[PtLoad],
+            rotation_matrix: NDArray[float64],
             extreme_forces: NDArray[float64] = \
                 np.array([0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
@@ -62,9 +80,16 @@ def shear_z(x: float,
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate shear force at position x due to point loads
+
     if x == 0:
         return np.array([0, extreme_forces[2]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[8], 0], dtype=float64)
 
     vz = np.array([extreme_forces[2], extreme_forces[2]], dtype=float64)
@@ -78,6 +103,7 @@ def shear_z(x: float,
 def moment_x(x: float,
              length: float,
              pt_loads: list[PtLoad],
+             rotation_matrix: NDArray[float64],
              extreme_forces: NDArray[float64] = \
                  np.array([0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
@@ -85,9 +111,15 @@ def moment_x(x: float,
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate moment force at position x due to point loads
     if x == 0:
         return np.array([0, extreme_forces[3]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[9], 0], dtype=float64)
 
     mx = np.array([extreme_forces[3], extreme_forces[3]], dtype=float64)
@@ -102,6 +134,7 @@ def moment_x(x: float,
 def moment_y(x: float,
              length: float,
              pt_loads: list[PtLoad],
+             rotation_matrix: NDArray[float64],
              extreme_forces: NDArray[float64] = \
                  np.array([0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
@@ -109,9 +142,15 @@ def moment_y(x: float,
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate moment force at position x due to point loads
     if x == 0:
         return np.array([0, extreme_forces[4]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[10], 0], dtype=float64)
 
     disc = sorted([load['position'] for load in pt_loads if 0 < load['position'] < length])
@@ -135,13 +174,15 @@ def moment_y(x: float,
         else:
             x1 = disc[i]
 
+        # Rotation matrix is identity because the loads have already been converted
+        # to local coordinates
         if x0 < x <= x1:
-            my[0] += shear_z(x, length, pt_loads, extreme_forces)[0] * (x - x0)
-            my[1] += shear_z(x, length, pt_loads, extreme_forces)[0] * (x - x0)
+            my[0] += shear_z(x, length, pt_loads, np.eye(12), extreme_forces)[0] * (x - x0)
+            my[1] += shear_z(x, length, pt_loads, np.eye(12), extreme_forces)[0] * (x - x0)
             break
 
-        my[0] += shear_z(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
-        my[1] += shear_z(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
+        my[0] += shear_z(x1, length, pt_loads, np.eye(12), extreme_forces)[0] * (x1 - x0)
+        my[1] += shear_z(x1, length, pt_loads, np.eye(12), extreme_forces)[0] * (x1 - x0)
 
 
     return my
@@ -149,6 +190,7 @@ def moment_y(x: float,
 def moment_z(x: float,
              length: float,
              pt_loads: list[PtLoad],
+             rotation_matrix: NDArray[float64],
              extreme_forces: NDArray[float64] = \
                  np.array([0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0], dtype=float64)) -> NDArray[float64]:
@@ -156,9 +198,15 @@ def moment_z(x: float,
     if x < 0 or x > length:
         raise ValueError("Position x is out of bounds")
 
+    # Convert loads to local coordinates if necessary
+    for i, load in enumerate(pt_loads):
+        if load['system'] == 'global':
+            pt_loads[i] = global2local_pt(load, rotation_matrix)
+
+    # Calculate moment force at position x due to point loads
     if x == 0:
         return np.array([0, extreme_forces[5]], dtype=float64)
-    if x == length:
+    if isclose(x, length):
         return np.array([extreme_forces[11], 0], dtype=float64)
 
     disc = sorted([load['position'] for load in pt_loads if 0 < load['position'] < length])
@@ -183,12 +231,12 @@ def moment_z(x: float,
             x1 = disc[i]
 
         if x0 < x <= x1:
-            mz[0] += shear_y(x, length, pt_loads, extreme_forces)[0] * (x - x0)
-            mz[1] += shear_y(x, length, pt_loads, extreme_forces)[0] * (x - x0)
+            mz[0] += shear_y(x, length, pt_loads, np.eye(12), extreme_forces)[0] * (x - x0)
+            mz[1] += shear_y(x, length, pt_loads, np.eye(12), extreme_forces)[0] * (x - x0)
             break
 
-        mz[0] += shear_y(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
-        mz[1] += shear_y(x1, length, pt_loads, extreme_forces)[0] * (x1 - x0)
+        mz[0] += shear_y(x1, length, pt_loads, np.eye(12), extreme_forces)[0] * (x1 - x0)
+        mz[1] += shear_y(x1, length, pt_loads, np.eye(12), extreme_forces)[0] * (x1 - x0)
 
 
     return mz

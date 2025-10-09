@@ -2,4 +2,4 @@
 import numpy as np
 
 
-print(np.eye(6))
+print(np.eye(12))
